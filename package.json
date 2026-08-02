@@ -1,0 +1,44 @@
+{
+  "name": "labib-tour-management",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Labib Tour Management System (LTMS) — Enterprise Travel ERP & Booking Platform",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace=server & npm run dev --workspace=client",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
+    "build": "npm run build --workspace=client && npm run build --workspace=server",
+    "build:client": "npm run build --workspace=client",
+    "build:server": "npm run build --workspace=server",
+    "lint": "npm run lint --workspace=client && npm run lint --workspace=server",
+    "lint:fix": "npm run lint:fix --workspace=client && npm run lint:fix --workspace=server",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md}\" --ignore-path .gitignore",
+    "typecheck": "npm run typecheck --workspace=client && npm run typecheck --workspace=server",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
+    "prettier": "^3.4.2"
+  },
+  "lint-staged": {
+    "client/**/*.{ts,tsx}": [
+      "eslint --fix --config client/eslint.config.js"
+    ],
+    "server/**/*.ts": [
+      "eslint --fix --config server/eslint.config.js"
+    ],
+    "**/*.{ts,tsx,json,md}": [
+      "prettier --write"
+    ]
+  }
+}
