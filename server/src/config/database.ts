@@ -1,6 +1,11 @@
+import dns from 'node:dns';
 import mongoose from 'mongoose';
 import { env } from '@/config/env.js';
 import { logger } from '@/utils/logger.js';
+
+// Windows/ISP DNS resolver অনেক সময় mongodb+srv:// এর SRV lookup fail করে,
+// তাই সরাসরি Google DNS ব্যবহার করে এই সমস্যা এড়ানো হচ্ছে
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 /**
  * MongoDB connection via Mongoose. Kept as a single exported function so
