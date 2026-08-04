@@ -1,0 +1,97 @@
+/**
+ * Base element styles + DARK THEME overrides.
+ *
+ * How theming works: tokens.css defines --color-background, --color-primary,
+ * etc. (LIGHT values) inside @theme, which is what makes `bg-background`,
+ * `text-foreground`, `bg-primary` exist as real Tailwind utilities.
+ * Below, `.dark { ... }` re-declares the exact same variable names with
+ * dark-mode values. Because utilities reference the variable (not a
+ * literal color), toggling the `.dark` class on <html> re-themes the
+ * entire app instantly — no component code changes between themes.
+ */
+
+.dark {
+  --color-background: var(--color-neutral-950);
+  --color-foreground: var(--color-neutral-100);
+
+  --color-card: var(--color-neutral-900);
+  --color-card-foreground: var(--color-neutral-100);
+
+  --color-popover: var(--color-neutral-900);
+  --color-popover-foreground: var(--color-neutral-100);
+
+  --color-primary: var(--color-primary-500);
+  --color-primary-foreground: var(--color-neutral-950);
+
+  --color-secondary: var(--color-secondary-500);
+  --color-secondary-foreground: var(--color-neutral-950);
+
+  --color-muted: var(--color-neutral-800);
+  --color-muted-foreground: var(--color-neutral-400);
+
+  --color-accent: var(--color-accent-500);
+  --color-accent-foreground: var(--color-neutral-950);
+
+  --color-success: var(--color-success-500);
+  --color-success-foreground: var(--color-neutral-950);
+
+  --color-destructive: var(--color-danger-500);
+  --color-destructive-foreground: var(--color-neutral-950);
+
+  --color-border: var(--color-neutral-800);
+  --color-input: var(--color-neutral-800);
+  --color-ring: var(--color-primary-500);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  @apply antialiased bg-background text-foreground;
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+}
+
+/* Visible keyboard focus everywhere — WCAG 2.4.7. Mouse clicks get no
+   ring (:focus-visible only fires for keyboard/programmatic focus). */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  color: var(--color-foreground);
+}

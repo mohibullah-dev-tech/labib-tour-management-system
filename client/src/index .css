@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* Self-hosted fonts, LATIN SUBSET ONLY (see styles/tokens.css for the
+   font-family tokens). Importing full @fontsource/* pulls every unicode
+   range (Cyrillic, Greek, Vietnamese, ...); LTMS ships in English, so we
+   import just the `latin` + `latin-ext` files per weight — smaller
+   download, same visual result. */
+@import '@fontsource/plus-jakarta-sans/latin-400.css';
+@import '@fontsource/plus-jakarta-sans/latin-500.css';
+@import '@fontsource/plus-jakarta-sans/latin-600.css';
+@import '@fontsource/plus-jakarta-sans/latin-700.css';
+@import '@fontsource/plus-jakarta-sans/latin-ext-400.css';
+@import '@fontsource/plus-jakarta-sans/latin-ext-500.css';
+@import '@fontsource/plus-jakarta-sans/latin-ext-600.css';
+@import '@fontsource/plus-jakarta-sans/latin-ext-700.css';
+@import '@fontsource/fraunces/latin-500.css';
+@import '@fontsource/fraunces/latin-600.css';
+@import '@fontsource/fraunces/latin-ext-500.css';
+@import '@fontsource/fraunces/latin-ext-600.css';
+@import '@fontsource/jetbrains-mono/latin-400.css';
+@import '@fontsource/jetbrains-mono/latin-500.css';
+
+/* Tailwind v4 defaults to matching dark mode to the OS `prefers-color-scheme`.
+   LTMS needs a user-toggleable Light/Dark/System switch (see lib/theme), so
+   we override the `dark:` variant to key off a `.dark` class instead —
+   applied to <html> by ThemeProvider. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@import './styles/tokens.css';
+@import './styles/base.css';

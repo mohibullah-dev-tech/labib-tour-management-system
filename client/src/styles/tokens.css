@@ -1,0 +1,167 @@
+/**
+ * LTMS Design Tokens — single source of truth for color, type, radius,
+ * shadow, and spacing. Tailwind v4 reads this @theme block and generates
+ * real utility classes from it (bg-primary-600, shadow-floating, etc.),
+ * so tokens defined here are usable everywhere immediately — no build step,
+ * no separate JS config to keep in sync.
+ *
+ * NOTE ON BRAND COLORS: every hex in the brief (#0F766E, #0891B2, #F59E0B,
+ * #16A34A, #DC2626) is, digit for digit, an existing step in Tailwind's
+ * default palette (teal-700, cyan-600, amber-500, green-600, red-600).
+ * Rather than hand-roll new 50–950 ramps (and hand-verify their contrast
+ * ratios), we alias our semantic names directly to Tailwind's own
+ * battle-tested scales. Same visual brand, zero maintenance, and every
+ * shade is already accessibility-vetted by Tailwind.
+ */
+@theme {
+  /* ---------------------------------------------------------------- */
+  /* FONTS                                                              */
+  /* Display: Fraunces — a warm, editorial serif with soft ink-trap     */
+  /*   detailing. Used ONLY for large headings/hero moments, sparingly, */
+  /*   to carry the "premium travel" feeling without tipping into      */
+  /*   generic luxury-brand cliché.                                    */
+  /* Sans: Plus Jakarta Sans — geometric but warm, excellent at small   */
+  /*   UI sizes. Carries all body copy, labels, and controls.           */
+  /* Mono: JetBrains Mono — booking codes, prices, dates, IDs. Tabular   */
+  /*   figures make numbers in tables/receipts line up cleanly.         */
+  /* ---------------------------------------------------------------- */
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* ---------------------------------------------------------------- */
+  /* BRAND COLORS — aliased to Tailwind's default scales (see note above)*/
+  /* ---------------------------------------------------------------- */
+  --color-primary-50: var(--color-teal-50);
+  --color-primary-100: var(--color-teal-100);
+  --color-primary-200: var(--color-teal-200);
+  --color-primary-300: var(--color-teal-300);
+  --color-primary-400: var(--color-teal-400);
+  --color-primary-500: var(--color-teal-500);
+  --color-primary-600: var(--color-teal-600);
+  --color-primary-700: var(--color-teal-700); /* #0F766E — brand primary */
+  --color-primary-800: var(--color-teal-800);
+  --color-primary-900: var(--color-teal-900);
+  --color-primary-950: var(--color-teal-950);
+
+  --color-secondary-50: var(--color-cyan-50);
+  --color-secondary-100: var(--color-cyan-100);
+  --color-secondary-200: var(--color-cyan-200);
+  --color-secondary-300: var(--color-cyan-300);
+  --color-secondary-400: var(--color-cyan-400);
+  --color-secondary-500: var(--color-cyan-500);
+  --color-secondary-600: var(--color-cyan-600); /* #0891B2 — brand secondary */
+  --color-secondary-700: var(--color-cyan-700);
+  --color-secondary-800: var(--color-cyan-800);
+  --color-secondary-900: var(--color-cyan-900);
+  --color-secondary-950: var(--color-cyan-950);
+
+  --color-accent-50: var(--color-amber-50);
+  --color-accent-100: var(--color-amber-100);
+  --color-accent-200: var(--color-amber-200);
+  --color-accent-300: var(--color-amber-300);
+  --color-accent-400: var(--color-amber-400);
+  --color-accent-500: var(--color-amber-500); /* #F59E0B — brand accent */
+  --color-accent-600: var(--color-amber-600);
+  --color-accent-700: var(--color-amber-700);
+  --color-accent-800: var(--color-amber-800);
+  --color-accent-900: var(--color-amber-900);
+  --color-accent-950: var(--color-amber-950);
+
+  --color-success-50: var(--color-green-50);
+  --color-success-100: var(--color-green-100);
+  --color-success-200: var(--color-green-200);
+  --color-success-300: var(--color-green-300);
+  --color-success-400: var(--color-green-400);
+  --color-success-500: var(--color-green-500);
+  --color-success-600: var(--color-green-600); /* #16A34A — success */
+  --color-success-700: var(--color-green-700);
+  --color-success-800: var(--color-green-800);
+  --color-success-900: var(--color-green-900);
+  --color-success-950: var(--color-green-950);
+
+  --color-danger-50: var(--color-red-50);
+  --color-danger-100: var(--color-red-100);
+  --color-danger-200: var(--color-red-200);
+  --color-danger-300: var(--color-red-300);
+  --color-danger-400: var(--color-red-400);
+  --color-danger-500: var(--color-red-500);
+  --color-danger-600: var(--color-red-600); /* #DC2626 — danger */
+  --color-danger-700: var(--color-red-700);
+  --color-danger-800: var(--color-red-800);
+  --color-danger-900: var(--color-red-900);
+  --color-danger-950: var(--color-red-950);
+
+  /* Neutral gray: slate — a cool-toned neutral that sits naturally next  */
+  /* to teal/cyan (shared blue undertone) instead of fighting it the way */
+  /* a warm gray would.                                                   */
+  --color-neutral-50: var(--color-slate-50);
+  --color-neutral-100: var(--color-slate-100);
+  --color-neutral-200: var(--color-slate-200);
+  --color-neutral-300: var(--color-slate-300);
+  --color-neutral-400: var(--color-slate-400);
+  --color-neutral-500: var(--color-slate-500);
+  --color-neutral-600: var(--color-slate-600);
+  --color-neutral-700: var(--color-slate-700);
+  --color-neutral-800: var(--color-slate-800);
+  --color-neutral-900: var(--color-slate-900);
+  --color-neutral-950: var(--color-slate-950);
+
+  /* ---------------------------------------------------------------- */
+  /* RADIUS SCALE — soft, premium rounding. Nothing sharp, nothing      */
+  /* cartoonish.                                                        */
+  /* ---------------------------------------------------------------- */
+  --radius-sm: 0.5rem; /* 8px  — inputs, badges, small controls        */
+  --radius-md: 0.75rem; /* 12px — buttons, default components          */
+  --radius-lg: 1rem; /* 16px — cards, panels                            */
+  --radius-xl: 1.5rem; /* 24px — modals, hero surfaces, large sheets    */
+
+  /* ---------------------------------------------------------------- */
+  /* SHADOW SCALE — soft, low-opacity, multi-layered. Real premium UI   */
+  /* shadows are subtle diffusion, not a single hard drop-shadow.       */
+  /* ---------------------------------------------------------------- */
+  --shadow-color: 222 47% 11%; /* neutral-900 hue, used as shadow tint */
+  --shadow-sm: 0 1px 2px -1px hsl(var(--shadow-color) / 0.06), 0 1px 1px -1px hsl(var(--shadow-color) / 0.04);
+  --shadow-md: 0 4px 8px -2px hsl(var(--shadow-color) / 0.08), 0 2px 4px -2px hsl(var(--shadow-color) / 0.06);
+  --shadow-lg: 0 12px 24px -6px hsl(var(--shadow-color) / 0.1), 0 4px 8px -4px hsl(var(--shadow-color) / 0.06);
+  --shadow-floating: 0 24px 48px -12px hsl(var(--shadow-color) / 0.16), 0 8px 16px -8px hsl(var(--shadow-color) / 0.08);
+
+  /* ---------------------------------------------------------------- */
+  /* SEMANTIC TOKENS (LIGHT — default)                                  */
+  /* Components NEVER reference --color-primary-700 etc. directly —    */
+  /* they reference these semantic names (bg-background, bg-primary,   */
+  /* text-foreground...). Dark mode is implemented by re-declaring      */
+  /* these SAME variable names inside `.dark {}` in base.css — the      */
+  /* component code and utility classes never change between themes.   */
+  /* ---------------------------------------------------------------- */
+  --color-background: #ffffff;
+  --color-foreground: var(--color-neutral-900);
+
+  --color-card: #ffffff;
+  --color-card-foreground: var(--color-neutral-900);
+
+  --color-popover: #ffffff;
+  --color-popover-foreground: var(--color-neutral-900);
+
+  --color-primary: var(--color-primary-700);
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: var(--color-secondary-600);
+  --color-secondary-foreground: #ffffff;
+
+  --color-muted: var(--color-neutral-100);
+  --color-muted-foreground: var(--color-neutral-500);
+
+  --color-accent: var(--color-accent-500);
+  --color-accent-foreground: var(--color-neutral-900);
+
+  --color-success: var(--color-success-600);
+  --color-success-foreground: #ffffff;
+
+  --color-destructive: var(--color-danger-600);
+  --color-destructive-foreground: #ffffff;
+
+  --color-border: var(--color-neutral-200);
+  --color-input: var(--color-neutral-200);
+  --color-ring: var(--color-primary-600);
+}
