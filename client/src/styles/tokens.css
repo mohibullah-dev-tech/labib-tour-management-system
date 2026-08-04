@@ -30,6 +30,22 @@
   --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   /* ---------------------------------------------------------------- */
+  /* BREAKPOINTS — named aliases on top of Tailwind's defaults          */
+  /* (sm/md/lg/xl/2xl keep working as-is; these add semantic names for  */
+  /* layout code that reads better as "tablet:" than "sm:"). Mobile has */
+  /* no prefix — it's the unprefixed base, per mobile-first design.     */
+  /*   mobile    : 0–639px    (base, no prefix)                         */
+  /*   tablet    : 640px+     (== sm)                                   */
+  /*   laptop    : 1024px+    (== lg)                                   */
+  /*   desktop   : 1280px+    (== xl)                                   */
+  /*   ultrawide : 1536px+    (== 2xl)                                  */
+  /* ---------------------------------------------------------------- */
+  --breakpoint-tablet: 40rem; /* 640px */
+  --breakpoint-laptop: 64rem; /* 1024px */
+  --breakpoint-desktop: 80rem; /* 1280px */
+  --breakpoint-ultrawide: 96rem; /* 1536px */
+
+  /* ---------------------------------------------------------------- */
   /* BRAND COLORS — aliased to Tailwind's default scales (see note above)*/
   /* ---------------------------------------------------------------- */
   --color-primary-50: var(--color-teal-50);
@@ -164,4 +180,16 @@
   --color-border: var(--color-neutral-200);
   --color-input: var(--color-neutral-200);
   --color-ring: var(--color-primary-600);
+
+  /* ---------------------------------------------------------------- */
+  /* NAMED BREAKPOINTS — additive aliases alongside Tailwind's default   */
+  /* sm/md/lg/xl/2xl (those still work everywhere). These give the       */
+  /* semantic tiers the brief asks for (tablet:, laptop:, desktop:,      */
+  /* ultrawide:) for the handful of places a named tier reads clearer    */
+  /* than a raw breakpoint letter — e.g. `ultrawide:max-w-[1800px]`.     */
+  /* ---------------------------------------------------------------- */
+  --breakpoint-tablet: 48rem; /* 768px  — small tablets and up   */
+  --breakpoint-laptop: 64rem; /* 1024px — laptops and up         */
+  --breakpoint-desktop: 80rem; /* 1280px — desktop monitors       */
+  --breakpoint-ultrawide: 120rem; /* 1920px — ultra-wide displays */
 }

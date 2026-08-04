@@ -1,11 +1,19 @@
+import { PageWrapper } from '@/components/layout/PageWrapper';
+import { Section } from '@/components/layout/Section';
+import { H1, Lead } from '@/components/ui/typography';
+
 /**
- * Placeholder route — intentionally minimal.
- * UI/business logic is out of scope for the project-setup phase.
+ * Placeholder route — intentionally minimal. Home page sections (Hero,
+ * featured tours, testimonials, etc.) are explicitly out of scope for
+ * this phase and will be built next.
  */
 export function HomePage() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <h1 className="text-2xl font-semibold">Labib Tour Management System</h1>
-    </main>
+    <PageWrapper>
+      <Section>
+        <H1>Labib Tour Management System</H1>
+        <Lead className="mt-3">Home page content will be built in an upcoming phase.</Lead>
+      </Section>
+    </PageWrapper>
   );
 }
