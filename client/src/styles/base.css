@@ -95,3 +95,21 @@ pre {
   background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
   color: var(--color-foreground);
 }
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}

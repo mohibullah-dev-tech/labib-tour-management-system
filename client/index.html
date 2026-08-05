@@ -10,6 +10,20 @@
       content="Labib Tour Management System — book tours, manage itineraries, and travel with confidence."
     />
     <title>Labib Tour Management System</title>
+    <script>
+      // Runs before React mounts to avoid a flash of the wrong theme.
+      // Mirrors the logic in lib/theme/ThemeProvider.tsx exactly.
+      (function () {
+        try {
+          var stored = localStorage.getItem('ltms-theme');
+          var isDark =
+            stored === 'dark' ||
+            (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.classList.toggle('dark', isDark);
+          document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+        } catch (_) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

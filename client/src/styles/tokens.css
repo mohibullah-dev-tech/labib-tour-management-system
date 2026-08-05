@@ -192,4 +192,12 @@
   --breakpoint-laptop: 64rem; /* 1024px — laptops and up         */
   --breakpoint-desktop: 80rem; /* 1280px — desktop monitors       */
   --breakpoint-ultrawide: 120rem; /* 1920px — ultra-wide displays */
+
+  /* ---------------------------------------------------------------- */
+  /* ANIMATIONS — height-based accordion open/close, driven by the      */
+  /* CSS custom property Radix sets on the content element. Keyframes   */
+  /* are defined in base.css (plain CSS, @theme can't hold @keyframes). */
+  /* ---------------------------------------------------------------- */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
 }

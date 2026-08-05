@@ -8,6 +8,8 @@ export interface SectionTitleProps {
   description?: string;
   align?: 'left' | 'center';
   className?: string;
+  /** Applied to the underlying <h2> so a parent <section aria-labelledby="..."> can reference it. */
+  id?: string;
 }
 
 /**
@@ -21,6 +23,7 @@ function SectionTitle({
   description,
   align = 'left',
   className,
+  id,
 }: SectionTitleProps) {
   return (
     <div
@@ -31,7 +34,7 @@ function SectionTitle({
       )}
     >
       {eyebrow && <Caption className="text-primary">{eyebrow}</Caption>}
-      <H2>{title}</H2>
+      <H2 id={id}>{title}</H2>
       {description && <Lead className="max-w-2xl">{description}</Lead>}
     </div>
   );

@@ -25,7 +25,7 @@ export const router = createBrowserRouter([
       {
         element: <PublicLayout />,
         children: [
-          { index: true, element: <HomePage /> },
+          { index: true, element: <HomePage />, handle: { transparentNavbar: true } },
           ...NAV_ITEMS.filter((item) => item.path !== '/').map((item) => ({
             path: item.path,
             element: <ComingSoonPage title={item.label} />,

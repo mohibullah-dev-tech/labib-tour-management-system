@@ -52,9 +52,25 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     { className, variant, size, asChild = false, isLoading = false, disabled, children, ...props },
     ref,
   ) => {
-    const Comp = asChild ? Slot : 'button';
+    // Radix `Slot` requires exactly one React element child. When
+    // `asChild` is used (e.g. <Button asChild><Link>...</Link></Button>),
+    // we must render only `children` — never prepend the loading spinner
+    // as a sibling, even a `false`/falsy one, or Slot throws.
+    if (asChild) {
+      return (
+        <Slot
+          ref={ref}
+          className={cn(buttonVariants({ variant, size }), className)}
+          aria-busy={isLoading || undefined}
+          {...props}
+        >
+          {children}
+        </Slot>
+      );
+    }
+
     return (
-      <Comp
+      <button
         ref={ref}
         className={cn(buttonVariants({ variant, size }), className)}
         disabled={disabled || isLoading}
@@ -63,7 +79,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
         {children}
-      </Comp>
+      </button>
     );
   },
 );
