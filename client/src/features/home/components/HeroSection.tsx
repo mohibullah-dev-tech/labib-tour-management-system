@@ -57,7 +57,7 @@ function HeroSection() {
           </p>
           <div className="mt-2 flex flex-col gap-3 sm:flex-row">
             <Button size="lg" asChild>
-              <Link to="/tours">Book Tour</Link>
+              <Link to="/booking">Book Tour</Link>
             </Button>
             <Button
               size="lg"

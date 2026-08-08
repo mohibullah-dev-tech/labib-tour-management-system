@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, Link } from 'react-router';
 import { Search, LogIn, UserPlus } from 'lucide-react';
 import { NAV_ITEMS } from '@/config/navigation';
 import { Button } from '@/components/ui/button';
@@ -56,8 +56,8 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
           <UserPlus className="size-4" />
           Register
         </Button>
-        <Button className="mt-2" onClick={onNavigate}>
-          Book Tour
+        <Button className="mt-2" onClick={onNavigate} asChild>
+          <Link to="/booking">Book Tour</Link>
         </Button>
       </div>
     </nav>

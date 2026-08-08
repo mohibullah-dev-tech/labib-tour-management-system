@@ -88,7 +88,7 @@ const TourCard = memo(function TourCard({ tour }: TourCardProps) {
           </div>
         </dl>
 
-        <div className="border-border mt-1 flex items-center justify-between gap-3 border-t pt-3">
+        <div className="border-border mt-1 flex flex-wrap items-center justify-between gap-3 border-t pt-3">
           <div>
             <p className="text-muted-foreground text-xs">Starting from</p>
             <p className="font-display text-primary text-lg font-semibold">
@@ -100,7 +100,7 @@ const TourCard = memo(function TourCard({ tour }: TourCardProps) {
               <Link to={`/tours/${tour.slug}`}>Details</Link>
             </Button>
             <Button size="sm" asChild>
-              <Link to={`/tours/${tour.slug}#booking`}>Book Now</Link>
+              <Link to={`/booking?tourId=${tour.id}`}>Book Now</Link>
             </Button>
           </div>
         </div>

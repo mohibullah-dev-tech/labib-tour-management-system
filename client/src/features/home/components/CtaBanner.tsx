@@ -32,7 +32,7 @@ function CtaBanner() {
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button size="lg" variant="secondary" asChild>
-              <Link to="/tours">Book a Tour</Link>
+              <Link to="/booking">Book a Tour</Link>
             </Button>
             <Button
               size="lg"

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { motion } from 'framer-motion';
 import { CompassIcon } from 'lucide-react';
 import { PageWrapper } from '@/components/layout/PageWrapper';
@@ -24,6 +25,9 @@ const PAGE_SIZE = 9;
  * flag, and pagination — it never touches TOURS directly.
  */
 export function ToursPage() {
+  const [searchParams] = useSearchParams();
+  const initialSearch = searchParams.get('search') ?? '';
+
   const {
     filters,
     setFilters,
@@ -33,7 +37,7 @@ export function ToursPage() {
     priceBounds,
     resetFilters,
     activeFilterCount,
-  } = useTourFilters();
+  } = useTourFilters(undefined, initialSearch ? { search: initialSearch } : undefined);
 
   const [page, setPage] = useState(1);
   // Simulates the initial network fetch's loading state so the skeleton

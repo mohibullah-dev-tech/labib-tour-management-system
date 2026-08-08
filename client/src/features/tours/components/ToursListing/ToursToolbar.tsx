@@ -46,7 +46,7 @@ function ToursToolbar({
   onReset,
 }: ToursToolbarProps) {
   return (
-    <div className="border-border flex items-center justify-between gap-4 border-b pb-4">
+    <div className="border-border flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
       <p className="text-muted-foreground text-sm">
         <span className="text-foreground font-medium">{resultCount}</span>{' '}
         {resultCount === 1 ? 'tour' : 'tours'} found

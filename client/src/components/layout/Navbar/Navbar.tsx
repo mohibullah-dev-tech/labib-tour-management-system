@@ -103,7 +103,9 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
               <UserPlus className="size-4" />
               Register
             </Button>
-            <Button>Book Tour</Button>
+            <Button asChild>
+              <Link to="/booking">Book Tour</Link>
+            </Button>
           </div>
 
           {/* Mobile: hamburger opens the bottom Drawer */}

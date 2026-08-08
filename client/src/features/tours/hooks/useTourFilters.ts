@@ -44,9 +44,16 @@ function matchesDurationBucket(tour: Tour, bucket: DurationBucket): boolean {
  * TanStack Query result later only changes the `source` this hook reads
  * from `data/tours.ts` — every filter/sort computation here is already
  * written generically over `Tour[]`.
+ *
+ * `initialFilters` lets a caller pre-fill state on mount — e.g. arriving
+ * from the Home page's search widget with `?search=Sajek Valley` already
+ * in the URL (see ToursPage.tsx).
  */
-export function useTourFilters(source: Tour[] = TOURS) {
-  const [filters, setFilters] = useState<TourFiltersState>(DEFAULT_FILTERS);
+export function useTourFilters(source: Tour[] = TOURS, initialFilters?: Partial<TourFiltersState>) {
+  const [filters, setFilters] = useState<TourFiltersState>(() => ({
+    ...DEFAULT_FILTERS,
+    ...initialFilters,
+  }));
 
   const destinations = useMemo(
     () => Array.from(new Set(source.map((t) => t.destination))).sort(),

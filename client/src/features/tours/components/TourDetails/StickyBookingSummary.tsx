@@ -1,4 +1,5 @@
 import { CalendarDays, Users } from 'lucide-react';
+import { Link } from 'react-router';
 import type { Tour } from '@/features/tours/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -49,8 +50,17 @@ function StickyBookingSummary({ tour }: StickyBookingSummaryProps) {
               </dd>
             </div>
           </dl>
-          <Button size="lg" className="w-full" disabled={tour.availableSeats === 0}>
-            {tour.availableSeats === 0 ? 'Sold Out' : 'Book Now'}
+          <Button
+            size="lg"
+            className="w-full"
+            disabled={tour.availableSeats === 0}
+            asChild={tour.availableSeats !== 0}
+          >
+            {tour.availableSeats === 0 ? (
+              'Sold Out'
+            ) : (
+              <Link to={`/booking?tourId=${tour.id}`}>Book Now</Link>
+            )}
           </Button>
           <p className="text-muted-foreground text-center text-xs">
             No payment required to reserve — pay a deposit later.
@@ -69,8 +79,12 @@ function StickyBookingSummary({ tour }: StickyBookingSummaryProps) {
             {formatBDT(tour.startingPriceBDT)}
           </p>
         </div>
-        <Button disabled={tour.availableSeats === 0}>
-          {tour.availableSeats === 0 ? 'Sold Out' : 'Book Now'}
+        <Button disabled={tour.availableSeats === 0} asChild={tour.availableSeats !== 0}>
+          {tour.availableSeats === 0 ? (
+            'Sold Out'
+          ) : (
+            <Link to={`/booking?tourId=${tour.id}`}>Book Now</Link>
+          )}
         </Button>
       </div>
     </>

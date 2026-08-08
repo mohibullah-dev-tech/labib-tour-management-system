@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { useNavigate } from 'react-router';
 import { MapPin, CalendarDays, Users, Search } from 'lucide-react';
 import {
   Select,
@@ -13,21 +14,30 @@ import { Button } from '@/components/ui/button';
 import { DESTINATIONS } from '@/features/home/data/destinations';
 
 /**
- * UI only — no search/booking API exists yet. Holds its own local form
- * state so the controls feel real (typing, selecting), but submission is
- * a no-op placeholder. Swap `handleSubmit` for a real query/navigation
- * (e.g. `navigate(`/tours?destination=...`)`) once the Tours search
- * feature is built — the form contract (values collected here) won't
- * need to change.
+ * Navigates to the Tours listing with the chosen destination pre-filled
+ * as a search term (`/tours?search=<name>`), which ToursPage reads on
+ * mount and hands to useTourFilters' initial state. Destination names
+ * here intentionally aren't matched against the Tours module's exact
+ * `destination` filter values — the two catalogs (8 broad Home
+ * destinations vs. 11 specific tour products) don't line up 1:1 (e.g.
+ * "Sreemangal" only exists combined with Sylhet as a tour product) — a
+ * free-text search match against tour name/destination is the more
+ * forgiving, always-correct bridge between them.
+ * Date and guest count aren't sent yet — they're booking-flow inputs,
+ * not tour-search filters, and will be used once Booking is built.
  */
 function SearchTourWidget() {
+  const navigate = useNavigate();
   const [destination, setDestination] = useState('');
   const [date, setDate] = useState('');
   const [guests, setGuests] = useState('');
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Placeholder — Tours search is a future feature.
+    const selected = DESTINATIONS.find((d) => d.id === destination);
+    const params = new URLSearchParams();
+    if (selected) params.set('search', selected.name);
+    navigate(`/tours${params.toString() ? `?${params.toString()}` : ''}`);
   };
 
   return (

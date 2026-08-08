@@ -40,6 +40,10 @@ export const router = createBrowserRouter([
             lazy: () =>
               import('@/pages/TourDetailsPage').then((m) => ({ Component: m.TourDetailsPage })),
           },
+          {
+            path: '/booking',
+            lazy: () => import('@/pages/BookingPage').then((m) => ({ Component: m.BookingPage })),
+          },
           ...NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/tours').map(
             (item) => ({
               path: item.path,
