@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router';
 import { RootLayout } from '@/components/layout/RootLayout';
 import { PublicLayout } from '@/components/layout/PublicLayout';
+import { AdminLayout } from '@/features/admin/components/layout/AdminLayout';
 import { HomePage } from '@/pages/HomePage';
 import { ComingSoonPage } from '@/pages/ComingSoonPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
@@ -9,19 +10,20 @@ import { NAV_ITEMS, LEGAL_ITEMS } from '@/config/navigation';
 /**
  * Central route table, structured as nested layouts:
  *   RootLayout (scroll restoration only)
- *     └─ PublicLayout (Navbar + Footer + floating actions)
- *          └─ page routes
+ *     ├─ PublicLayout (Navbar + Footer + floating actions) — the public site
+ *     └─ AdminLayout (Sidebar + Topbar) — the admin dashboard, a SIBLING
+ *        of PublicLayout, not nested under it (no public Navbar/Footer in
+ *        an authenticated admin context). Route protection is deferred to
+ *        the future Authentication module.
  *
- * Every NAV_ITEMS entry gets a real route here (rendering ComingSoonPage
- * until its feature module exists) so the Navbar never links to a 404.
- * `/tours` and `/tours/:slug` are now real (Tours Module phase) — the
- * rest of NAV_ITEMS is filtered to skip `/tours` below so it isn't
- * double-registered.
+ * Every public NAV_ITEMS entry gets a real route (rendering
+ * ComingSoonPage until its feature module exists) so the Navbar never
+ * links to a 404. Every admin section now has full CRUD UI — see
+ * docs/ADMIN_DASHBOARD.md for the complete module breakdown.
  *
- * Both Tours routes use React Router's `lazy` field instead of a static
- * `element` import — the Tours module (11 tour records, ~15 detail-page
- * components) only downloads when a visitor actually navigates there,
- * keeping it out of the Home page's initial bundle entirely.
+ * Tours, Booking, and every Admin route use React Router's `lazy` field
+ * instead of a static `element` import, so none of them cost anything in
+ * the Home page's initial bundle.
  */
 export const router = createBrowserRouter([
   {
@@ -54,6 +56,91 @@ export const router = createBrowserRouter([
             path: item.path,
             element: <ComingSoonPage title={item.label} />,
           })),
+          { path: '*', element: <NotFoundPage /> },
+        ],
+      },
+      {
+        path: '/admin',
+        element: <AdminLayout />,
+        children: [
+          {
+            index: true,
+            lazy: () =>
+              import('@/pages/admin/AdminDashboardPage').then((m) => ({
+                Component: m.AdminDashboardPage,
+              })),
+          },
+          {
+            path: 'tours',
+            lazy: () =>
+              import('@/pages/admin/AdminToursPage').then((m) => ({ Component: m.AdminToursPage })),
+          },
+          {
+            path: 'events',
+            lazy: () =>
+              import('@/pages/admin/AdminEventsPage').then((m) => ({
+                Component: m.AdminEventsPage,
+              })),
+          },
+          {
+            path: 'buses',
+            lazy: () =>
+              import('@/pages/admin/AdminBusesPage').then((m) => ({ Component: m.AdminBusesPage })),
+          },
+          {
+            path: 'hosts',
+            lazy: () =>
+              import('@/pages/admin/AdminHostsPage').then((m) => ({ Component: m.AdminHostsPage })),
+          },
+          {
+            path: 'bookings',
+            lazy: () =>
+              import('@/pages/admin/AdminBookingsPage').then((m) => ({
+                Component: m.AdminBookingsPage,
+              })),
+          },
+          {
+            path: 'guests',
+            lazy: () =>
+              import('@/pages/admin/AdminGuestsPage').then((m) => ({
+                Component: m.AdminGuestsPage,
+              })),
+          },
+          {
+            path: 'reviews',
+            lazy: () =>
+              import('@/pages/admin/AdminReviewsPage').then((m) => ({
+                Component: m.AdminReviewsPage,
+              })),
+          },
+          {
+            path: 'gallery',
+            lazy: () =>
+              import('@/pages/admin/AdminGalleryPage').then((m) => ({
+                Component: m.AdminGalleryPage,
+              })),
+          },
+          {
+            path: 'content',
+            lazy: () =>
+              import('@/pages/admin/AdminContentPage').then((m) => ({
+                Component: m.AdminContentPage,
+              })),
+          },
+          {
+            path: 'settings',
+            lazy: () =>
+              import('@/pages/admin/AdminSettingsPage').then((m) => ({
+                Component: m.AdminSettingsPage,
+              })),
+          },
+          {
+            path: 'analytics',
+            lazy: () =>
+              import('@/pages/admin/AdminAnalyticsPage').then((m) => ({
+                Component: m.AdminAnalyticsPage,
+              })),
+          },
           { path: '*', element: <NotFoundPage /> },
         ],
       },
