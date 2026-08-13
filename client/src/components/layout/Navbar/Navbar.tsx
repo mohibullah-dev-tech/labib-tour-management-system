@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { Menu, Search, LogIn, UserPlus, Compass } from 'lucide-react';
+import { Menu, Search, LogIn, UserPlus, Compass, LogOut, User } from 'lucide-react';
 import { useScrolled } from '@/hooks/useScrolled';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { ROLE_HOME_PATH } from '@/features/auth/constants/permissions';
 import { Button } from '@/components/ui/button';
 import {
   Drawer,
@@ -11,6 +13,15 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { NavLinks } from '@/components/layout/Navbar/NavLinks';
 import { MobileNav } from '@/components/layout/Navbar/MobileNav';
 import { Container } from '@/components/common/Container';
@@ -35,6 +46,7 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
   const scrolled = useScrolled(24);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isTransparent = transparentOnTop && !scrolled;
+  const { user, role, isAuthenticated, logout } = useAuth();
 
   return (
     <header
@@ -83,26 +95,75 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
               <TooltipContent>Search tours</TooltipContent>
             </Tooltip>
 
-            <Button
-              variant="ghost"
-              className={cn(
-                'gap-2',
-                isTransparent && 'text-white hover:bg-white/10 hover:text-white',
-              )}
-            >
-              <LogIn className="size-4" />
-              Login
-            </Button>
-            <Button
-              variant={isTransparent ? 'outline' : 'secondary'}
-              className={cn(
-                'gap-2',
-                isTransparent && 'border-white/40 bg-transparent text-white hover:bg-white/10',
-              )}
-            >
-              <UserPlus className="size-4" />
-              Register
-            </Button>
+            {isAuthenticated && user && role ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label="Account menu"
+                    className="focus-visible:ring-ring rounded-full focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                  >
+                    <Avatar className="size-9">
+                      <AvatarImage src={user.avatarUrl} alt="" />
+                      <AvatarFallback>
+                        {user.fullName
+                          .split(' ')
+                          .map((p) => p[0])
+                          .slice(0, 2)
+                          .join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <p className="text-foreground font-medium">{user.fullName}</p>
+                    <p className="text-muted-foreground text-xs font-normal">{user.email}</p>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to={ROLE_HOME_PATH[role]}>
+                      <User className="mr-2 size-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={() => logout()}>
+                    <LogOut className="mr-2 size-4" />
+                    Log Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'gap-2',
+                    isTransparent && 'text-white hover:bg-white/10 hover:text-white',
+                  )}
+                  asChild
+                >
+                  <Link to="/login">
+                    <LogIn className="size-4" />
+                    Login
+                  </Link>
+                </Button>
+                <Button
+                  variant={isTransparent ? 'outline' : 'secondary'}
+                  className={cn(
+                    'gap-2',
+                    isTransparent && 'border-white/40 bg-transparent text-white hover:bg-white/10',
+                  )}
+                  asChild
+                >
+                  <Link to="/register">
+                    <UserPlus className="size-4" />
+                    Register
+                  </Link>
+                </Button>
+              </>
+            )}
             <Button asChild>
               <Link to="/booking">Book Tour</Link>
             </Button>
