@@ -21,6 +21,22 @@ import { setAccessToken, clearAccessToken } from '@/features/auth/services/token
  * explicitly asks for no fake JWT decoding.
  */
 
+/**
+ * Standard backend API authentication endpoint paths.
+ * Configured relative to `env.apiBaseUrl`.
+ */
+export const AUTH_ENDPOINTS = {
+  login: '/auth/login',
+  register: '/auth/register',
+  logout: '/auth/logout',
+  refresh: '/auth/refresh',
+  me: '/auth/me',
+  forgotPassword: '/auth/forgot-password',
+  verifyResetCode: '/auth/verify-reset-code',
+  resetPassword: '/auth/reset-password',
+  verifyEmail: '/auth/verify-email',
+} as const;
+
 const MOCK_NETWORK_DELAY_MS = 600;
 
 interface MockUserRecord extends AuthUser {

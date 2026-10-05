@@ -18,6 +18,7 @@ import {
   useLogoutMutation,
   useRegisterMutation,
 } from '@/features/auth/hooks/useAuthMutations';
+import { SessionExpiredDialog } from '@/features/auth/components/SessionExpiredDialog';
 import type { AuthContextValue } from '@/features/auth/types/auth-state';
 import type { AuthUser, LoginInput, RegisterInput } from '@/features/auth/types/user';
 
@@ -38,6 +39,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const queryClient = useQueryClient();
   const { data: user = null } = useCurrentUserQuery();
   const [isRestoring, setIsRestoring] = useState(true);
+  const [sessionExpiredOpen, setSessionExpiredOpen] = useState(false);
 
   const loginMutation = useLoginMutation();
   const registerMutation = useRegisterMutation();
@@ -74,6 +76,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       },
       onSessionExpired: () => {
         queryClient.setQueryData(authQueryKeys.currentUser, null);
+        setSessionExpiredOpen(true);
         toast.error('Your session has expired. Please log in again.');
       },
     });
@@ -122,5 +125,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
     [user, isRestoring, login, logout, register, refreshSession, updateUser],
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+      <SessionExpiredDialog open={sessionExpiredOpen} onOpenChange={setSessionExpiredOpen} />
+    </AuthContext.Provider>
+  );
 }

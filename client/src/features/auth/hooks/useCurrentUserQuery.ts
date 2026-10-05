@@ -21,3 +21,6 @@ export function useCurrentUserQuery() {
     retry: false, // a failed/null current-user check should not silently retry — the UI needs to know immediately
   });
 }
+
+/** Direct alias for `useCurrentUserQuery` matching TanStack Query hook naming conventions */
+export const useCurrentUser = useCurrentUserQuery;

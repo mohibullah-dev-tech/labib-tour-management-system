@@ -77,13 +77,23 @@ apiClient.interceptors.response.use(
       (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined;
 
     const isUnauthorized = error.response?.status === 401;
-    const isAuthEndpoint = originalRequest?.url?.includes('/auth/');
+    // Endpoints that should NEVER trigger a refresh on 401:
+    // - Login: Invalid credentials
+    // - Refresh: Invalid/expired refresh cookie itself (avoids loop)
+    // - Register / Password reset
+    const isNonRefreshableAuthEndpoint =
+      originalRequest?.url?.includes('/auth/login') ||
+      originalRequest?.url?.includes('/auth/refresh') ||
+      originalRequest?.url?.includes('/auth/register') ||
+      originalRequest?.url?.includes('/auth/forgot-password') ||
+      originalRequest?.url?.includes('/auth/reset-password') ||
+      originalRequest?.url?.includes('/auth/verify-reset-code');
 
     if (
       !isUnauthorized ||
       !originalRequest ||
       originalRequest._retry ||
-      isAuthEndpoint ||
+      isNonRefreshableAuthEndpoint ||
       !performTokenRefresh
     ) {
       return Promise.reject(error);
@@ -127,3 +137,24 @@ apiClient.interceptors.response.use(
     }
   },
 );
+
+/**
+ * Standard utility to parse error messages from Axios responses or network failures.
+ */
+export function extractApiErrorMessage(
+  error: unknown,
+  fallbackMessage = 'An unexpected error occurred',
+): string {
+  if (axios.isAxiosError(error)) {
+    const serverMessage = (error.response?.data as { message?: string } | undefined)?.message;
+    if (serverMessage) return serverMessage;
+    if (error.code === 'ERR_NETWORK')
+      return 'Unable to connect to the server. Please check your network connection.';
+    if (error.response?.status === 403) return 'You do not have permission to perform this action.';
+    if (error.response?.status === 404) return 'Requested resource not found.';
+    if (error.response?.status && error.response.status >= 500)
+      return 'Server error. Please try again later.';
+  }
+  if (error instanceof Error) return error.message;
+  return fallbackMessage;
+}

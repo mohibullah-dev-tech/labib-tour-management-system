@@ -31,6 +31,14 @@ export function isAccessTokenExpired(): boolean {
   return Date.now() >= currentToken.expiresAt;
 }
 
+export function hasValidAccessToken(): boolean {
+  return !!currentToken && !isAccessTokenExpired();
+}
+
+export function getTokenExpiresAt(): number | null {
+  return currentToken?.expiresAt ?? null;
+}
+
 export function setAccessToken(token: AccessTokenPayload): void {
   currentToken = token;
 }

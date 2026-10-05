@@ -75,3 +75,28 @@ export function useVerifyEmailMutation() {
     },
   });
 }
+
+/**
+ * Mutation hook for explicitly re-authenticating / refreshing session via cookie.
+ */
+export function useRefreshSession() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => authService.refreshToken(),
+    onSuccess: (user) => {
+      queryClient.setQueryData(authQueryKeys.currentUser, user);
+    },
+    onError: () => {
+      queryClient.setQueryData(authQueryKeys.currentUser, null);
+    },
+  });
+}
+
+// Friendly aliases matching TanStack Query convention & prompt specifications
+export const useLogin = useLoginMutation;
+export const useRegister = useRegisterMutation;
+export const useLogout = useLogoutMutation;
+export const useForgotPassword = useForgotPasswordMutation;
+export const useVerifyResetCode = useVerifyResetCodeMutation;
+export const useResetPassword = useResetPasswordMutation;
+export const useVerifyEmail = useVerifyEmailMutation;

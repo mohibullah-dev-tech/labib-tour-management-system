@@ -23,7 +23,7 @@ export function RegisterPage() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -65,6 +65,12 @@ export function RegisterPage() {
       {serverError && (
         <Alert variant="destructive" role="alert">
           <AlertDescription>{serverError}</AlertDescription>
+        </Alert>
+      )}
+
+      {isSubmitSuccessful && !serverError && (
+        <Alert variant="success" role="status">
+          <AlertDescription>Account created! Redirecting to email verification...</AlertDescription>
         </Alert>
       )}
 

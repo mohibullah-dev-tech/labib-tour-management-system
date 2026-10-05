@@ -1,5 +1,7 @@
+import { Suspense } from 'react';
 import { Link, Outlet } from 'react-router';
 import { Compass } from 'lucide-react';
+import { AuthSkeleton } from '@/features/auth/components/AuthSkeleton';
 
 /**
  * Sibling to PublicLayout and AdminLayout (same pattern established in
@@ -19,7 +21,9 @@ function AuthLayout() {
         <Compass className="text-primary size-7" aria-hidden="true" />
         LTMS
       </Link>
-      <Outlet />
+      <Suspense fallback={<AuthSkeleton />}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 }

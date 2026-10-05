@@ -1,7 +1,12 @@
+import type { ReactNode } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { AuthLoadingScreen } from '@/features/auth/components/AuthLoadingScreen';
 import { AUTH_ROUTES } from '@/features/auth/constants/auth-routes';
+
+export interface ProtectedRouteProps {
+  children?: ReactNode;
+}
 
 /**
  * Wraps any route branch that requires SOME authenticated user,
@@ -17,7 +22,7 @@ import { AUTH_ROUTES } from '@/features/auth/constants/auth-routes';
  * reject any unauthorized request regardless of what this component
  * does; never treat this guard as the real access-control boundary.
  */
-function ProtectedRoute() {
+function ProtectedRoute({ children }: ProtectedRouteProps = {}) {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
@@ -27,7 +32,7 @@ function ProtectedRoute() {
     return <Navigate to={AUTH_ROUTES.login} state={{ from: location.pathname }} replace />;
   }
 
-  return <Outlet />;
+  return children ? <>{children}</> : <Outlet />;
 }
 
 export { ProtectedRoute };
