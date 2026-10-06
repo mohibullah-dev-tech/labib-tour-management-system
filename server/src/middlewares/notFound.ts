@@ -1,8 +1,6 @@
 import type { Request, Response } from 'express';
+import { ApiError } from '@/utils/ApiError.js';
 
-export function notFoundHandler(req: Request, res: Response): void {
-  res.status(404).json({
-    success: false,
-    message: `Route not found: ${req.method} ${req.originalUrl}`,
-  });
+export function notFoundHandler(req: Request, _res: Response): void {
+  throw ApiError.notFound(`Route not found: ${req.method} ${req.originalUrl}`);
 }

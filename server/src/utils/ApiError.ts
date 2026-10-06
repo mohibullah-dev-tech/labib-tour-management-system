@@ -1,38 +1,37 @@
-/**
- * Standard operational error shape used across the API.
- * Distinguishing `isOperational` errors (expected — bad input, not found,
- * unauthorized) from programmer errors/bugs lets the global error handler
- * decide what's safe to expose to the client vs. what should just log + 500.
- */
 export class ApiError extends Error {
-  public readonly statusCode: number;
   public readonly isOperational: boolean;
   public readonly details?: unknown;
 
-  constructor(statusCode: number, message: string, isOperational = true, details?: unknown) {
+  constructor(
+    public readonly statusCode: number,
+    message: string,
+    isOperational = true,
+    details?: unknown,
+    public readonly code = 'REQUEST_FAILED',
+  ) {
     super(message);
-    this.statusCode = statusCode;
+    this.name = 'ApiError';
     this.isOperational = isOperational;
     this.details = details;
     Error.captureStackTrace(this, this.constructor);
   }
 
   static badRequest(message: string, details?: unknown) {
-    return new ApiError(400, message, true, details);
+    return new ApiError(400, message, true, details, 'BAD_REQUEST');
   }
   static unauthorized(message = 'Unauthorized') {
-    return new ApiError(401, message);
+    return new ApiError(401, message, true, undefined, 'UNAUTHORIZED');
   }
   static forbidden(message = 'Forbidden') {
-    return new ApiError(403, message);
+    return new ApiError(403, message, true, undefined, 'FORBIDDEN');
   }
   static notFound(message = 'Resource not found') {
-    return new ApiError(404, message);
+    return new ApiError(404, message, true, undefined, 'NOT_FOUND');
   }
   static conflict(message: string) {
-    return new ApiError(409, message);
+    return new ApiError(409, message, true, undefined, 'CONFLICT');
   }
   static internal(message = 'Internal server error') {
-    return new ApiError(500, message, false);
+    return new ApiError(500, message, false, undefined, 'INTERNAL_SERVER_ERROR');
   }
 }

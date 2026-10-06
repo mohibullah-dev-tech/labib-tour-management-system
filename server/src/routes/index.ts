@@ -1,4 +1,6 @@
-import { Router } from 'express';
+import { Router, type Request, type Response } from 'express';
+import { getDatabaseStatus } from '@/config/database.js';
+import { env } from '@/config/env.js';
 
 /**
  * Root API router. Feature modules (auth, tours, bookings, payments, ...)
@@ -8,12 +10,18 @@ import { Router } from 'express';
  */
 const router = Router();
 
-router.get('/health', (_req, res) => {
+export function healthHandler(_req: Request, res: Response): void {
   res.status(200).json({
     success: true,
-    message: 'LTMS API is healthy',
-    timestamp: new Date().toISOString(),
+    data: {
+      api: 'ok',
+      database: getDatabaseStatus(),
+      timestamp: new Date().toISOString(),
+      environment: env.NODE_ENV,
+    },
   });
-});
+}
+
+router.get('/health', healthHandler);
 
 export default router;

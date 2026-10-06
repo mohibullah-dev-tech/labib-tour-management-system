@@ -1,27 +1,44 @@
-import dns from 'node:dns';
 import mongoose from 'mongoose';
 import { env } from '@/config/env.js';
 import { logger } from '@/utils/logger.js';
 
-// Windows/ISP DNS resolver অনেক সময় mongodb+srv:// এর SRV lookup fail করে,
-// তাই সরাসরি Google DNS ব্যবহার করে এই সমস্যা এড়ানো হচ্ছে
-dns.setServers(['8.8.8.8', '8.8.4.4']);
+mongoose.set('strictQuery', true);
 
-/**
- * MongoDB connection via Mongoose. Kept as a single exported function so
- * server.ts controls startup order explicitly (connect DB -> connect Redis
- * -> start HTTP server), rather than each module connecting independently.
- */
+mongoose.connection.on('connected', () => logger.info('MongoDB connected'));
+mongoose.connection.on('error', (error) => logger.error('MongoDB connection error', { error }));
+mongoose.connection.on('disconnected', () => logger.warn('MongoDB disconnected'));
+
+let connectionPromise: Promise<typeof mongoose> | undefined;
+
 export async function connectDatabase(): Promise<void> {
-  mongoose.set('strictQuery', true);
+  if (mongoose.connection.readyState === 1) return;
+  if (connectionPromise) {
+    await connectionPromise;
+    return;
+  }
 
-  mongoose.connection.on('connected', () => logger.info('MongoDB connected'));
-  mongoose.connection.on('error', (err) => logger.error(`MongoDB connection error: ${err}`));
-  mongoose.connection.on('disconnected', () => logger.warn('MongoDB disconnected'));
+  connectionPromise = mongoose.connect(env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 10_000,
+  });
 
-  await mongoose.connect(env.MONGODB_URI);
+  try {
+    await connectionPromise;
+  } finally {
+    connectionPromise = undefined;
+  }
 }
 
 export async function disconnectDatabase(): Promise<void> {
   await mongoose.disconnect();
+}
+
+export function getDatabaseStatus(): 'connected' | 'disconnected' | 'connecting' {
+  switch (mongoose.connection.readyState) {
+    case 1:
+      return 'connected';
+    case 2:
+      return 'connecting';
+    default:
+      return 'disconnected';
+  }
 }

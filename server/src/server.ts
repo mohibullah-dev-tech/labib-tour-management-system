@@ -1,48 +1,65 @@
 import { createServer } from 'node:http';
 import { createApp } from '@/app.js';
-import { initSocketServer } from '@/sockets/index.js';
-import { connectDatabase } from '@/config/database.js';
-import { connectRedis } from '@/config/redis.js';
+import { connectDatabase, disconnectDatabase } from '@/config/database.js';
 import { env } from '@/config/env.js';
 import { logger } from '@/utils/logger.js';
 
-/**
- * Process entry point. Owns startup order and graceful shutdown —
- * everything else (app assembly, DB, Redis, sockets) is imported and
- * composed here so there is exactly one place that boots/tears down
- * the process.
- */
 async function bootstrap(): Promise<void> {
-  await connectDatabase();
-  await connectRedis();
+  const httpServer = createServer(createApp());
 
-  const app = createApp();
-  const httpServer = createServer(app);
-  initSocketServer(httpServer);
-
-  httpServer.listen(env.PORT, () => {
-    logger.info(`🚀 LTMS API running on port ${env.PORT} [${env.NODE_ENV}]`);
+  await new Promise<void>((resolve, reject) => {
+    httpServer.once('error', reject);
+    httpServer.listen(env.PORT, () => {
+      httpServer.off('error', reject);
+      logger.info(`LTMS API running on port ${env.PORT} [${env.NODE_ENV}]`);
+      resolve();
+    });
   });
 
+  let reconnectTimer: NodeJS.Timeout | undefined;
+  const connectWithRetry = async (): Promise<void> => {
+    try {
+      await connectDatabase();
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      reconnectTimer = undefined;
+    } catch (error) {
+      logger.warn('MongoDB is unavailable; API remains available in degraded mode', { error });
+      reconnectTimer = setTimeout(() => {
+        void connectWithRetry();
+      }, 15_000);
+      reconnectTimer.unref();
+    }
+  };
+  void connectWithRetry();
+
+  let isShuttingDown = false;
   const shutdown = (signal: string) => {
-    logger.info(`${signal} received. Shutting down gracefully...`);
-    httpServer.close(() => {
-      logger.info('HTTP server closed.');
-      process.exit(0);
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+    logger.info(`${signal} received. Shutting down gracefully.`);
+    if (reconnectTimer) clearTimeout(reconnectTimer);
+    const timeout = setTimeout(() => process.exit(1), 10_000);
+    timeout.unref();
+    httpServer.close((error) => {
+      if (error) logger.error('HTTP server close failed', { error });
+      void disconnectDatabase()
+        .then(() => process.exit(error ? 1 : 0))
+        .catch((disconnectError: unknown) => {
+          logger.error('MongoDB disconnect failed during shutdown', { error: disconnectError });
+          process.exit(1);
+        });
     });
-    // Force-exit if shutdown hangs
-    setTimeout(() => process.exit(1), 10_000).unref();
   };
 
-  process.on('SIGTERM', () => shutdown('SIGTERM'));
-  process.on('SIGINT', () => shutdown('SIGINT'));
-
-  process.on('unhandledRejection', (reason) => {
-    logger.error(`Unhandled Rejection: ${reason}`);
-  });
+  process.once('SIGTERM', () => shutdown('SIGTERM'));
+  process.once('SIGINT', () => shutdown('SIGINT'));
+  process.on('unhandledRejection', (reason: unknown) =>
+    logger.error('Unhandled rejection', { reason }),
+  );
 }
 
-bootstrap().catch((err) => {
-  logger.error(`Failed to start server: ${err}`);
+bootstrap().catch(async (error: unknown) => {
+  logger.error('Failed to start server', { error });
+  await disconnectDatabase().catch(() => undefined);
   process.exit(1);
 });

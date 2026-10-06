@@ -9,13 +9,12 @@ import { morganStream } from '@/utils/logger.js';
 import { apiRateLimiter } from '@/middlewares/rateLimiter.js';
 import { errorHandler } from '@/middlewares/errorHandler.js';
 import { notFoundHandler } from '@/middlewares/notFound.js';
-import apiRouter from '@/routes/index.js';
+import apiRouter, { healthHandler } from '@/routes/index.js';
 
 /**
  * Express app is assembled here, separately from server.ts (which owns
- * HTTP + Socket.IO server lifecycle). This split makes the app importable
- * in isolation for integration tests (supertest) without booting sockets,
- * DB connections, or a real listening port.
+ * HTTP server lifecycle). This split keeps the app importable without opening
+ * a database connection or starting a real listening port.
  */
 export function createApp(): Application {
   const app = express();
@@ -47,6 +46,7 @@ export function createApp(): Application {
   app.use('/api', apiRateLimiter);
 
   // API routes
+  app.get('/api/health', healthHandler);
   app.use('/api/v1', apiRouter);
 
   // 404 + centralized error handler (must be registered last, in this order)
