@@ -1,0 +1,223 @@
+import type { GuestBooking } from '@/features/guest/types';
+
+// Anchor departure dates around the current timeframe for dynamic countdown demonstration
+const now = new Date();
+const inFiveDays = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000);
+const inThreeWeeks = new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000);
+const twoMonthsAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+const fourMonthsAgo = new Date(now.getTime() - 120 * 24 * 60 * 60 * 1000);
+
+export const MOCK_GUEST_BOOKINGS: GuestBooking[] = [
+  {
+    id: 'LTMS-BK-8941',
+    tourId: 'sajek-valley-adventure',
+    tourName: 'Sajek Valley Cloud Paradise',
+    destination: 'Sajek Valley, Rangamati',
+    coverImage:
+      'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80',
+    departureDate: inFiveDays.toISOString(),
+    returnDate: new Date(inFiveDays.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+    duration: '3 Days / 2 Nights',
+    packageTier: 'premium',
+    packageName: 'Standard Resort Package',
+    seatNumbers: ['A3', 'A4'],
+    guestCount: 2,
+    totalAmount: 17000,
+    receivedAmount: 17000,
+    dueAmount: 0,
+    bookingStatus: 'confirmed',
+    paymentStatus: 'paid',
+    guestInfo: {
+      fullName: 'Farhana Akter',
+      email: 'guest@labibtours.com',
+      phone: '+880 1611-000001',
+      address: 'House 42, Road 11, Sector 4, Uttara, Dhaka',
+      pickupLocation: 'Abdullahpur Bus Stand, Dhaka',
+    },
+    busInfo: {
+      busNumber: 'DHAKA-METRO-B-11-2041',
+      name: 'Labib Express Royal Scania Hino',
+      acType: 'AC',
+    },
+    hostInfo: {
+      id: 'host-1',
+      name: 'Rahim Uddin',
+      phone: '+880 1711-000010',
+      whatsapp: 'https://wa.me/8801711000010',
+      avatarUrl:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+      rating: 4.9,
+    },
+    meetingPoint: 'Abdullahpur Bus Terminal Counter #4',
+    reportingTime: '09:30 PM (Night)',
+    departureTime: '10:00 PM Sharp',
+    emergencyContact: '+880 1700-000000 (LTMS Central Dispatch)',
+    hasReview: false,
+    createdAt: new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+    timeline: [
+      {
+        day: 1,
+        title: 'Overnight Journey & Khagrachari Arrival',
+        description:
+          'Board AC Bus from Dhaka. Morning arrival at Khagrachari, breakfast & fresh-up.',
+        time: '10:00 PM',
+      },
+      {
+        day: 2,
+        title: 'Chander Gari Journey into Sajek Valley',
+        description:
+          'Scenic hill convoy to Ruilui Para, check-in to eco-resort, Konglak Pahar sunset.',
+        time: '11:00 AM',
+      },
+      {
+        day: 3,
+        title: 'Helipad Sunrise & Return Journey',
+        description:
+          'Watch sea of clouds from Helipad, explore Alutila Cave, evening return to Dhaka.',
+        time: '05:30 AM',
+      },
+    ],
+  },
+  {
+    id: 'LTMS-BK-9102',
+    tourId: 'coxs-bazar-marine-drive',
+    tourName: "Cox's Bazar & Saint Martin Cruise",
+    destination: "Cox's Bazar & Inani Beach",
+    coverImage:
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+    departureDate: inThreeWeeks.toISOString(),
+    returnDate: new Date(inThreeWeeks.getTime() + 4 * 24 * 60 * 60 * 1000).toISOString(),
+    duration: '4 Days / 3 Nights',
+    packageTier: 'couple',
+    packageName: 'Deluxe Sea View Package',
+    seatNumbers: ['B1'],
+    guestCount: 1,
+    totalAmount: 14500,
+    receivedAmount: 7000,
+    dueAmount: 7500,
+    bookingStatus: 'confirmed',
+    paymentStatus: 'partial',
+    guestInfo: {
+      fullName: 'Farhana Akter',
+      email: 'guest@labibtours.com',
+      phone: '+880 1611-000001',
+      address: 'House 42, Road 11, Sector 4, Uttara, Dhaka',
+      pickupLocation: 'Arambagh Bus Counter, Motijheel, Dhaka',
+    },
+    busInfo: {
+      busNumber: 'DHAKA-METRO-B-14-9981',
+      name: 'Labib Platinum Hyundai Universe',
+      acType: 'AC',
+    },
+    hostInfo: {
+      id: 'host-2',
+      name: 'Tanvir Ahmed',
+      phone: '+880 1819-223344',
+      whatsapp: 'https://wa.me/8801819223344',
+      avatarUrl:
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
+      rating: 4.8,
+    },
+    meetingPoint: 'Arambagh Central Ticket Counter #2',
+    reportingTime: '10:30 PM',
+    departureTime: '11:00 PM',
+    emergencyContact: '+880 1700-000000',
+    hasReview: false,
+    createdAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'LTMS-BK-7320',
+    tourId: 'sreemangal-tea-rainforest',
+    tourName: 'Sreemangal Tea Estates & Lawachara',
+    destination: 'Sreemangal, Sylhet',
+    coverImage:
+      'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
+    departureDate: twoMonthsAgo.toISOString(),
+    returnDate: new Date(twoMonthsAgo.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+    duration: '2 Days / 1 Night',
+    packageTier: 'single',
+    packageName: 'Eco Cottage Package',
+    seatNumbers: ['C3'],
+    guestCount: 1,
+    totalAmount: 6800,
+    receivedAmount: 6800,
+    dueAmount: 0,
+    bookingStatus: 'completed',
+    paymentStatus: 'paid',
+    guestInfo: {
+      fullName: 'Farhana Akter',
+      email: 'guest@labibtours.com',
+      phone: '+880 1611-000001',
+      address: 'House 42, Road 11, Sector 4, Uttara, Dhaka',
+      pickupLocation: 'Sayedabad Bus Terminal, Dhaka',
+    },
+    busInfo: {
+      busNumber: 'DHAKA-METRO-B-09-5512',
+      name: 'Labib Comfort AC Coach',
+      acType: 'AC',
+    },
+    hostInfo: {
+      id: 'host-1',
+      name: 'Rahim Uddin',
+      phone: '+880 1711-000010',
+      whatsapp: 'https://wa.me/8801711000010',
+      avatarUrl:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+      rating: 4.9,
+    },
+    meetingPoint: 'Sayedabad Gate #3 Counter',
+    reportingTime: '06:30 AM',
+    departureTime: '07:00 AM',
+    emergencyContact: '+880 1700-000000',
+    hasReview: true,
+    userRating: 5,
+    createdAt: new Date(twoMonthsAgo.getTime() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'LTMS-BK-6619',
+    tourId: 'tanguar-haor-houseboat',
+    tourName: 'Tanguar Haor Luxury Houseboat',
+    destination: 'Sunamganj, Sylhet',
+    coverImage:
+      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+    departureDate: fourMonthsAgo.toISOString(),
+    returnDate: new Date(fourMonthsAgo.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+    duration: '3 Days / 2 Nights',
+    packageTier: 'premium',
+    packageName: 'Premium Boat Cabin',
+    seatNumbers: ['A1', 'A2'],
+    guestCount: 2,
+    totalAmount: 19500,
+    receivedAmount: 19500,
+    dueAmount: 0,
+    bookingStatus: 'completed',
+    paymentStatus: 'paid',
+    guestInfo: {
+      fullName: 'Farhana Akter',
+      email: 'guest@labibtours.com',
+      phone: '+880 1611-000001',
+      address: 'House 42, Road 11, Sector 4, Uttara, Dhaka',
+      pickupLocation: 'Abdullahpur Bus Stand, Dhaka',
+    },
+    busInfo: {
+      busNumber: 'DHAKA-METRO-B-11-2041',
+      name: 'Labib Express Royal Scania Hino',
+      acType: 'AC',
+    },
+    hostInfo: {
+      id: 'host-3',
+      name: 'Kawsar Mahmud',
+      phone: '+880 1911-334455',
+      whatsapp: 'https://wa.me/8801911334455',
+      avatarUrl:
+        'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=300&q=80',
+      rating: 4.7,
+    },
+    meetingPoint: 'Abdullahpur Bus Stand',
+    reportingTime: '10:00 PM',
+    departureTime: '10:30 PM',
+    emergencyContact: '+880 1700-000000',
+    hasReview: false, // Eligible for review!
+    createdAt: new Date(fourMonthsAgo.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+];

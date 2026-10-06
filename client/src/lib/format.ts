@@ -8,6 +8,8 @@ export function formatBDT(amount: number): string {
   return `৳${amount.toLocaleString('en-BD')}`;
 }
 
+export const formatCurrency = formatBDT;
+
 const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   day: 'numeric',
   month: 'short',

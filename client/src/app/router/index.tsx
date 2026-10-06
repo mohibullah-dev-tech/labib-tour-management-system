@@ -58,45 +58,6 @@ export const router = createBrowserRouter([
           },
           { path: '/unauthorized', element: <UnauthorizedPage /> },
 
-          // --- Authenticated, any role ------------------------------
-          {
-            element: <ProtectedRoute />,
-            children: [
-              {
-                path: '/dashboard',
-                lazy: () =>
-                  import('@/pages/protected/DashboardPage').then((m) => ({
-                    Component: m.DashboardPage,
-                  })),
-              },
-              {
-                path: '/profile',
-                lazy: () =>
-                  import('@/pages/protected/ProfilePage').then((m) => ({
-                    Component: m.ProfilePage,
-                  })),
-              },
-              {
-                path: '/bookings',
-                lazy: () =>
-                  import('@/pages/protected/MyBookingsPage').then((m) => ({
-                    Component: m.MyBookingsPage,
-                  })),
-              },
-              // --- Authenticated + Host/Admin/SuperAdmin only -------
-              {
-                element: <RoleGuard allowedRoles={[Role.Host, Role.Admin, Role.SuperAdmin]} />,
-                children: [
-                  {
-                    path: '/host',
-                    lazy: () =>
-                      import('@/pages/protected/HostPage').then((m) => ({ Component: m.HostPage })),
-                  },
-                ],
-              },
-            ],
-          },
-
           ...NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/tours').map(
             (item) => ({
               path: item.path,
@@ -152,6 +113,65 @@ export const router = createBrowserRouter([
               import('@/pages/auth/VerifyEmailPage').then((m) => ({
                 Component: m.VerifyEmailPage,
               })),
+          },
+        ],
+      },
+
+      // --- Guest / User Dashboard — Authenticated, any role ---
+      {
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: '/dashboard',
+            lazy: () =>
+              import('@/pages/protected/DashboardPage').then((m) => ({
+                Component: m.DashboardPage,
+              })),
+          },
+          {
+            path: '/profile',
+            lazy: () =>
+              import('@/pages/protected/ProfilePage').then((m) => ({
+                Component: m.ProfilePage,
+              })),
+          },
+          {
+            path: '/bookings',
+            lazy: () =>
+              import('@/pages/protected/MyBookingsPage').then((m) => ({
+                Component: m.MyBookingsPage,
+              })),
+          },
+          {
+            path: '/dashboard/live-location',
+            lazy: () =>
+              import('@/pages/guest/GuestLiveLocationPage').then((m) => ({
+                Component: m.GuestLiveLocationPage,
+              })),
+          },
+        ],
+      },
+
+      // --- Host Dashboard — Authenticated + Host/Admin/SuperAdmin only ---
+      {
+        element: <ProtectedRoute />,
+        children: [
+          {
+            element: <RoleGuard allowedRoles={[Role.Host, Role.Admin, Role.SuperAdmin]} />,
+            children: [
+              {
+                path: '/host',
+                lazy: () =>
+                  import('@/pages/protected/HostPage').then((m) => ({ Component: m.HostPage })),
+              },
+              {
+                path: '/host/live-location',
+                lazy: () =>
+                  import('@/pages/host/HostLiveLocationPage').then((m) => ({
+                    Component: m.HostLiveLocationPage,
+                  })),
+              },
+            ],
           },
         ],
       },
@@ -249,6 +269,13 @@ export const router = createBrowserRouter([
                     lazy: () =>
                       import('@/pages/admin/AdminAnalyticsPage').then((m) => ({
                         Component: m.AdminAnalyticsPage,
+                      })),
+                  },
+                  {
+                    path: 'live-location/:eventId',
+                    lazy: () =>
+                      import('@/pages/admin/AdminLiveLocationPage').then((m) => ({
+                        Component: m.AdminLiveLocationPage,
                       })),
                   },
                   { path: '*', element: <NotFoundPage /> },

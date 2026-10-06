@@ -1,10 +1,5 @@
-import { AuthenticatedPlaceholder } from '@/features/auth/components/AuthenticatedPlaceholder';
+import { DashboardPage } from './DashboardPage';
 
 export function MyBookingsPage() {
-  return (
-    <AuthenticatedPlaceholder
-      title="My Bookings"
-      description="Your upcoming and past tour bookings."
-    />
-  );
+  return <DashboardPage initialTab="bookings" />;
 }
