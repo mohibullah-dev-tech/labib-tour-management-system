@@ -12,12 +12,14 @@ import {
   LifeBuoy,
   LogOut,
   Radio,
+  MessageSquareText,
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { GuestDashboardTab } from '@/features/guest/types';
+import { useConversations } from '@/features/messaging/hooks/useMessaging';
 
 interface GuestSidebarProps {
   activeTab: GuestDashboardTab;
@@ -44,6 +46,11 @@ const GUEST_NAV_ITEMS: {
 
 export function GuestSidebar({ activeTab, onTabChange, className }: GuestSidebarProps) {
   const { user, logout } = useAuth();
+  const { data: conversations = [] } = useConversations('guest');
+  const unreadMessages = conversations.reduce(
+    (sum, conversation) => sum + conversation.unreadCount,
+    0,
+  );
 
   const initials = (user?.fullName || 'Guest')
     .split(' ')
@@ -101,6 +108,19 @@ export function GuestSidebar({ activeTab, onTabChange, className }: GuestSidebar
             );
           })}
         </nav>
+
+        <Link
+          to="/dashboard/messages"
+          className="text-muted-foreground hover:bg-muted hover:text-foreground mt-2 flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium transition-colors sm:text-sm"
+        >
+          <MessageSquareText className="size-4 shrink-0" />
+          <span className="flex-1">Messages</span>
+          {unreadMessages > 0 && (
+            <span className="bg-primary text-primary-foreground flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px]">
+              {unreadMessages}
+            </span>
+          )}
+        </Link>
 
         {/* Live Bus Tracking Highlight */}
         <Link

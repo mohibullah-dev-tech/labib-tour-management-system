@@ -149,6 +149,25 @@ export const router = createBrowserRouter([
                 Component: m.GuestLiveLocationPage,
               })),
           },
+          {
+            element: <RoleGuard allowedRoles={[Role.Guest]} />,
+            children: [
+              {
+                path: '/dashboard/messages',
+                lazy: () =>
+                  import('@/features/messaging/components/MessagingPage').then((m) => ({
+                    Component: m.GuestMessagesRoutePage,
+                  })),
+              },
+              {
+                path: '/dashboard/messages/:conversationId',
+                lazy: () =>
+                  import('@/features/messaging/components/MessagingPage').then((m) => ({
+                    Component: m.GuestMessagesRoutePage,
+                  })),
+              },
+            ],
+          },
         ],
       },
 
@@ -169,6 +188,27 @@ export const router = createBrowserRouter([
                 lazy: () =>
                   import('@/pages/host/HostLiveLocationPage').then((m) => ({
                     Component: m.HostLiveLocationPage,
+                  })),
+              },
+              {
+                path: '/host/messages',
+                lazy: () =>
+                  import('@/features/messaging/components/MessagingPage').then((m) => ({
+                    Component: m.HostMessagesRoutePage,
+                  })),
+              },
+              {
+                path: '/host/messages/:conversationId',
+                lazy: () =>
+                  import('@/features/messaging/components/MessagingPage').then((m) => ({
+                    Component: m.HostMessagesRoutePage,
+                  })),
+              },
+              {
+                path: '/host/events/:eventId/announcements',
+                lazy: () =>
+                  import('@/features/messaging/components/MessagingPage').then((m) => ({
+                    Component: m.HostEventAnnouncementsRoutePage,
                   })),
               },
             ],
@@ -276,6 +316,27 @@ export const router = createBrowserRouter([
                     lazy: () =>
                       import('@/pages/admin/AdminLiveLocationPage').then((m) => ({
                         Component: m.AdminLiveLocationPage,
+                      })),
+                  },
+                  {
+                    path: 'messages',
+                    lazy: () =>
+                      import('@/features/messaging/components/MessagingPage').then((m) => ({
+                        Component: m.AdminMessagesRoutePage,
+                      })),
+                  },
+                  {
+                    path: 'messages/:conversationId',
+                    lazy: () =>
+                      import('@/features/messaging/components/MessagingPage').then((m) => ({
+                        Component: m.AdminMessagesRoutePage,
+                      })),
+                  },
+                  {
+                    path: 'events/:eventId/announcements',
+                    lazy: () =>
+                      import('@/features/messaging/components/MessagingPage').then((m) => ({
+                        Component: m.AdminEventAnnouncementsRoutePage,
                       })),
                   },
                   { path: '*', element: <NotFoundPage /> },

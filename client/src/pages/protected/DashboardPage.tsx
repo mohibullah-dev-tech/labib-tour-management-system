@@ -17,18 +17,14 @@ import {
   TicketModal,
   BookingDetailsDialog,
   ReviewForm,
-  NotificationCenter,
   useGuestProfile,
   useGuestBookings,
   useUpcomingTour,
   useGuestPayments,
-  useGuestNotifications,
   useGuestReviews,
   useUpdateProfileMutation,
   useSubmitReviewMutation,
   useCancelBookingMutation,
-  useMarkNotificationReadMutation,
-  useMarkAllNotificationsReadMutation,
   type GuestBooking,
   type GuestDashboardTab,
   type GuestProfile,
@@ -65,22 +61,18 @@ export function DashboardPage({ initialTab = 'overview' }: DashboardPageProps) {
   const [selectedBookingForReview, setSelectedBookingForReview] = useState<GuestBooking | null>(
     null,
   );
-  const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
 
   // Queries
   const { data: profile, isLoading: isProfileLoading } = useGuestProfile();
   const { data: bookings = [] } = useGuestBookings();
   const { data: upcomingTour = null } = useUpcomingTour();
   const { data: payments = [] } = useGuestPayments();
-  const { data: notifications = [] } = useGuestNotifications();
   const { data: reviews = [] } = useGuestReviews();
 
   // Mutations
   const updateProfileMutation = useUpdateProfileMutation();
   const submitReviewMutation = useSubmitReviewMutation();
   const cancelBookingMutation = useCancelBookingMutation();
-  const markNotificationReadMutation = useMarkNotificationReadMutation();
-  const markAllNotificationsReadMutation = useMarkAllNotificationsReadMutation();
 
   const handleTabChange = (tab: GuestDashboardTab) => {
     setSearchParams({ tab });
@@ -132,15 +124,6 @@ export function DashboardPage({ initialTab = 'overview' }: DashboardPageProps) {
     return await updateProfileMutation.mutateAsync(patch);
   };
 
-  const handleMarkAsRead = (id: string) => {
-    markNotificationReadMutation.mutate(id);
-  };
-
-  const handleMarkAllAsRead = () => {
-    markAllNotificationsReadMutation.mutate();
-    toast.success('All notifications marked as read');
-  };
-
   if (isProfileLoading && !profile) {
     return (
       <div className="bg-muted/20 flex min-h-screen items-center justify-center">
@@ -173,12 +156,7 @@ export function DashboardPage({ initialTab = 'overview' }: DashboardPageProps) {
   };
 
   return (
-    <GuestLayout
-      activeTab={activeTab}
-      onTabChange={handleTabChange}
-      notifications={notifications}
-      onOpenNotifications={() => setNotificationCenterOpen(true)}
-    >
+    <GuestLayout activeTab={activeTab} onTabChange={handleTabChange}>
       {/* Tab View Switcher */}
       {activeTab === 'overview' && (
         <OverviewView
@@ -263,20 +241,6 @@ export function DashboardPage({ initialTab = 'overview' }: DashboardPageProps) {
           if (!open) setSelectedBookingForReview(null);
         }}
         onSubmit={handleSubmitReview}
-      />
-
-      <NotificationCenter
-        notifications={notifications}
-        open={notificationCenterOpen}
-        onOpenChange={setNotificationCenterOpen}
-        onMarkAsRead={handleMarkAsRead}
-        onMarkAllAsRead={handleMarkAllAsRead}
-        onSelectBooking={(bookingId) => {
-          const found = bookings.find((b) => b.id === bookingId);
-          if (found) {
-            setSelectedBookingForDetails(found);
-          }
-        }}
       />
     </GuestLayout>
   );

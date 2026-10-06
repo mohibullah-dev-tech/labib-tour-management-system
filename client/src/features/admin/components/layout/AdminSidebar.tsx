@@ -2,6 +2,8 @@ import { NavLink } from 'react-router';
 import { Compass } from 'lucide-react';
 import { ADMIN_NAV_GROUPS } from '@/features/admin/config/admin-navigation';
 import { cn } from '@/lib/utils';
+import { useConversations } from '@/features/messaging/hooks/useMessaging';
+import { Badge } from '@/components/ui/badge';
 
 export interface AdminSidebarProps {
   /** Called after a nav click so a parent Sheet (mobile) can close itself. Undefined on the permanent desktop sidebar. */
@@ -14,6 +16,8 @@ export interface AdminSidebarProps {
  * pattern as the public site's Navbar/MobileNav split.
  */
 function AdminSidebar({ onNavigate }: AdminSidebarProps) {
+  const { data: conversations = [] } = useConversations('admin');
+  const unreadMessages = conversations.reduce((count, item) => count + item.unreadCount, 0);
   return (
     <div className="flex h-full flex-col gap-6 overflow-y-auto">
       <div className="border-border font-display text-foreground flex h-16 shrink-0 items-center gap-2 border-b px-4 text-lg font-semibold">
@@ -42,7 +46,15 @@ function AdminSidebar({ onNavigate }: AdminSidebarProps) {
                 }
               >
                 <item.icon className="size-4 shrink-0" aria-hidden="true" />
-                {item.label}
+                <span className="flex-1">{item.label}</span>
+                {item.path === '/admin/messages' && unreadMessages > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="ml-auto h-5 min-w-5 justify-center px-1 text-[10px]"
+                  >
+                    {unreadMessages}
+                  </Badge>
+                )}
               </NavLink>
             ))}
           </div>

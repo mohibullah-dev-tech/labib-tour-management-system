@@ -3,23 +3,15 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/u
 import { GuestSidebar } from '@/features/guest/components/layout/GuestSidebar';
 import { GuestTopbar } from '@/features/guest/components/layout/GuestTopbar';
 import { GuestBottomNav } from '@/features/guest/components/layout/GuestBottomNav';
-import type { GuestDashboardTab, GuestNotification } from '@/features/guest/types';
+import type { GuestDashboardTab } from '@/features/guest/types';
 
 interface GuestLayoutProps {
   activeTab: GuestDashboardTab;
   onTabChange: (tab: GuestDashboardTab) => void;
-  notifications: GuestNotification[];
-  onOpenNotifications: () => void;
   children: ReactNode;
 }
 
-export function GuestLayout({
-  activeTab,
-  onTabChange,
-  notifications,
-  onOpenNotifications,
-  children,
-}: GuestLayoutProps) {
+export function GuestLayout({ activeTab, onTabChange, children }: GuestLayoutProps) {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   const handleMobileTabSelect = (tab: GuestDashboardTab) => {
@@ -54,12 +46,7 @@ export function GuestLayout({
 
       {/* Main Workspace Viewport */}
       <div className="laptop:pl-64 flex min-w-0 flex-1 flex-col">
-        <GuestTopbar
-          activeTab={activeTab}
-          notifications={notifications}
-          onOpenNotifications={onOpenNotifications}
-          onOpenMobileMenu={() => setMobileDrawerOpen(true)}
-        />
+        <GuestTopbar activeTab={activeTab} onOpenMobileMenu={() => setMobileDrawerOpen(true)} />
 
         {/* Scrollable Page Content (padding bottom on mobile for BottomNav) */}
         <main className="laptop:pb-12 mx-auto w-full max-w-7xl flex-1 p-4 pb-24 sm:p-6">

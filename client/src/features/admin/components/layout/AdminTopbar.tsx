@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { Bell, Menu, LogOut, Settings, UserCircle } from 'lucide-react';
+import { Menu, LogOut, Settings, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -14,16 +14,10 @@ import {
 import { Sheet, SheetContent, SheetTitle, SheetHeader } from '@/components/ui/sheet';
 import { AdminSidebar } from '@/features/admin/components/layout/AdminSidebar';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { NotificationCenter } from '@/features/notifications/components/NotificationCenter';
 
-/**
- * Notification bell is a visual placeholder (badge + empty-state popover
- * content) — no real notification feed exists yet; see
- * docs/ADMIN_DASHBOARD.md's Future Backend APIs for the eventual
- * `GET /api/v1/admin/notifications` this will read from.
- */
 function AdminTopbar() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
 
   return (
     <header className="border-border bg-background/95 laptop:px-6 sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b px-4 backdrop-blur">
@@ -50,25 +44,7 @@ function AdminTopbar() {
       <div className="flex items-center gap-2">
         <ThemeToggle />
 
-        <DropdownMenu open={notifOpen} onOpenChange={setNotifOpen}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Notifications" className="relative">
-              <Bell className="size-4" />
-              <span
-                className="bg-danger-600 absolute top-1.5 right-1.5 size-2 rounded-full"
-                aria-hidden="true"
-              />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-72">
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <div className="text-muted-foreground px-2 py-6 text-center text-sm">
-              No notifications yet — this panel will populate once the notifications API is
-              connected.
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <NotificationCenter />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

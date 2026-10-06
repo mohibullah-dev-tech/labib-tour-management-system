@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/lib/theme/ThemeProvider';
 import { AuthProvider } from '@/features/auth/context/AuthProvider';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { RealtimeBridge } from '@/features/messaging/components/RealtimeBridge';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             so every route — including guards evaluated during routing — can
             call useAuth(). */}
         <AuthProvider>
+          <RealtimeBridge />
           {/* TooltipProvider is required once at the root by Radix Tooltip. */}
           <TooltipProvider delayDuration={200}>
             <RouterProvider router={router} />

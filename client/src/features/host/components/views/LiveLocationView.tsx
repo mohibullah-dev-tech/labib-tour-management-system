@@ -1,22 +1,23 @@
-import { Link } from 'react-router';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
   Navigation,
+  MapPin,
   ShieldCheck,
   Radio,
   Clock,
   BatteryCharging,
   Gauge,
+  Compass,
+  AlertTriangle,
   Play,
   Pause,
   StopCircle,
-  ExternalLink,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { HostLocationData, AssignedEvent } from '@/features/host/types';
-import { LiveLocationMap } from '@/features/live-location/components/LiveLocationMap';
-import type { LiveLocation } from '@/features/live-location/types/location.types';
 
 interface LiveLocationViewProps {
   locationData: HostLocationData;
@@ -36,23 +37,6 @@ export function LiveLocationView({
   const isSharing = locationData.sharingStatus === 'active';
   const isPaused = locationData.sharingStatus === 'paused';
   const isInactive = locationData.sharingStatus === 'inactive';
-
-  const liveLocationObj: LiveLocation = {
-    eventId: event?.id ?? 'evt-sajek-01',
-    hostId: event?.hostId ?? 'u-host-1',
-    hostName: event?.hostName ?? 'Rahim Ahmed',
-    busId: event?.bus.busNumber ?? 'bus-01',
-    busNumber: event?.bus.busNumber ?? 'LABIB-01',
-    latitude: locationData.latitude,
-    longitude: locationData.longitude,
-    accuracy: locationData.accuracyMeters,
-    heading: locationData.headingDegrees,
-    speed: locationData.speedKmh,
-    timestamp: Date.now(),
-    status: locationData.sharingStatus,
-    address: locationData.addressPlaceholder,
-    batteryLevel: locationData.batteryLevel,
-  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -176,33 +160,82 @@ export function LiveLocationView({
         </div>
       </div>
 
-      {/* Main Interactive Leaflet Map Container */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between px-1 text-xs">
-          <span className="text-foreground flex items-center gap-1.5 font-bold">
-            <Radio className="text-primary size-3.5" />
-            <span>Interactive Highway GPS Map (OpenStreetMap)</span>
-          </span>
+      {/* Main Interactive Map Canvas Container */}
+      <Card className="border-border bg-card overflow-hidden shadow-xs">
+        <div className="border-border/80 relative flex h-80 w-full items-center justify-center overflow-hidden rounded-2xl border bg-slate-900 sm:h-96">
+          {/* Stylized vector map background placeholder */}
+          <div className="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
 
-          <Link to="/host/live-location">
-            <Button size="sm" variant="ghost" className="text-primary h-7 gap-1 text-xs">
-              <span>Open Dedicated Control Room</span>
-              <ExternalLink className="size-3" />
-            </Button>
-          </Link>
+          {/* Highway vector route path */}
+          <svg className="absolute inset-0 size-full" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M 60,320 Q 220,240 380,180 T 700,90"
+              fill="none"
+              stroke="#0284c7"
+              strokeWidth="6"
+              strokeDasharray="8 6"
+              className="animate-pulse opacity-70"
+            />
+          </svg>
+
+          {/* Departure Marker: Sayedabad */}
+          <div className="absolute bottom-14 left-14 flex items-center gap-2 rounded-lg border border-white/20 bg-black/80 px-2.5 py-1 text-[10px] text-white backdrop-blur-md">
+            <span className="size-2 rounded-full bg-emerald-500" />
+            <span>Dhaka (Sayedabad)</span>
+          </div>
+
+          {/* Destination Marker: Sajek */}
+          <div className="absolute top-14 right-14 flex items-center gap-2 rounded-lg border border-white/20 bg-black/80 px-2.5 py-1 text-[10px] text-white backdrop-blur-md">
+            <span className="bg-primary size-2 rounded-full" />
+            <span>Sajek Valley (Helipad)</span>
+          </div>
+
+          {/* Live Vehicle Radar Marker Placeholder */}
+          <div className="relative z-10 flex flex-col items-center">
+            {isSharing && (
+              <>
+                <motion.div
+                  className="absolute size-28 rounded-full border-2 border-rose-500 bg-rose-500/10"
+                  animate={{ scale: [0.8, 1.6, 2.2], opacity: [0.8, 0.4, 0] }}
+                  transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut' }}
+                />
+                <motion.div
+                  className="absolute size-18 rounded-full border border-rose-400 bg-rose-500/20"
+                  animate={{ scale: [0.8, 1.3, 1.7], opacity: [0.9, 0.5, 0] }}
+                  transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut', delay: 0.6 }}
+                />
+              </>
+            )}
+
+            {/* Vehicle Icon Badge */}
+            <div
+              className={`flex size-12 items-center justify-center rounded-2xl border-2 shadow-xl transition-transform duration-300 ${
+                isSharing
+                  ? 'scale-110 border-white bg-rose-600 text-white'
+                  : 'border-slate-600 bg-slate-800 text-slate-300'
+              }`}
+            >
+              <Navigation
+                className="size-6 transition-transform"
+                style={{ transform: `rotate(${locationData.headingDegrees}deg)` }}
+              />
+            </div>
+
+            <div className="mt-3 rounded-full border border-white/20 bg-black/80 px-3 py-1 font-mono text-xs font-bold text-white shadow-lg backdrop-blur-md">
+              LABIB-01 ({locationData.speedKmh} km/h)
+            </div>
+          </div>
+
+          {/* Map Controls Overlay */}
+          <div className="absolute top-4 left-4 space-y-1 rounded-xl border border-white/10 bg-black/75 p-2.5 text-xs text-white backdrop-blur-md">
+            <div className="flex items-center gap-1.5 font-bold">
+              <MapPin className="size-3.5 text-rose-500" />
+              <span>Current Highway Segment:</span>
+            </div>
+            <p className="max-w-xs text-[11px] text-white/80">{locationData.addressPlaceholder}</p>
+          </div>
         </div>
 
-        <LiveLocationMap
-          location={liveLocationObj}
-          height="450px"
-          originCoords={[23.7196, 90.4267]}
-          destinationCoords={[23.382, 92.2938]}
-          originLabel="Sayedabad Departure"
-          destinationLabel="Sajek Valley Terminal"
-        />
-      </div>
-
-      <Card className="border-border bg-card overflow-hidden shadow-xs">
         {/* Telemetry Metrics Strip */}
         <CardContent className="grid grid-cols-2 gap-3 p-4 text-xs sm:p-5 md:grid-cols-4">
           <div className="bg-muted/40 border-border rounded-xl border p-3">

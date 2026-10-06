@@ -12,7 +12,6 @@ interface HostLayoutProps {
   notifications: HostNotification[];
   unreadMessagesCount?: number;
   isLocationSharingActive: boolean;
-  onOpenNotifications: () => void;
   tourName?: string;
   busNumber?: string;
   children: ReactNode;
@@ -25,7 +24,6 @@ export function HostLayout({
   notifications,
   unreadMessagesCount = 0,
   isLocationSharingActive,
-  onOpenNotifications,
   tourName,
   busNumber,
   children,
@@ -77,9 +75,7 @@ export function HostLayout({
         <HostTopbar
           activeTab={activeTab}
           profile={profile}
-          notifications={notifications}
           isLocationSharingActive={isLocationSharingActive}
-          onOpenNotifications={onOpenNotifications}
           onOpenMobileMenu={() => setMobileDrawerOpen(true)}
           onNavigateTab={onTabChange}
           tourName={tourName}

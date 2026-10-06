@@ -12,6 +12,7 @@ import {
   FileText,
   Settings,
   BarChart3,
+  MessageSquare,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -70,6 +71,7 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
   {
     label: 'System',
     items: [
+      { label: 'Messages', path: '/admin/messages', icon: MessageSquare },
       { label: 'Analytics', path: '/admin/analytics', icon: BarChart3, isPlaceholder: true },
       { label: 'Settings', path: '/admin/settings', icon: Settings, isPlaceholder: true },
     ],

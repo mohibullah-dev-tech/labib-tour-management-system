@@ -1,4 +1,4 @@
-import { Menu, Bell, Navigation, LogOut, User, Compass, HelpCircle } from 'lucide-react';
+import { Menu, Navigation, LogOut, User, Compass, HelpCircle } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -10,14 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { HostDashboardTab, HostProfile, HostNotification } from '@/features/host/types';
+import type { HostDashboardTab, HostProfile } from '@/features/host/types';
+import { NotificationCenter } from '@/features/notifications/components/NotificationCenter';
 
 interface HostTopbarProps {
   activeTab: HostDashboardTab;
   profile?: HostProfile;
-  notifications: HostNotification[];
   isLocationSharingActive: boolean;
-  onOpenNotifications: () => void;
   onOpenMobileMenu: () => void;
   onNavigateTab: (tab: HostDashboardTab) => void;
   tourName?: string;
@@ -74,16 +73,13 @@ const TAB_TITLES: Record<HostDashboardTab, { title: string; subtitle: string }> 
 export function HostTopbar({
   activeTab,
   profile,
-  notifications,
   isLocationSharingActive,
-  onOpenNotifications,
   onOpenMobileMenu,
   onNavigateTab,
   tourName = 'Sajek Valley Odyssey',
   busNumber = 'LABIB-01',
 }: HostTopbarProps) {
   const { logout } = useAuth();
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
   const currentTabInfo = TAB_TITLES[activeTab] || { title: 'Host Dashboard', subtitle: '' };
 
   return (
@@ -149,20 +145,7 @@ export function HostTopbar({
         </button>
 
         {/* Notifications Bell */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onOpenNotifications}
-          className="text-muted-foreground hover:text-foreground relative size-9"
-          aria-label="Notifications"
-        >
-          <Bell className="size-4.5" />
-          {unreadCount > 0 && (
-            <span className="bg-primary text-primary-foreground absolute top-1.5 right-1.5 flex size-4 items-center justify-center rounded-full text-[10px] font-bold">
-              {unreadCount}
-            </span>
-          )}
-        </Button>
+        <NotificationCenter />
 
         {/* Host Avatar Dropdown Menu */}
         <DropdownMenu>

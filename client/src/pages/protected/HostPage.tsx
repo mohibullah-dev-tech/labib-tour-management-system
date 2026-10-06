@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { Role } from '@/features/auth/types/role';
@@ -65,6 +66,7 @@ interface HostPageProps {
 }
 
 export function HostPage({ initialTab = 'overview' }: HostPageProps) {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const rawTab = searchParams.get('tab') as HostDashboardTab | null;
   const activeTab: HostDashboardTab = rawTab && VALID_TABS.includes(rawTab) ? rawTab : initialTab;
@@ -117,6 +119,10 @@ export function HostPage({ initialTab = 'overview' }: HostPageProps) {
   const togglePauseMutation = useTogglePauseSharingMutation();
 
   const handleTabChange = (tab: HostDashboardTab) => {
+    if (tab === 'messages') {
+      navigate('/host/messages');
+      return;
+    }
     setSearchParams({ tab });
     if (tab !== 'events') {
       setDetailedEvent(null);
@@ -282,7 +288,6 @@ export function HostPage({ initialTab = 'overview' }: HostPageProps) {
       notifications={notifications}
       unreadMessagesCount={unreadMessagesCount}
       isLocationSharingActive={locationData.sharingStatus === 'active'}
-      onOpenNotifications={() => handleTabChange('notifications')}
       tourName={activeEvent?.destination}
       busNumber={activeEvent?.bus.busNumber}
     >

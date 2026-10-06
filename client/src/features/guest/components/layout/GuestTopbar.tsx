@@ -1,13 +1,11 @@
-import { Menu, Bell, Compass, ExternalLink } from 'lucide-react';
+import { Menu, Compass, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import type { GuestDashboardTab, GuestNotification } from '@/features/guest/types';
+import type { GuestDashboardTab } from '@/features/guest/types';
+import { NotificationCenter as AppNotificationCenter } from '@/features/notifications/components/NotificationCenter';
 
 interface GuestTopbarProps {
   activeTab: GuestDashboardTab;
-  notifications: GuestNotification[];
-  onOpenNotifications: () => void;
   onOpenMobileMenu?: () => void;
 }
 
@@ -50,18 +48,11 @@ const TAB_TITLES: Record<GuestDashboardTab, { title: string; subtitle: string }>
   },
 };
 
-export function GuestTopbar({
-  activeTab,
-  notifications,
-  onOpenNotifications,
-  onOpenMobileMenu,
-}: GuestTopbarProps) {
+export function GuestTopbar({ activeTab, onOpenMobileMenu }: GuestTopbarProps) {
   const currentTabInfo = TAB_TITLES[activeTab] || {
     title: 'Guest Dashboard',
     subtitle: 'Manage your tour itineraries and tickets.',
   };
-
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   return (
     <header className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-30 flex h-16 items-center justify-between border-b px-4 backdrop-blur sm:px-6">
@@ -99,23 +90,7 @@ export function GuestTopbar({
         </Button>
 
         {/* Notification Bell */}
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={onOpenNotifications}
-          className="relative size-9"
-          aria-label="Open notification center"
-        >
-          <Bell className="size-4" />
-          {unreadCount > 0 && (
-            <Badge
-              variant="destructive"
-              className="border-background absolute -top-1 -right-1 flex size-5 animate-pulse items-center justify-center rounded-full border-2 p-0 text-[10px] font-bold"
-            >
-              {unreadCount}
-            </Badge>
-          )}
-        </Button>
+        <AppNotificationCenter />
       </div>
     </header>
   );
