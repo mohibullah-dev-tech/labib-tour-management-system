@@ -1,4 +1,3 @@
-import { randomBytes } from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 import { env } from '@/config/env.js';
@@ -21,11 +20,11 @@ async function seed(): Promise<void> {
   if (env.NODE_ENV === 'production') throw new Error('Seed script is disabled in production');
   await connectDatabase();
 
-  const passwordHash = await bcrypt.hash(randomBytes(32).toString('hex'), 12);
+  const passwordHash = await bcrypt.hash('Demo-Only-2026!', 12);
   const admin = await User.findOneAndUpdate(
     { email: 'admin@example.com' },
     {
-      $setOnInsert: {
+      $set: {
         name: 'LTMS Demo Admin',
         email: 'admin@example.com',
         passwordHash,
@@ -38,7 +37,7 @@ async function seed(): Promise<void> {
   const host = await User.findOneAndUpdate(
     { email: 'host@example.com' },
     {
-      $setOnInsert: {
+      $set: {
         name: 'LTMS Demo Host',
         email: 'host@example.com',
         passwordHash,
@@ -51,7 +50,7 @@ async function seed(): Promise<void> {
   const guest = await User.findOneAndUpdate(
     { email: 'guest@example.com' },
     {
-      $setOnInsert: {
+      $set: {
         name: 'LTMS Demo Guest',
         email: 'guest@example.com',
         passwordHash,

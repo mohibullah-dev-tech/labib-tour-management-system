@@ -9,7 +9,7 @@ import { morganStream } from '@/utils/logger.js';
 import { apiRateLimiter } from '@/middlewares/rateLimiter.js';
 import { errorHandler } from '@/middlewares/errorHandler.js';
 import { notFoundHandler } from '@/middlewares/notFound.js';
-import apiRouter, { healthHandler } from '@/routes/index.js';
+import apiRouter from '@/routes/index.js';
 
 /**
  * Express app is assembled here, separately from server.ts (which owns
@@ -46,7 +46,7 @@ export function createApp(): Application {
   app.use('/api', apiRateLimiter);
 
   // API routes
-  app.get('/api/health', healthHandler);
+  app.use('/api', apiRouter);
   app.use('/api/v1', apiRouter);
 
   // 404 + centralized error handler (must be registered last, in this order)

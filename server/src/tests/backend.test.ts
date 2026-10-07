@@ -5,6 +5,7 @@ import test from 'node:test';
 import { getDatabaseStatus } from '@/config/database.js';
 import { createStandardPassengerSeatLayout } from '@/constants/index.js';
 import { errorHandler } from '@/middlewares/errorHandler.js';
+import { authorize } from '@/middlewares/authenticate.js';
 import { createApp } from '@/app.js';
 import {
   Booking,
@@ -25,6 +26,7 @@ import {
 import { calculateBookingFinance } from '@/modules/bookings/bookingFinance.js';
 import { ApiError } from '@/utils/ApiError.js';
 import { createBookingSchema, createTourEventSchema } from '@/validators/index.js';
+import { registerSchema } from '@/validators/auth.validators.js';
 
 test('canonical 45-seat layout keeps K3 marked as the aisle obstruction', () => {
   const layout = createStandardPassengerSeatLayout();
@@ -238,6 +240,50 @@ test('request validators reject repeated seats and nonpositive event ranges', ()
     pickupPoints: [{ name: 'Station', address: 'Central road', time: '07:00' }],
   });
   assert.equal(event.success, false);
+});
+
+test('registration is guest-only and rejects client-supplied role escalation', () => {
+  const valid = {
+    name: 'Demo User',
+    email: 'demo@example.com',
+    phone: '+8801712345678',
+    password: 'SecurePass123',
+  };
+  assert.equal(registerSchema.safeParse(valid).success, true);
+  assert.equal(registerSchema.safeParse({ ...valid, role: 'admin' }).success, false);
+});
+
+test('protected auth endpoint rejects anonymous requests and RBAC rejects missing role', async (context) => {
+  const server = createServer(createApp());
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  context.after(
+    async () =>
+      new Promise<void>((resolve, reject) =>
+        server.close((error) => (error ? reject(error) : resolve())),
+      ),
+  );
+  const address = server.address();
+  assert.ok(address && typeof address !== 'string');
+  const response = await fetch(`http://127.0.0.1:${address.port}/api/auth/me`);
+  assert.equal(response.status, 401);
+  const payload = (await response.json()) as { error: { code: string } };
+  assert.equal(payload.error.code, 'UNAUTHORIZED');
+
+  const app = express();
+  app.get('/admin', authorize('admin', 'super_admin'), (_req, res) => res.sendStatus(204));
+  app.use(errorHandler);
+  const roleServer = createServer(app);
+  await new Promise<void>((resolve) => roleServer.listen(0, '127.0.0.1', resolve));
+  context.after(
+    async () =>
+      new Promise<void>((resolve, reject) =>
+        roleServer.close((error) => (error ? reject(error) : resolve())),
+      ),
+  );
+  const roleAddress = roleServer.address();
+  assert.ok(roleAddress && typeof roleAddress !== 'string');
+  const denied = await fetch(`http://127.0.0.1:${roleAddress.port}/admin`);
+  assert.equal(denied.status, 401);
 });
 
 test('GET /api/health exposes API and database status without starting MongoDB', async (context) => {

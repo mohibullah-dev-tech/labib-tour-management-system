@@ -19,6 +19,12 @@ const userSchema = new Schema(
     isActive: { type: Boolean, default: true, index: true },
     isVerified: { type: Boolean, default: false },
     lastLoginAt: Date,
+    refreshTokenHash: { type: String, select: false },
+    refreshTokenExpiresAt: { type: Date, select: false },
+    passwordResetTokenHash: { type: String, select: false },
+    passwordResetExpiresAt: { type: Date, select: false },
+    emailVerificationTokenHash: { type: String, select: false },
+    emailVerificationExpiresAt: { type: Date, select: false },
   },
   { timestamps: true, versionKey: false },
 );

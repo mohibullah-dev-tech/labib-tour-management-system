@@ -146,7 +146,9 @@ export function extractApiErrorMessage(
   fallbackMessage = 'An unexpected error occurred',
 ): string {
   if (axios.isAxiosError(error)) {
-    const serverMessage = (error.response?.data as { message?: string } | undefined)?.message;
+    const responseBody = error.response?.data as
+      { message?: string; error?: { message?: string } } | undefined;
+    const serverMessage = responseBody?.error?.message ?? responseBody?.message;
     if (serverMessage) return serverMessage;
     if (error.code === 'ERR_NETWORK')
       return 'Unable to connect to the server. Please check your network connection.';

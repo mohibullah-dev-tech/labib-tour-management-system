@@ -1,6 +1,8 @@
 import { Router, type Request, type Response } from 'express';
 import { getDatabaseStatus } from '@/config/database.js';
 import { env } from '@/config/env.js';
+import authRoutes from '@/modules/auth/auth.routes.js';
+import resourceRoutes from '@/modules/resources/resource.routes.js';
 
 /**
  * Root API router. Feature modules (auth, tours, bookings, payments, ...)
@@ -23,5 +25,7 @@ export function healthHandler(_req: Request, res: Response): void {
 }
 
 router.get('/health', healthHandler);
+router.use('/auth', authRoutes);
+router.use('/', resourceRoutes);
 
 export default router;

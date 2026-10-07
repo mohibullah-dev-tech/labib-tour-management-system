@@ -12,7 +12,7 @@ const participantSchema = new Schema(
 
 const conversationSchema = new Schema(
   {
-    type: { type: String, enum: CONVERSATION_TYPES, required: true, default: 'guest_host' },
+    type: { type: String, enum: CONVERSATION_TYPES, required: true, default: 'guest-host' },
     participants: {
       type: [participantSchema],
       required: true,

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { authService } from '@/features/auth/services/auth.service';
+import { getAccessToken } from '@/features/auth/services/token-manager';
 
 /** Shared query key — mutations invalidate this exact key on login/logout/updateUser instead of guessing a string. */
 export const authQueryKeys = {
@@ -18,6 +19,7 @@ export function useCurrentUserQuery() {
     queryKey: authQueryKeys.currentUser,
     queryFn: authService.getCurrentUser,
     staleTime: 5 * 60 * 1000,
+    enabled: Boolean(getAccessToken()),
     retry: false, // a failed/null current-user check should not silently retry — the UI needs to know immediately
   });
 }
