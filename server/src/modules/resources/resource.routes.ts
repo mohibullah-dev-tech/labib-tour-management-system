@@ -404,9 +404,12 @@ router.post(
   '/bookings',
   authenticate,
   authorize('guest', 'admin', 'super_admin'),
-  asyncHandler(async (req, res) =>
-    res.status(201).json(envelope(await createBooking(req.body, req.user!.id))),
-  ),
+  asyncHandler(async (req, res) => {
+    const idempotencyKey = (req.headers['idempotency-key'] as string) || req.body.idempotencyKey;
+    const sessionId = (req.headers['x-seat-session-id'] as string) || req.body.sessionId;
+    const booking = await createBooking(req.body, req.user!.id, { sessionId, idempotencyKey });
+    res.status(201).json(envelope(booking));
+  }),
 );
 router.get(
   '/bookings',

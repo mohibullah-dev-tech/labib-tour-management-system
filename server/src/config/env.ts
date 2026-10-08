@@ -18,6 +18,8 @@ const envSchema = z.object({
     .positive()
     .default(15 * 60 * 1000),
   RATE_LIMIT_MAX_REQUESTS: z.coerce.number().int().positive().default(100),
+  SEAT_LOCK_TTL_SECONDS: z.coerce.number().int().positive().default(600),
+  MAX_SEAT_LOCK_DURATION_SECONDS: z.coerce.number().int().positive().default(900),
 });
 
 const parsed = envSchema.safeParse(process.env);

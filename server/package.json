@@ -8,7 +8,7 @@
     "dev": "nodemon",
     "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
     "start": "node dist/server.js",
-    "test": "node --import tsx --test src/tests/backend.test.ts",
+    "test": "node --import tsx --test src/tests/backend.test.ts src/tests/seatLock.test.ts",
     "seed": "tsx src/scripts/seed.ts",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --fix",

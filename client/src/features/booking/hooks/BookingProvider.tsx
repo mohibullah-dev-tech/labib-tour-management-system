@@ -7,14 +7,18 @@ import type {
 } from '@/features/booking/types';
 import { EMPTY_GUEST_FORM, BOOKING_STEPS } from '@/features/booking/types';
 import { getBusById } from '@/features/booking/data/buses';
+import { clearSeatLockSessionId } from '@/features/booking/services/seat.service';
 
-interface BookingDraft {
+export interface BookingDraft {
   step: BookingStep;
   event: BookingEvent | null;
   packageOption: BookingPackageOption | null;
   selectedSeatIds: string[];
+  lockExpiresAt: string | null;
+  seatLockSessionId: string | null;
   guestForm: GuestFormData;
   bookingId: string | null;
+  isHoldExpired: boolean;
 }
 
 type BookingAction =
@@ -22,6 +26,9 @@ type BookingAction =
   | { type: 'SELECT_PACKAGE'; packageOption: BookingPackageOption }
   | { type: 'CONFIRM_BUS' }
   | { type: 'TOGGLE_SEAT'; seatId: string }
+  | { type: 'SET_SEAT_LOCKS'; seatNumbers: string[]; expiresAt: string; sessionId: string }
+  | { type: 'CLEAR_SEAT_LOCKS' }
+  | { type: 'MARK_HOLD_EXPIRED' }
   | { type: 'SET_GUEST_FORM'; guestForm: GuestFormData }
   | { type: 'SUBMIT_BOOKING'; bookingId: string }
   | { type: 'GO_TO_STEP'; step: BookingStep }
@@ -33,8 +40,11 @@ const initialDraft: BookingDraft = {
   event: null,
   packageOption: null,
   selectedSeatIds: [],
+  lockExpiresAt: null,
+  seatLockSessionId: null,
   guestForm: EMPTY_GUEST_FORM,
   bookingId: null,
+  isHoldExpired: false,
 };
 
 function stepIndex(step: BookingStep): number {
@@ -51,13 +61,36 @@ function bookingReducer(state: BookingDraft, action: BookingAction): BookingDraf
       return { ...state, step: 'seat' };
     case 'TOGGLE_SEAT': {
       const isSelected = state.selectedSeatIds.includes(action.seatId);
+      const updatedSeats = isSelected
+        ? state.selectedSeatIds.filter((id) => id !== action.seatId)
+        : [...state.selectedSeatIds, action.seatId];
       return {
         ...state,
-        selectedSeatIds: isSelected
-          ? state.selectedSeatIds.filter((id) => id !== action.seatId)
-          : [...state.selectedSeatIds, action.seatId],
+        selectedSeatIds: updatedSeats,
       };
     }
+    case 'SET_SEAT_LOCKS':
+      return {
+        ...state,
+        selectedSeatIds: action.seatNumbers,
+        lockExpiresAt: action.expiresAt,
+        seatLockSessionId: action.sessionId,
+        isHoldExpired: false,
+      };
+    case 'CLEAR_SEAT_LOCKS':
+      return {
+        ...state,
+        selectedSeatIds: [],
+        lockExpiresAt: null,
+        isHoldExpired: false,
+      };
+    case 'MARK_HOLD_EXPIRED':
+      return {
+        ...state,
+        selectedSeatIds: [],
+        lockExpiresAt: null,
+        isHoldExpired: true,
+      };
     case 'SET_GUEST_FORM':
       return { ...state, guestForm: action.guestForm };
     case 'SUBMIT_BOOKING':
@@ -69,19 +102,23 @@ function bookingReducer(state: BookingDraft, action: BookingAction): BookingDraf
       return { ...state, step: BOOKING_STEPS[prevIndex].key };
     }
     case 'RESET':
+      clearSeatLockSessionId();
       return initialDraft;
     default:
       return state;
   }
 }
 
-interface BookingContextValue {
+export interface BookingContextValue {
   draft: BookingDraft;
   bus: ReturnType<typeof getBusById>;
   selectEvent: (event: BookingEvent) => void;
   selectPackage: (packageOption: BookingPackageOption) => void;
   confirmBus: () => void;
   toggleSeat: (seatId: string) => void;
+  setSeatLocks: (seatNumbers: string[], expiresAt: string, sessionId: string) => void;
+  clearSeatLocks: () => void;
+  markHoldExpired: () => void;
   setGuestForm: (form: GuestFormData) => void;
   submitBooking: (bookingId: string) => void;
   goToStep: (step: BookingStep) => void;
@@ -92,13 +129,6 @@ interface BookingContextValue {
 // eslint-disable-next-line react-refresh/only-export-components -- context must live next to its Provider
 export const BookingContext = createContext<BookingContextValue | null>(null);
 
-/**
- * Owns the entire booking wizard's draft state via useReducer — a single
- * source of truth threaded through every step component, instead of
- * lifting state through props across 6 separate step components. Scoped
- * to BookingPage only (not app-wide) since nothing outside the booking
- * flow needs it.
- */
 export function BookingProvider({ children }: PropsWithChildren) {
   const [draft, dispatch] = useReducer(bookingReducer, initialDraft);
 
@@ -112,6 +142,13 @@ export function BookingProvider({ children }: PropsWithChildren) {
   );
   const confirmBus = useCallback(() => dispatch({ type: 'CONFIRM_BUS' }), []);
   const toggleSeat = useCallback((seatId: string) => dispatch({ type: 'TOGGLE_SEAT', seatId }), []);
+  const setSeatLocks = useCallback(
+    (seatNumbers: string[], expiresAt: string, sessionId: string) =>
+      dispatch({ type: 'SET_SEAT_LOCKS', seatNumbers, expiresAt, sessionId }),
+    [],
+  );
+  const clearSeatLocks = useCallback(() => dispatch({ type: 'CLEAR_SEAT_LOCKS' }), []);
+  const markHoldExpired = useCallback(() => dispatch({ type: 'MARK_HOLD_EXPIRED' }), []);
   const setGuestForm = useCallback(
     (guestForm: GuestFormData) => dispatch({ type: 'SET_GUEST_FORM', guestForm }),
     [],
@@ -137,6 +174,9 @@ export function BookingProvider({ children }: PropsWithChildren) {
       selectPackage,
       confirmBus,
       toggleSeat,
+      setSeatLocks,
+      clearSeatLocks,
+      markHoldExpired,
       setGuestForm,
       submitBooking,
       goToStep,
@@ -150,6 +190,9 @@ export function BookingProvider({ children }: PropsWithChildren) {
       selectPackage,
       confirmBus,
       toggleSeat,
+      setSeatLocks,
+      clearSeatLocks,
+      markHoldExpired,
       setGuestForm,
       submitBooking,
       goToStep,

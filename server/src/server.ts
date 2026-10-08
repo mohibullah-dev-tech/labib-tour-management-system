@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { createApp } from '@/app.js';
 import { connectDatabase, disconnectDatabase } from '@/config/database.js';
+import { connectRedis, disconnectRedis } from '@/config/redis.js';
 import { env } from '@/config/env.js';
 import { logger } from '@/utils/logger.js';
 
@@ -15,6 +16,9 @@ async function bootstrap(): Promise<void> {
       resolve();
     });
   });
+
+  // Connect databases in background resiliently
+  void connectRedis();
 
   let reconnectTimer: NodeJS.Timeout | undefined;
   const connectWithRetry = async (): Promise<void> => {
@@ -42,12 +46,9 @@ async function bootstrap(): Promise<void> {
     timeout.unref();
     httpServer.close((error) => {
       if (error) logger.error('HTTP server close failed', { error });
-      void disconnectDatabase()
-        .then(() => process.exit(error ? 1 : 0))
-        .catch((disconnectError: unknown) => {
-          logger.error('MongoDB disconnect failed during shutdown', { error: disconnectError });
-          process.exit(1);
-        });
+      void Promise.allSettled([disconnectDatabase(), disconnectRedis()]).then(() => {
+        process.exit(error ? 1 : 0);
+      });
     });
   };
 

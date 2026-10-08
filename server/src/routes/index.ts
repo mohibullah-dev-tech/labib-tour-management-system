@@ -1,7 +1,9 @@
 import { Router, type Request, type Response } from 'express';
 import { getDatabaseStatus } from '@/config/database.js';
+import { getRedisStatus } from '@/config/redis.js';
 import { env } from '@/config/env.js';
 import authRoutes from '@/modules/auth/auth.routes.js';
+import seatRoutes from '@/modules/seats/seat.routes.js';
 import resourceRoutes from '@/modules/resources/resource.routes.js';
 
 /**
@@ -18,6 +20,7 @@ export function healthHandler(_req: Request, res: Response): void {
     data: {
       api: 'ok',
       database: getDatabaseStatus(),
+      redis: getRedisStatus(),
       timestamp: new Date().toISOString(),
       environment: env.NODE_ENV,
     },
@@ -26,6 +29,7 @@ export function healthHandler(_req: Request, res: Response): void {
 
 router.get('/health', healthHandler);
 router.use('/auth', authRoutes);
+router.use('/', seatRoutes);
 router.use('/', resourceRoutes);
 
 export default router;

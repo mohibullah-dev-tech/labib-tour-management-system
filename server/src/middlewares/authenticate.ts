@@ -37,6 +37,34 @@ export const authenticate: RequestHandler = asyncHandler(async (req, _res, next)
   next();
 });
 
+export const authenticateOptional: RequestHandler = asyncHandler(async (req, _res, next) => {
+  const authorization = req.headers.authorization;
+  if (!authorization?.startsWith('Bearer ')) {
+    return next();
+  }
+  const token = authorization.slice('Bearer '.length);
+  try {
+    const claims = jwt.verify(token, env.JWT_ACCESS_SECRET, {
+      issuer: 'ltms-api',
+      audience: 'ltms-client',
+    }) as AccessClaims;
+    if (claims.tokenUse === 'access' && claims.sub) {
+      const user = await User.findById(claims.sub).select('name email role isActive').lean();
+      if (user && user.isActive) {
+        req.user = {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+          role: user.role as UserRole,
+        };
+      }
+    }
+  } catch {
+    // optional token invalid, ignore and proceed as guest
+  }
+  next();
+});
+
 export function authorize(...roles: UserRole[]): RequestHandler {
   return (req, _res, next) => {
     if (!req.user) return next(ApiError.unauthorized('Authentication required'));

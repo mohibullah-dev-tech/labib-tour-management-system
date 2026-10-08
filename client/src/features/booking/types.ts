@@ -31,11 +31,14 @@ export interface BookingPackageOption {
   inclusions: string[];
 }
 
-export type SeatStatus = 'available' | 'booked' | 'locked' | 'reserved' | 'female-reserved';
+export type SeatStatus =
+  'available' | 'booked' | 'locked' | 'reserved' | 'blocked' | 'female-reserved';
 
 export interface Seat {
   id: string; // e.g. "A1"
   status: SeatStatus;
+  lockedByCurrentUser?: boolean;
+  lockExpiresAt?: string | null;
 }
 
 export interface SeatRow {
