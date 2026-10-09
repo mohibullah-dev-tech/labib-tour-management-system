@@ -1,8 +1,9 @@
 import { memo } from 'react';
 import { Link, useLocation } from 'react-router';
-import { Search, LogIn, UserPlus, LogOut, User } from 'lucide-react';
+import { Search, LogIn, UserPlus, LogOut, User, Sun, Moon, Monitor } from 'lucide-react';
 import { NAV_ITEMS } from '@/config/navigation';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useTheme } from '@/lib/theme/useTheme';
 import { ROLE_HOME_PATH } from '@/features/auth/constants/permissions';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -22,6 +23,7 @@ export interface MobileNavProps {
 const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
   const { isAuthenticated, role, logout } = useAuth();
   const { pathname, hash } = useLocation();
+  const { theme, setTheme } = useTheme();
 
   const handleLinkClick = (path: string) => {
     onNavigate?.();
@@ -71,6 +73,52 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
       </ul>
 
       <Separator className="my-4" />
+
+      {/* Theme Switcher Segmented Control */}
+      <div className="border-border bg-muted/40 mb-3 flex items-center justify-between rounded-lg border p-1.5">
+        <span className="text-muted-foreground pl-1.5 text-xs font-medium">Theme</span>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setTheme('light')}
+            className={cn(
+              'flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+              theme === 'light'
+                ? 'bg-background text-foreground font-semibold shadow-2xs'
+                : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            <Sun className="size-3.5 text-amber-500" />
+            <span>Light</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setTheme('dark')}
+            className={cn(
+              'flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+              theme === 'dark'
+                ? 'bg-background text-foreground font-semibold shadow-2xs'
+                : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            <Moon className="size-3.5 text-amber-300" />
+            <span>Dark</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setTheme('system')}
+            className={cn(
+              'flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+              theme === 'system'
+                ? 'bg-background text-foreground font-semibold shadow-2xs'
+                : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            <Monitor className="size-3.5" />
+            <span>System</span>
+          </button>
+        </div>
+      </div>
 
       <div className="flex flex-col gap-2 px-1">
         <Button variant="outline" className="justify-start gap-2" onClick={onNavigate}>

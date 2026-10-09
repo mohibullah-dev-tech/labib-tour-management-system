@@ -1,51 +1,48 @@
 /**
- * Base element styles + DARK THEME overrides.
+ * Base element styles + PREMIUM DARK & LIGHT THEME overrides.
  *
- * How theming works: tokens.css defines --color-background, --color-primary,
- * etc. (LIGHT values) inside @theme, which is what makes `bg-background`,
- * `text-foreground`, `bg-primary` exist as real Tailwind utilities.
- * Below, `.dark { ... }` re-declares the exact same variable names with
- * dark-mode values. Because utilities reference the variable (not a
- * literal color), toggling the `.dark` class on <html> re-themes the
- * entire app instantly — no component code changes between themes.
+ * How theming works: tokens.css defines light tokens inside @theme.
+ * Below, `.dark { ... }` re-declares variables with deep obsidian / slate
+ * dark-mode values, giving the entire app an ultra-premium aesthetic.
  */
 
 .dark {
-  --color-background: var(--color-neutral-950);
-  --color-foreground: var(--color-neutral-100);
+  --color-background: #090d16;
+  --color-foreground: #f1f5f9;
 
-  --color-card: var(--color-neutral-900);
-  --color-card-foreground: var(--color-neutral-100);
+  --color-card: #0f172a;
+  --color-card-foreground: #f8fafc;
 
-  --color-popover: var(--color-neutral-900);
-  --color-popover-foreground: var(--color-neutral-100);
+  --color-popover: #0f172a;
+  --color-popover-foreground: #f8fafc;
 
-  --color-primary: var(--color-primary-500);
-  --color-primary-foreground: var(--color-neutral-950);
+  --color-primary: #10b981;
+  --color-primary-foreground: #022c22;
 
-  --color-secondary: var(--color-secondary-500);
-  --color-secondary-foreground: var(--color-neutral-950);
+  --color-secondary: #06b6d4;
+  --color-secondary-foreground: #082f49;
 
-  --color-muted: var(--color-neutral-800);
-  --color-muted-foreground: var(--color-neutral-400);
+  --color-muted: #172033;
+  --color-muted-foreground: #94a3b8;
 
-  --color-accent: var(--color-accent-500);
-  --color-accent-foreground: var(--color-neutral-950);
+  --color-accent: #f59e0b;
+  --color-accent-foreground: #451a03;
 
-  --color-success: var(--color-success-500);
-  --color-success-foreground: var(--color-neutral-950);
+  --color-success: #10b981;
+  --color-success-foreground: #022c22;
 
-  --color-destructive: var(--color-danger-500);
-  --color-destructive-foreground: var(--color-neutral-950);
+  --color-destructive: #f43f5e;
+  --color-destructive-foreground: #ffffff;
 
-  --color-border: var(--color-neutral-800);
-  --color-input: var(--color-neutral-800);
-  --color-ring: var(--color-primary-500);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-input: rgba(255, 255, 255, 0.12);
+  --color-ring: #10b981;
 }
 
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -65,6 +62,16 @@ html {
 body {
   @apply antialiased bg-background text-foreground;
   font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* Premium dark card glow and border refinements */
+.dark .bg-card {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+.dark .border-border {
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 h1,
@@ -83,8 +90,7 @@ pre {
   font-family: var(--font-mono);
 }
 
-/* Visible keyboard focus everywhere — WCAG 2.4.7. Mouse clicks get no
-   ring (:focus-visible only fires for keyboard/programmatic focus). */
+/* Visible keyboard focus everywhere — WCAG 2.4.7 */
 :focus-visible {
   outline: 2px solid var(--color-ring);
   outline-offset: 2px;
@@ -92,7 +98,7 @@ pre {
 }
 
 ::selection {
-  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  background-color: color-mix(in srgb, var(--color-primary) 25%, transparent);
   color: var(--color-foreground);
 }
 
@@ -112,4 +118,12 @@ pre {
   to {
     height: 0;
   }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
 }

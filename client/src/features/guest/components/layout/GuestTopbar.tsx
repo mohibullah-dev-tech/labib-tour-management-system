@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 import type { GuestDashboardTab } from '@/features/guest/types';
 import { NotificationCenter as AppNotificationCenter } from '@/features/notifications/components/NotificationCenter';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 
 interface GuestTopbarProps {
   activeTab: GuestDashboardTab;
@@ -88,6 +89,9 @@ export function GuestTopbar({ activeTab, onOpenMobileMenu }: GuestTopbarProps) {
             <ExternalLink className="text-muted-foreground ml-0.5 size-3" />
           </Link>
         </Button>
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         {/* Notification Bell */}
         <AppNotificationCenter />

@@ -25,6 +25,7 @@ import {
 import { NavLinks } from '@/components/layout/Navbar/NavLinks';
 import { MobileNav } from '@/components/layout/Navbar/MobileNav';
 import { Container } from '@/components/common/Container';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { cn } from '@/lib/utils';
 
 export interface NavbarProps {
@@ -94,6 +95,9 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
               </TooltipTrigger>
               <TooltipContent>Search tours</TooltipContent>
             </Tooltip>
+
+            {/* Dark / Light Mode Switcher */}
+            <ThemeToggle onTransparentSurface={isTransparent} />
 
             {isAuthenticated && user && role ? (
               <DropdownMenu>
@@ -169,28 +173,28 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
             </Button>
           </div>
 
-          {/* Mobile: hamburger opens the bottom Drawer */}
-          <Drawer open={mobileOpen} onOpenChange={setMobileOpen}>
-            <DrawerTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Open menu"
-                className={cn(
-                  'laptop:hidden',
-                  isTransparent && 'text-white hover:bg-white/10 hover:text-white',
-                )}
-              >
-                <Menu className="size-5" />
-              </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <DrawerHeader>
-                <DrawerTitle>Menu</DrawerTitle>
-              </DrawerHeader>
-              <MobileNav onNavigate={() => setMobileOpen(false)} />
-            </DrawerContent>
-          </Drawer>
+          {/* Mobile: theme toggle + hamburger opens the bottom Drawer */}
+          <div className="laptop:hidden flex items-center gap-1.5">
+            <ThemeToggle onTransparentSurface={isTransparent} />
+            <Drawer open={mobileOpen} onOpenChange={setMobileOpen}>
+              <DrawerTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Open menu"
+                  className={cn(isTransparent && 'text-white hover:bg-white/10 hover:text-white')}
+                >
+                  <Menu className="size-5" />
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader>
+                  <DrawerTitle>Menu</DrawerTitle>
+                </DrawerHeader>
+                <MobileNav onNavigate={() => setMobileOpen(false)} />
+              </DrawerContent>
+            </Drawer>
+          </div>
         </nav>
       </Container>
     </header>

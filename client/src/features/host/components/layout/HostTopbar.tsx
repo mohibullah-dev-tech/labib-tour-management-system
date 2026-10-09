@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { HostDashboardTab, HostProfile } from '@/features/host/types';
 import { NotificationCenter } from '@/features/notifications/components/NotificationCenter';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 
 interface HostTopbarProps {
   activeTab: HostDashboardTab;
@@ -143,6 +144,9 @@ export function HostTopbar({
             {isLocationSharingActive ? 'GPS Live' : 'GPS Off'}
           </span>
         </button>
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         {/* Notifications Bell */}
         <NotificationCenter />
