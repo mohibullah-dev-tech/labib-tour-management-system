@@ -1,5 +1,4 @@
 import { CreditCard, Download, CheckCircle2 } from 'lucide-react';
-import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,16 +6,16 @@ import { PaymentSummary } from '@/features/guest/components/PaymentSummary';
 import { formatCurrency } from '@/lib/format';
 import type { GuestPayment, GuestBooking } from '@/features/guest/types';
 
+import { ticketService } from '@/features/booking/services/ticket.service';
+
 interface PaymentsViewProps {
   payments: GuestPayment[];
   bookings: GuestBooking[];
 }
 
 export function PaymentsView({ payments, bookings }: PaymentsViewProps) {
-  const handleDownloadReceipt = (payment: GuestPayment) => {
-    toast.success('Downloading payment receipt...', {
-      description: `Receipt for ${payment.transactionId} (${payment.destination}) is being downloaded.`,
-    });
+  const handleDownloadReceipt = async (payment: GuestPayment) => {
+    await ticketService.downloadReceiptPdf(payment.bookingId || payment.id, payment.transactionId);
   };
 
   return (

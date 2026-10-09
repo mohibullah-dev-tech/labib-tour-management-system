@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import {
   Compass,
   Download,
@@ -9,11 +9,13 @@ import {
   User,
   Phone,
   CheckCircle2,
+  Loader2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/format';
 import type { GuestBooking } from '@/features/guest/types';
+import { ticketService } from '@/features/booking/services/ticket.service';
 
 interface DigitalTicketProps {
   booking: GuestBooking;
@@ -23,6 +25,7 @@ interface DigitalTicketProps {
 
 export function DigitalTicket({ booking, className, showActions = true }: DigitalTicketProps) {
   const ticketRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const formattedDeparture = new Date(booking.departureDate).toLocaleDateString('en-GB', {
     weekday: 'short',
@@ -35,10 +38,17 @@ export function DigitalTicket({ booking, className, showActions = true }: Digita
     window.print();
   };
 
-  const handleDownloadPdf = () => {
-    toast.success('Preparing ticket PDF download...', {
-      description: `Ticket ${booking.id} is formatted and ready for PDF generation.`,
-    });
+  const handleDownloadPdf = async () => {
+    setIsDownloading(true);
+    try {
+      if (booking.bookingStatus === 'confirmed' || booking.bookingStatus === 'completed') {
+        await ticketService.downloadTicketPdf(booking.id, booking.id);
+      } else {
+        await ticketService.downloadReceiptPdf(booking.id, booking.id);
+      }
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleShare = async () => {
@@ -284,9 +294,22 @@ export function DigitalTicket({ booking, className, showActions = true }: Digita
             <span>Print Ticket</span>
           </Button>
 
-          <Button size="sm" onClick={handleDownloadPdf} className="gap-1.5">
-            <Download className="size-4" />
-            <span>Download PDF</span>
+          <Button
+            size="sm"
+            onClick={handleDownloadPdf}
+            disabled={isDownloading}
+            className="gap-1.5"
+          >
+            {isDownloading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Download className="size-4" />
+            )}
+            <span>
+              {booking.bookingStatus === 'confirmed' || booking.bookingStatus === 'completed'
+                ? 'Download Ticket PDF'
+                : 'Download Receipt'}
+            </span>
           </Button>
         </div>
       )}

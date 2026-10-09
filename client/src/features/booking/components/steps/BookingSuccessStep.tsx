@@ -1,24 +1,45 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router';
-import { CheckCircle2, QrCode, Download, LayoutDashboard } from 'lucide-react';
+import { CheckCircle2, QrCode, Download, LayoutDashboard, Loader2, Receipt } from 'lucide-react';
 import { useBooking } from '@/features/booking/hooks/useBooking';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/format';
 import { fadeInUp } from '@/lib/animations/variants';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { ticketService } from '@/features/booking/services/ticket.service';
 
 /**
- * Step 7 — confirmation screen. QR code and PDF download are visual
- * placeholders (per the brief) — the QR would encode the real booking
- * ID/verification URL once the backend issues one, and PDF generation
- * is a follow-up feature, not built here.
+ * Step 7 — confirmation screen with official PDF ticket and receipt download.
  */
 function BookingSuccessStep() {
   const { draft, reset } = useBooking();
   const reducedMotion = useReducedMotion();
+  const [downloadingTicket, setDownloadingTicket] = useState(false);
+  const [downloadingReceipt, setDownloadingReceipt] = useState(false);
 
   if (!draft.event || !draft.bookingId) return null;
+
+  const handleDownloadTicket = async () => {
+    if (!draft.bookingId) return;
+    setDownloadingTicket(true);
+    try {
+      await ticketService.downloadTicketPdf(draft.bookingId);
+    } finally {
+      setDownloadingTicket(false);
+    }
+  };
+
+  const handleDownloadReceipt = async () => {
+    if (!draft.bookingId) return;
+    setDownloadingReceipt(true);
+    try {
+      await ticketService.downloadReceiptPdf(draft.bookingId);
+    } finally {
+      setDownloadingReceipt(false);
+    }
+  };
 
   return (
     <motion.div
@@ -57,14 +78,36 @@ function BookingSuccessStep() {
       </Card>
 
       <div className="flex w-full flex-col gap-3 sm:flex-row">
-        <Button variant="outline" className="flex-1 gap-2" disabled>
-          <Download className="size-4" />
-          Download PDF
+        <Button
+          variant="outline"
+          className="flex-1 gap-2"
+          disabled={downloadingTicket || downloadingReceipt}
+          onClick={handleDownloadTicket}
+        >
+          {downloadingTicket ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Download className="size-4" />
+          )}
+          Download Ticket PDF
+        </Button>
+        <Button
+          variant="outline"
+          className="flex-1 gap-2"
+          disabled={downloadingTicket || downloadingReceipt}
+          onClick={handleDownloadReceipt}
+        >
+          {downloadingReceipt ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Receipt className="size-4" />
+          )}
+          Download Receipt
         </Button>
         <Button className="flex-1 gap-2" asChild onClick={reset}>
-          <Link to="/">
+          <Link to="/guest">
             <LayoutDashboard className="size-4" />
-            Go to Dashboard
+            My Bookings
           </Link>
         </Button>
       </div>

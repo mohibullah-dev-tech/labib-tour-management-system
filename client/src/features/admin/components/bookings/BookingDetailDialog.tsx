@@ -1,6 +1,5 @@
-import type { ReactNode } from 'react';
-import { Printer, Download, Phone } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState, type ReactNode } from 'react';
+import { Printer, Download, Phone, Loader2 } from 'lucide-react';
 import type { BookingAdmin } from '@/features/admin/types';
 import {
   Dialog,
@@ -12,14 +11,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { formatBDT, formatDate } from '@/lib/format';
+import { ticketService } from '@/features/booking/services/ticket.service';
 
 export interface BookingDetailDialogProps {
   booking: BookingAdmin | null;
   onOpenChange: (open: boolean) => void;
 }
 
-/** Read-only guest/booking detail view, plus Print Ticket / Download PDF — both placeholders per the brief, wired to a toast so the interaction feels complete. */
+/** Read-only guest/booking detail view, plus Print Ticket / Download PDF with official backend integration. */
 function BookingDetailDialog({ booking, onOpenChange }: BookingDetailDialogProps) {
+  const [isDownloading, setIsDownloading] = useState(false);
   if (!booking) return null;
 
   return (
@@ -61,20 +62,48 @@ function BookingDetailDialog({ booking, onOpenChange }: BookingDetailDialogProps
           <Button
             variant="outline"
             className="gap-2"
-            onClick={() =>
-              toast.info('Ticket printing will be available once PDF generation is connected.')
-            }
+            disabled={isDownloading}
+            onClick={async () => {
+              setIsDownloading(true);
+              try {
+                if (booking.bookingStatus === 'approved' || booking.bookingStatus === 'completed') {
+                  await ticketService.downloadTicketPdf(booking.id, booking.bookingCode);
+                } else {
+                  await ticketService.downloadReceiptPdf(booking.id, booking.bookingCode);
+                }
+              } finally {
+                setIsDownloading(false);
+              }
+            }}
           >
-            <Printer className="size-4" />
+            {isDownloading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Printer className="size-4" />
+            )}
             Print Ticket
           </Button>
           <Button
             className="gap-2"
-            onClick={() =>
-              toast.info('PDF download will be available once the backend is connected.')
-            }
+            disabled={isDownloading}
+            onClick={async () => {
+              setIsDownloading(true);
+              try {
+                if (booking.bookingStatus === 'approved' || booking.bookingStatus === 'completed') {
+                  await ticketService.downloadTicketPdf(booking.id, booking.bookingCode);
+                } else {
+                  await ticketService.downloadReceiptPdf(booking.id, booking.bookingCode);
+                }
+              } finally {
+                setIsDownloading(false);
+              }
+            }}
           >
-            <Download className="size-4" />
+            {isDownloading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Download className="size-4" />
+            )}
             Download PDF
           </Button>
         </DialogFooter>

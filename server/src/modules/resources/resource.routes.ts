@@ -20,6 +20,7 @@ import {
   User,
 } from '@/models/index.js';
 import { createBooking } from '@/modules/bookings/booking.service.js';
+import { generateBookingPdf } from '@/modules/bookings/bookingPdf.service.js';
 import { createTourEventSchema, createTourTemplateSchema } from '@/validators/index.js';
 import { updateProfileSchema } from '@/validators/auth.validators.js';
 import { getIO, ROOMS, emitNotification } from '@/sockets/index.js';
@@ -448,6 +449,55 @@ router.get(
     res.json(envelope(booking));
   }),
 );
+
+router.get(
+  ['/bookings/:id/ticket.pdf', '/bookings/:id/ticket'],
+  authenticate,
+  asyncHandler(async (req, res) => {
+    const rawId = req.params.id;
+    const bookingId = typeof rawId === 'string' ? rawId : rawId?.[0];
+    if (!bookingId || bookingId.length > 50) {
+      throw ApiError.badRequest('Invalid booking identifier');
+    }
+
+    const { doc, filename } = await generateBookingPdf({
+      bookingId,
+      documentType: 'ticket',
+      user: { id: req.user!.id, role: req.user!.role },
+    });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+
+    doc.pipe(res);
+  }),
+);
+
+router.get(
+  ['/bookings/:id/receipt.pdf', '/bookings/:id/receipt'],
+  authenticate,
+  asyncHandler(async (req, res) => {
+    const rawId = req.params.id;
+    const bookingId = typeof rawId === 'string' ? rawId : rawId?.[0];
+    if (!bookingId || bookingId.length > 50) {
+      throw ApiError.badRequest('Invalid booking identifier');
+    }
+
+    const { doc, filename } = await generateBookingPdf({
+      bookingId,
+      documentType: 'receipt',
+      user: { id: req.user!.id, role: req.user!.role },
+    });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+
+    doc.pipe(res);
+  }),
+);
+
 router.patch(
   '/bookings/:id/cancel',
   authenticate,
