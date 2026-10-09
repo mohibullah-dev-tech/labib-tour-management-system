@@ -44,15 +44,18 @@ function SearchTourWidget() {
     <form
       onSubmit={handleSubmit}
       aria-label="Search tours"
-      className="border-border bg-card/95 shadow-floating laptop:grid-cols-[1.3fr_1fr_0.8fr_auto] laptop:items-end laptop:gap-3 laptop:p-5 grid w-full grid-cols-1 gap-3 rounded-xl border p-4 backdrop-blur"
+      className="border-border/80 bg-card/95 shadow-floating laptop:grid-cols-[1.3fr_1fr_0.8fr_auto] laptop:items-end laptop:gap-4 laptop:p-6 dark:bg-card/90 grid w-full grid-cols-1 gap-3.5 rounded-2xl border p-4.5 backdrop-blur-md transition-all dark:border-white/10"
     >
       <div className="flex flex-col gap-1.5 text-left">
-        <Label htmlFor="search-destination" className="flex items-center gap-1.5 text-xs">
-          <MapPin className="text-primary size-3.5" aria-hidden="true" />
+        <Label
+          htmlFor="search-destination"
+          className="text-foreground/80 flex items-center gap-1.5 text-xs font-semibold"
+        >
+          <MapPin className="text-primary size-4" aria-hidden="true" />
           Destination
         </Label>
         <Select value={destination} onValueChange={setDestination}>
-          <SelectTrigger id="search-destination">
+          <SelectTrigger id="search-destination" className="bg-background/60 h-11 rounded-xl">
             <SelectValue placeholder="Where do you want to go?" />
           </SelectTrigger>
           <SelectContent>
@@ -66,21 +69,28 @@ function SearchTourWidget() {
       </div>
 
       <div className="flex flex-col gap-1.5 text-left">
-        <Label htmlFor="search-date" className="flex items-center gap-1.5 text-xs">
-          <CalendarDays className="text-primary size-3.5" aria-hidden="true" />
+        <Label
+          htmlFor="search-date"
+          className="text-foreground/80 flex items-center gap-1.5 text-xs font-semibold"
+        >
+          <CalendarDays className="text-primary size-4" aria-hidden="true" />
           Travel Date
         </Label>
         <Input
           id="search-date"
           type="date"
+          className="bg-background/60 h-11 rounded-xl"
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
       </div>
 
       <div className="flex flex-col gap-1.5 text-left">
-        <Label htmlFor="search-guests" className="flex items-center gap-1.5 text-xs">
-          <Users className="text-primary size-3.5" aria-hidden="true" />
+        <Label
+          htmlFor="search-guests"
+          className="text-foreground/80 flex items-center gap-1.5 text-xs font-semibold"
+        >
+          <Users className="text-primary size-4" aria-hidden="true" />
           Guests
         </Label>
         <Input
@@ -88,14 +98,15 @@ function SearchTourWidget() {
           type="number"
           min={1}
           placeholder="2"
+          className="bg-background/60 h-11 rounded-xl"
           value={guests}
           onChange={(e) => setGuests(e.target.value)}
         />
       </div>
 
-      <Button type="submit" size="lg" className="gap-2">
+      <Button type="submit" className="h-11 gap-2 rounded-xl px-6 font-medium shadow-sm">
         <Search className="size-4" />
-        Search
+        Search Tours
       </Button>
     </form>
   );

@@ -43,7 +43,7 @@ function HeroSection() {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/50 to-neutral-950/30" />
 
-      <Container className="laptop:pb-16 laptop:pt-48 relative z-10 flex flex-col gap-8 pt-40 pb-24">
+      <Container className="laptop:pt-40 laptop:pb-16 relative z-10 flex flex-col gap-6 pt-36 pb-16">
         <motion.div
           initial={reducedMotion ? false : 'hidden'}
           animate="visible"
@@ -96,12 +96,13 @@ function HeroSection() {
           ))}
         </motion.dl>
 
+        {/* Search Tour Floating Widget */}
         <motion.div
           initial={reducedMotion ? false : 'hidden'}
           animate="visible"
           variants={fadeInUp}
           transition={{ delay: 0.45 }}
-          className="laptop:absolute laptop:inset-x-0 laptop:bottom-0 laptop:translate-y-1/2 laptop:px-8"
+          className="relative z-20 w-full pt-2"
         >
           <SearchTourWidget />
         </motion.div>
