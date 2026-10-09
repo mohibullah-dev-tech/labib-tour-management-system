@@ -5,7 +5,7 @@ export const DEFAULT_WEBSITE_CONTENT: WebsiteContentSettings = {
   heroHeadline: "Discover Bangladesh's Untold Beauty",
   heroSubheadline:
     'From cloud-wrapped hills to golden beaches — curated group tours, experienced hosts, and journeys designed to be remembered.',
-  heroBackgroundImage: 'https://picsum.photos/seed/ltms-hero-bandarban/1920/1080',
+  heroBackgroundImage: '/images/hero-banner.jpg',
   statGuests: '8500',
   statTours: '320',
   statDestinations: '24',

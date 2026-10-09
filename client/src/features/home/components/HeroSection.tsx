@@ -8,7 +8,7 @@ import { AnimatedCounter } from '@/features/home/components/TravelStats/Animated
 import { fadeInUp, fadeIn } from '@/lib/animations/variants';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
-const HERO_IMAGE = 'https://picsum.photos/seed/ltms-hero-bandarban/1920/1080';
+const HERO_IMAGE = '/images/hero-banner.jpg';
 
 const HERO_MINI_STATS = [
   { id: 'guests', value: 8500, suffix: '+', label: 'Happy Guests' },
@@ -31,12 +31,17 @@ function HeroSection() {
       {/* Background image — eager + high priority: this IS the LCP element, must never lazy-load. */}
       <img
         src={HERO_IMAGE}
-        alt="Misty green hills of Bandarban, Bangladesh"
+        alt="Breathtaking mountain peaks, rolling green hills, and mist across Bangladesh"
         loading="eager"
         fetchPriority="high"
-        className="absolute inset-0 size-full object-cover"
+        className="absolute inset-0 size-full object-cover object-center transition-transform duration-1000 ease-out hover:scale-102"
+        onError={(e) => {
+          // Graceful fallback to high-res CDN if local file is missing
+          (e.currentTarget as HTMLImageElement).src =
+            'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2070&q=85';
+        }}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-neutral-950/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/50 to-neutral-950/30" />
 
       <Container className="laptop:pb-16 laptop:pt-48 relative z-10 flex flex-col gap-8 pt-40 pb-24">
         <motion.div
