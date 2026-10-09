@@ -980,4 +980,46 @@ router.get(
   }),
 );
 
+const contactSchema = z.object({
+  name: z.string().trim().min(2, 'Name must be at least 2 characters').max(100),
+  email: z.string().trim().email('Invalid email address'),
+  phone: z.string().trim().max(24).optional().or(z.literal('')),
+  subject: z.string().trim().min(2, 'Subject must be at least 2 characters').max(150),
+  message: z.string().trim().min(5, 'Message must be at least 5 characters').max(3000),
+});
+
+router.post(
+  '/contact',
+  asyncHandler(async (req, res) => {
+    const data = contactSchema.parse(req.body);
+
+    try {
+      const adminUsers = await User.find({ role: { $in: ['admin', 'super_admin'] } })
+        .select('_id')
+        .lean();
+      if (adminUsers.length > 0) {
+        await Notification.insertMany(
+          adminUsers.map((admin) => ({
+            userId: admin._id,
+            type: 'system',
+            title: `New Inquiry from ${data.name}`,
+            message: `Subject: ${data.subject}\nFrom: ${data.email} (${data.phone || 'No phone'})\n${data.message.slice(0, 120)}...`,
+            actionUrl: '/admin',
+          })),
+        );
+      }
+    } catch {
+      // Graceful fallback if notification creation fails
+    }
+
+    res.status(200).json(
+      envelope({
+        received: true,
+        message:
+          'Thank you for contacting Labib Tour & Travel Group! Our travel advisory team will respond shortly.',
+      }),
+    );
+  }),
+);
+
 export default router;

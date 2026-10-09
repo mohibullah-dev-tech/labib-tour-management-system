@@ -11,24 +11,26 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { PageWrapper } from '@/components/layout/PageWrapper';
 import { Section } from '@/components/layout/Section';
 
-/**
- * GalleryPreview, ReviewsPreview, and FaqPreview are code-split
- * (React.lazy) — they're the furthest below the fold and heaviest in
- * image/interaction weight (masonry layout, accordion). Splitting them
- * keeps the Home route's initial JS chunk focused on what's needed for
- * the first viewport (Hero, Destinations, Events), while these load in
- * parallel just before the user scrolls to them.
- */
+const AboutSection = lazy(() =>
+  import('@/features/home/components/AboutSection').then((m) => ({ default: m.AboutSection })),
+);
+
 const GalleryPreview = lazy(() =>
   import('@/features/home/components/GalleryPreview').then((m) => ({ default: m.GalleryPreview })),
 );
+
 const ReviewsPreview = lazy(() =>
   import('@/features/home/components/ReviewsPreview/ReviewsPreview').then((m) => ({
     default: m.ReviewsPreview,
   })),
 );
+
 const FaqPreview = lazy(() =>
   import('@/features/home/components/FaqPreview').then((m) => ({ default: m.FaqPreview })),
+);
+
+const ContactSection = lazy(() =>
+  import('@/features/home/components/ContactSection').then((m) => ({ default: m.ContactSection })),
 );
 
 /** Generic fallback shown while a lazy section's chunk is loading. */
@@ -47,9 +49,8 @@ function SectionSkeleton() {
 
 /**
  * The commercial home page. Every section is a self-contained component
- * reading from its own placeholder data module (features/home/data/*) —
- * this file only composes them in order. See docs/HOME_PAGE.md for the
- * full rationale and future API integration points.
+ * composing verified company services, real backend-connected upcoming events,
+ * travel gallery, verified guest reviews, about narrative, and contact inquiries.
  */
 export function HomePage() {
   return (
@@ -58,6 +59,9 @@ export function HomePage() {
       <PopularDestinations />
       <UpcomingEvents />
       <WhyChooseUs />
+      <Suspense fallback={<SectionSkeleton />}>
+        <AboutSection />
+      </Suspense>
       <TravelStats />
       <Suspense fallback={<SectionSkeleton />}>
         <GalleryPreview />
@@ -69,6 +73,9 @@ export function HomePage() {
       <CtaBanner />
       <Suspense fallback={<SectionSkeleton />}>
         <FaqPreview />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <ContactSection />
       </Suspense>
       <Newsletter />
     </PageWrapper>

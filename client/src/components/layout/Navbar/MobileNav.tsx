@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { NavLink, Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { Search, LogIn, UserPlus, LogOut, User } from 'lucide-react';
 import { NAV_ITEMS } from '@/config/navigation';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -21,28 +21,53 @@ export interface MobileNavProps {
  */
 const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
   const { isAuthenticated, role, logout } = useAuth();
+  const { pathname, hash } = useLocation();
+
+  const handleLinkClick = (path: string) => {
+    onNavigate?.();
+    if (path.includes('#')) {
+      const targetHash = path.slice(path.indexOf('#') + 1);
+      if (pathname === '/') {
+        setTimeout(() => {
+          const el = document.getElementById(targetHash);
+          if (el) {
+            window.history.pushState(null, '', path);
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      }
+    }
+  };
 
   return (
     <nav aria-label="Mobile" className="flex flex-col gap-1 p-4">
       <ul className="flex flex-col gap-1">
-        {NAV_ITEMS.map((item) => (
-          <li key={item.path}>
-            <NavLink
-              to={item.path}
-              end={item.path === '/'}
-              onClick={onNavigate}
-              className={({ isActive }) =>
-                cn(
-                  'block rounded-md px-4 py-3 text-base font-medium transition-colors',
+        {NAV_ITEMS.map((item) => {
+          const isHashLink = item.path.includes('#');
+          const itemHash = isHashLink ? item.path.slice(item.path.indexOf('#')) : '';
+          const isActive = isHashLink
+            ? pathname === '/' && hash === itemHash
+            : item.path === '/'
+              ? pathname === '/' && !hash
+              : pathname.startsWith(item.path);
+
+          return (
+            <li key={item.path}>
+              <Link
+                to={item.path}
+                onClick={() => handleLinkClick(item.path)}
+                aria-current={isActive ? 'page' : undefined}
+                className={cn(
+                  'focus-visible:ring-primary block rounded-md px-4 py-3 text-base font-medium transition-colors focus-visible:ring-2 focus-visible:outline-hidden',
                   'text-foreground/80 hover:bg-muted hover:text-foreground',
-                  isActive && 'bg-primary-50 text-primary dark:bg-primary-950',
-                )
-              }
-            >
-              {item.label}
-            </NavLink>
-          </li>
-        ))}
+                  isActive && 'bg-primary-50 text-primary dark:bg-primary-950 font-semibold',
+                )}
+              >
+                {item.label}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
 
       <Separator className="my-4" />

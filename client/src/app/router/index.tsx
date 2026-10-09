@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { RootLayout } from '@/components/layout/RootLayout';
 import { PublicLayout } from '@/components/layout/PublicLayout';
 import { AuthLayout } from '@/components/layout/AuthLayout';
@@ -11,7 +11,7 @@ import { HomePage } from '@/pages/HomePage';
 import { ComingSoonPage } from '@/pages/ComingSoonPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { UnauthorizedPage } from '@/pages/UnauthorizedPage';
-import { NAV_ITEMS, LEGAL_ITEMS } from '@/config/navigation';
+import { LEGAL_ITEMS } from '@/config/navigation';
 
 /**
  * Central route table, structured as nested layouts:
@@ -58,12 +58,13 @@ export const router = createBrowserRouter([
           },
           { path: '/unauthorized', element: <UnauthorizedPage /> },
 
-          ...NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/tours').map(
-            (item) => ({
-              path: item.path,
-              element: <ComingSoonPage title={item.label} />,
-            }),
-          ),
+          // Direct path redirects to the corresponding homepage sections
+          { path: '/events', element: <Navigate to="/#upcoming-events" replace /> },
+          { path: '/gallery', element: <Navigate to="/#gallery" replace /> },
+          { path: '/reviews', element: <Navigate to="/#reviews" replace /> },
+          { path: '/about', element: <Navigate to="/#about" replace /> },
+          { path: '/contact', element: <Navigate to="/#contact" replace /> },
+
           ...LEGAL_ITEMS.map((item) => ({
             path: item.path,
             element: <ComingSoonPage title={item.label} />,
