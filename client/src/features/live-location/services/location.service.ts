@@ -16,6 +16,7 @@ import type {
   GuestLocationAccessCheck,
 } from '../types/location.types';
 import { mockLocationService } from './location.mock.service';
+import { getSocket, type ServerLocationUpdatePayload } from '@/lib/socket';
 
 export const LOCATION_ENDPOINTS = {
   startSharing: (eventId: string) => `/api/v1/host/events/${eventId}/location/start`,
@@ -29,19 +30,48 @@ export const LOCATION_ENDPOINTS = {
 export const locationService = {
   /**
    * Host starts live location broadcast.
-   *
-   * SECURITY NOTICE:
-   * Backend must verify that the requesting authenticated host is assigned to eventId.
    */
   async startSharing(eventId: string, coords?: GeoLocation): Promise<LiveLocation> {
-    return mockLocationService.startSharing(eventId, coords);
+    const local = await mockLocationService.startSharing(eventId, coords);
+    try {
+      const socket = getSocket();
+      if (socket.connected) {
+        socket.emit('location:start', {
+          eventId,
+          initialCoords: coords
+            ? {
+                latitude: coords.latitude,
+                longitude: coords.longitude,
+                accuracy: coords.accuracy,
+                heading: coords.heading,
+                speed: coords.speed,
+              }
+            : undefined,
+        });
+      }
+    } catch {
+      // Degrade gracefully if socket fails
+    }
+    return local;
   },
 
   /**
    * Host stops live location broadcast.
    */
   async stopSharing(eventId: string): Promise<LiveLocation> {
-    return mockLocationService.stopSharing(eventId);
+    const local = await mockLocationService.stopSharing(eventId);
+    try {
+      const socket = getSocket();
+      if (socket.connected) {
+        socket.emit('location:stop', {
+          eventId,
+          reason: 'host_stopped',
+        });
+      }
+    } catch {
+      // Degrade gracefully
+    }
+    return local;
   },
 
   /**
@@ -62,7 +92,23 @@ export const locationService = {
    * Pushes latest GPS coordinate ping.
    */
   async pushCoordinates(eventId: string, coords: GeoLocation): Promise<LiveLocation> {
-    return mockLocationService.pushLocationUpdate(eventId, coords);
+    const local = await mockLocationService.pushLocationUpdate(eventId, coords);
+    try {
+      const socket = getSocket();
+      if (socket.connected) {
+        socket.emit('location:update', {
+          eventId,
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          accuracy: coords.accuracy,
+          heading: coords.heading,
+          speed: coords.speed,
+        });
+      }
+    } catch {
+      // Degrade gracefully
+    }
+    return local;
   },
 
   /**
@@ -145,7 +191,35 @@ export const locationService = {
    * Subscribes to real-time updates for an event.
    */
   subscribeToLocation(eventId: string, callback: (loc: LiveLocation) => void): () => void {
-    return mockLocationService.subscribeToLocation(eventId, callback);
+    const mockUnsub = mockLocationService.subscribeToLocation(eventId, callback);
+    const socket = getSocket();
+
+    const onLocationUpdate = (payload: ServerLocationUpdatePayload) => {
+      if (payload.eventId === eventId) {
+        const liveLoc: LiveLocation = {
+          eventId: payload.eventId,
+          hostId: payload.hostId,
+          hostName: 'Tour Host',
+          busId: 'bus',
+          busNumber: 'Bus',
+          latitude: payload.latitude,
+          longitude: payload.longitude,
+          accuracy: payload.accuracy ?? 10,
+          heading: payload.heading ?? 0,
+          speed: payload.speed ?? 0,
+          timestamp: new Date(payload.timestamp).getTime(),
+          status: payload.status,
+        };
+        callback(liveLoc);
+      }
+    };
+
+    socket.on('location:update', onLocationUpdate);
+
+    return () => {
+      mockUnsub();
+      socket.off('location:update', onLocationUpdate);
+    };
   },
 
   /**
@@ -155,7 +229,28 @@ export const locationService = {
     eventId: string,
     callback: (status: LocationSharingStatus) => void,
   ): () => void {
-    return mockLocationService.subscribeToStatus(eventId, callback);
+    const mockUnsub = mockLocationService.subscribeToStatus(eventId, callback);
+    const socket = getSocket();
+
+    const onStopped = (payload: { eventId: string }) => {
+      if (payload.eventId === eventId) {
+        callback('stopped');
+      }
+    };
+    const onStarted = (payload: { eventId: string }) => {
+      if (payload.eventId === eventId) {
+        callback('active');
+      }
+    };
+
+    socket.on('location:stopped', onStopped);
+    socket.on('location:started', onStarted);
+
+    return () => {
+      mockUnsub();
+      socket.off('location:stopped', onStopped);
+      socket.off('location:started', onStarted);
+    };
   },
 
   /**

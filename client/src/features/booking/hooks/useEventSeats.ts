@@ -6,12 +6,57 @@ import {
 } from '@/features/booking/services/seat.service';
 import { extractApiErrorMessage } from '@/lib/axios';
 import { toast } from 'sonner';
+import { useEventRoom, useSocketEvent } from '@/lib/socket';
 
 export function useEventSeats(eventId?: string) {
   const queryClient = useQueryClient();
   const sessionId = getOrCreateSeatLockSessionId();
 
+  // Join real-time event room to receive live seat updates
+  useEventRoom(eventId);
+
   const queryKey = ['event-seats', eventId, sessionId];
+
+  // Invalidate and refresh seat map on real-time broadcasts
+  useSocketEvent(
+    'seat:locked',
+    (payload) => {
+      if (payload.eventId === eventId) {
+        queryClient.invalidateQueries({ queryKey: ['event-seats', eventId] });
+      }
+    },
+    [eventId, queryClient],
+  );
+
+  useSocketEvent(
+    'seat:released',
+    (payload) => {
+      if (payload.eventId === eventId) {
+        queryClient.invalidateQueries({ queryKey: ['event-seats', eventId] });
+      }
+    },
+    [eventId, queryClient],
+  );
+
+  useSocketEvent(
+    'seat:expired',
+    (payload) => {
+      if (payload.eventId === eventId) {
+        queryClient.invalidateQueries({ queryKey: ['event-seats', eventId] });
+      }
+    },
+    [eventId, queryClient],
+  );
+
+  useSocketEvent(
+    'seat:booked',
+    (payload) => {
+      if (payload.eventId === eventId) {
+        queryClient.invalidateQueries({ queryKey: ['event-seats', eventId] });
+      }
+    },
+    [eventId, queryClient],
+  );
 
   const seatsQuery = useQuery<EventSeatStatusResponse[]>({
     queryKey,
@@ -20,7 +65,7 @@ export function useEventSeats(eventId?: string) {
       return seatService.getEventSeats(eventId, sessionId);
     },
     enabled: Boolean(eventId),
-    refetchInterval: 15_000, // Background poll every 15s to keep seat availability fresh
+    refetchInterval: 30_000, // Reduced fallback polling since real-time socket pushes live changes
     staleTime: 5_000,
   });
 

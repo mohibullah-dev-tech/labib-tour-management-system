@@ -4,9 +4,13 @@ import { connectDatabase, disconnectDatabase } from '@/config/database.js';
 import { connectRedis, disconnectRedis } from '@/config/redis.js';
 import { env } from '@/config/env.js';
 import { logger } from '@/utils/logger.js';
+import { initSocketServer, closeSocketServer } from '@/sockets/index.js';
 
 async function bootstrap(): Promise<void> {
   const httpServer = createServer(createApp());
+
+  // Attach Socket.IO real-time server
+  initSocketServer(httpServer);
 
   await new Promise<void>((resolve, reject) => {
     httpServer.once('error', reject);
@@ -44,6 +48,7 @@ async function bootstrap(): Promise<void> {
     if (reconnectTimer) clearTimeout(reconnectTimer);
     const timeout = setTimeout(() => process.exit(1), 10_000);
     timeout.unref();
+    void closeSocketServer();
     httpServer.close((error) => {
       if (error) logger.error('HTTP server close failed', { error });
       void Promise.allSettled([disconnectDatabase(), disconnectRedis()]).then(() => {

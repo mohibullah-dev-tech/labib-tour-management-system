@@ -7,10 +7,16 @@ export function RealtimeBridge() {
   const client = useQueryClient();
   useEffect(() => {
     realtimeService.connect();
-    const offNotification = realtimeService.subscribe('notification:new', () => {
-      void client.invalidateQueries({ queryKey: ['notifications'] });
-      toast('New notification', { description: 'Your tour information has been updated.' });
-    });
+    const offNotification = realtimeService.subscribe(
+      'notification:new',
+      (payload: { id: string; title?: string; message?: string }) => {
+        void client.invalidateQueries({ queryKey: ['notifications'] });
+        void client.invalidateQueries({ queryKey: ['notifications-unread'] });
+        toast(payload?.title || 'New notification', {
+          description: payload?.message || 'Your tour information has been updated.',
+        });
+      },
+    );
     const offMessage = realtimeService.subscribe('message:new', (message) => {
       void client.invalidateQueries({ queryKey: ['conversations'] });
       void client.invalidateQueries({ queryKey: ['conversation', message.conversationId] });

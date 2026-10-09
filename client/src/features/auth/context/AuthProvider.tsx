@@ -21,6 +21,7 @@ import {
 import { SessionExpiredDialog } from '@/features/auth/components/SessionExpiredDialog';
 import type { AuthContextValue } from '@/features/auth/types/auth-state';
 import type { AuthUser, LoginInput, RegisterInput } from '@/features/auth/types/user';
+import { connectSocket, disconnectSocket } from '@/lib/socket';
 
 // eslint-disable-next-line react-refresh/only-export-components -- context must live next to its Provider
 export const AuthContext = createContext<AuthContextValue | null>(null);
@@ -59,7 +60,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      await refreshSessionRef.current();
+      const restored = await refreshSessionRef.current();
+      if (restored) connectSocket();
       if (!cancelled) setIsRestoring(false);
     })();
     return () => {
@@ -72,9 +74,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
     registerAuthInterceptorHandlers({
       refresh: async () => {
         const restoredUser = await refreshSessionRef.current();
+        if (restoredUser) connectSocket();
         return restoredUser ? getAccessToken() : null;
       },
       onSessionExpired: () => {
+        disconnectSocket();
         queryClient.setQueryData(authQueryKeys.currentUser, null);
         setSessionExpiredOpen(true);
         toast.error('Your session has expired. Please log in again.');
@@ -85,6 +89,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const login = useCallback(
     async (input: LoginInput): Promise<AuthUser> => {
       const result = await loginMutation.mutateAsync(input);
+      connectSocket();
       return result.user;
     },
     [loginMutation],
@@ -92,12 +97,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   const register = useCallback(
     async (input: RegisterInput): Promise<AuthUser> => {
-      return registerMutation.mutateAsync(input);
+      const user = await registerMutation.mutateAsync(input);
+      connectSocket();
+      return user;
     },
     [registerMutation],
   );
 
   const logout = useCallback(async (): Promise<void> => {
+    disconnectSocket();
     await logoutMutation.mutateAsync();
   }, [logoutMutation]);
 

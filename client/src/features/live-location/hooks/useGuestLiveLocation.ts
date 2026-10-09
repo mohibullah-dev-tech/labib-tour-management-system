@@ -18,10 +18,14 @@ import type {
   NetworkStatus,
 } from '../types/location.types';
 import { locationService } from '../services/location.service';
+import { useEventRoom } from '@/lib/socket';
 
 export function useGuestLiveLocation(eventId: string = 'evt-sajek-01') {
   const { isAuthenticated } = useAuth();
   const { data: bookings = [] } = useGuestBookings();
+
+  // Join backend Socket.io event room to receive live location updates
+  useEventRoom(eventId);
 
   const [isLoading, setIsLoading] = useState(true);
   const [access, setAccess] = useState<GuestLocationAccessCheck>({ isAuthorized: false });

@@ -17,6 +17,7 @@ import type {
 } from '../types/location.types';
 import { locationService } from '../services/location.service';
 import { useGeolocation } from './useGeolocation';
+import { useEventRoom } from '@/lib/socket';
 
 interface UseLiveLocationProps {
   eventId: string;
@@ -24,6 +25,9 @@ interface UseLiveLocationProps {
 }
 
 export function useLiveLocation({ eventId, autoSubscribe = true }: UseLiveLocationProps) {
+  // Join backend Socket.io event room
+  useEventRoom(eventId);
+
   const [event, setEvent] = useState<LiveTourEvent | null>(null);
   const [location, setLocation] = useState<LiveLocation | null>(null);
   const [history, setHistory] = useState<LocationPoint[]>([]);

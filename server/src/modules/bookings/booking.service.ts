@@ -1,11 +1,12 @@
 import mongoose, { Types } from 'mongoose';
-import { Booking, EventSeat, TourEvent, TourTemplate, User } from '@/models/index.js';
+import { Booking, EventSeat, TourEvent, TourTemplate, User, Notification } from '@/models/index.js';
 import { ApiError } from '@/utils/ApiError.js';
 import { createBookingSchema, type CreateBookingInput } from '@/validators/index.js';
 import { calculateBookingFinance } from '@/modules/bookings/bookingFinance.js';
 import { SeatLockService } from '@/modules/seats/seatLock.service.js';
 import { redisClient, isRedisConnected } from '@/config/redis.js';
 import { logger } from '@/utils/logger.js';
+import { broadcastSeatBooked, emitNotification } from '@/sockets/index.js';
 
 export interface CreateBookingOptions {
   sessionId?: string;
@@ -211,6 +212,39 @@ export async function createBooking(
     });
   } catch (releaseErr) {
     logger.warn('Failed to release Redis locks after booking confirmation', { error: releaseErr });
+  }
+
+  // 5. Broadcast real-time seat booked event to all clients viewing the seat layout
+  try {
+    broadcastSeatBooked(data.eventId, data.seatNumbers, createdBooking._id.toString());
+  } catch (err) {
+    logger.warn('Failed to broadcast seat:booked', { error: err });
+  }
+
+  // 6. Create in-app notification & push real-time notification to user
+  try {
+    const notif = await Notification.create({
+      userId,
+      type: 'booking_confirmed',
+      title: 'Booking Confirmed!',
+      message: `Your booking ${createdBooking.bookingCode} for ${data.seatNumbers.length} seat(s) (${data.seatNumbers.join(', ')}) has been confirmed.`,
+      eventId: data.eventId,
+      bookingId: createdBooking._id,
+      actionUrl: `/guest/bookings/${createdBooking._id}`,
+    });
+
+    emitNotification(userId, {
+      id: notif._id.toString(),
+      type: notif.type,
+      title: notif.title,
+      message: notif.message,
+      createdAt: notif.createdAt.toISOString(),
+      eventId: data.eventId,
+      bookingId: createdBooking._id.toString(),
+      actionUrl: notif.actionUrl || undefined,
+    });
+  } catch (err) {
+    logger.warn('Failed to emit booking notification', { error: err });
   }
 
   return createdBooking;

@@ -22,6 +22,7 @@ import {
 import { createBooking } from '@/modules/bookings/booking.service.js';
 import { createTourEventSchema, createTourTemplateSchema } from '@/validators/index.js';
 import { updateProfileSchema } from '@/validators/auth.validators.js';
+import { getIO, ROOMS, emitNotification } from '@/sockets/index.js';
 
 const router = Router();
 const admin = authorize('admin', 'super_admin');
@@ -689,7 +690,7 @@ router.post(
       eventId: req.params.eventId,
       bookingStatus: { $in: ['confirmed', 'completed'] },
     });
-    if (customerIds.length)
+    if (customerIds.length) {
       await Notification.insertMany(
         customerIds.map((userId) => ({
           userId,
@@ -700,6 +701,37 @@ router.post(
           actionUrl: `/events/${event._id}`,
         })),
       );
+    }
+
+    try {
+      const io = getIO();
+      const eventIdStr = String(req.params.eventId);
+      // Broadcast real-time announcement to all participants in this event room
+      io.to(ROOMS.event(eventIdStr)).emit('event:announcement', {
+        id: announcement._id.toString(),
+        eventId: eventIdStr,
+        senderId: req.user!.id,
+        title,
+        message,
+        createdAt: announcement.createdAt.toISOString(),
+      });
+
+      // Push real-time notification to each affected customer's personal user room
+      for (const customerId of customerIds) {
+        emitNotification(customerId.toString(), {
+          id: announcement._id.toString(),
+          type: 'event_update',
+          title,
+          message,
+          createdAt: announcement.createdAt.toISOString(),
+          eventId: event._id.toString(),
+          actionUrl: `/events/${event._id}`,
+        });
+      }
+    } catch {
+      // Degrade gracefully if socket server is unavailable
+    }
+
     res.status(201).json(envelope(announcement));
   }),
 );

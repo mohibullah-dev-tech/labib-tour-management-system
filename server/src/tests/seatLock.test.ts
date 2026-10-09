@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { getRedisStatus, disconnectRedis } from '@/config/redis.js';
@@ -29,19 +30,17 @@ test('SeatLockService: single seat atomic locking, collision, and ownership', as
   const originalFindById = TourEvent.findById;
   const originalEventSeatFind = EventSeat.find;
 
-  // @ts-expect-error Mocking for test
-  TourEvent.findById = () => ({
+  TourEvent.findById = (() => ({
     select: () => ({
       lean: async () => ({ _id: mockEventId, status: 'booking_open' }),
     }),
-  });
+  })) as any;
 
-  // @ts-expect-error Mocking for test
-  EventSeat.find = () => ({
+  EventSeat.find = (() => ({
     select: () => ({
       lean: async () => [],
     }),
-  });
+  })) as any;
 
   t.after(() => {
     TourEvent.findById = originalFindById;
@@ -130,19 +129,17 @@ test('SeatLockService: multi-seat atomic locking with all-or-nothing rollback', 
   const originalFindById = TourEvent.findById;
   const originalEventSeatFind = EventSeat.find;
 
-  // @ts-expect-error Mocking for test
-  TourEvent.findById = () => ({
+  TourEvent.findById = (() => ({
     select: () => ({
       lean: async () => ({ _id: mockEventId, status: 'booking_open' }),
     }),
-  });
+  })) as any;
 
-  // @ts-expect-error Mocking for test
-  EventSeat.find = () => ({
+  EventSeat.find = (() => ({
     select: () => ({
       lean: async () => [],
     }),
-  });
+  })) as any;
 
   t.after(() => {
     TourEvent.findById = originalFindById;
@@ -207,19 +204,17 @@ test('SeatLockService: lock expiration after TTL', async (t) => {
   const originalFindById = TourEvent.findById;
   const originalEventSeatFind = EventSeat.find;
 
-  // @ts-expect-error Mocking for test
-  TourEvent.findById = () => ({
+  TourEvent.findById = (() => ({
     select: () => ({
       lean: async () => ({ _id: mockEventId, status: 'booking_open' }),
     }),
-  });
+  })) as any;
 
-  // @ts-expect-error Mocking for test
-  EventSeat.find = () => ({
+  EventSeat.find = (() => ({
     select: () => ({
       lean: async () => [],
     }),
-  });
+  })) as any;
 
   t.after(() => {
     TourEvent.findById = originalFindById;

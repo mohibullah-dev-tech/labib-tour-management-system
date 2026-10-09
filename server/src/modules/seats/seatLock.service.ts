@@ -5,6 +5,7 @@ import { logger } from '@/utils/logger.js';
 import { ApiError } from '@/utils/ApiError.js';
 import { EventSeat, TourEvent } from '@/models/index.js';
 import { PASSENGER_SEAT_NUMBERS } from '@/constants/index.js';
+import { broadcastSeatLocked, broadcastSeatReleased } from '@/sockets/index.js';
 
 export interface SeatLockPayload {
   userId: string;
@@ -276,12 +277,20 @@ export class SeatLockService {
       this.acquireMemoryLocks(keys, seatNumbers, payloadTemplate, ttlSeconds, userId, sessionId);
     }
 
-    return {
+    const lockResult: LockSeatsResult = {
       sessionId,
       seatNumbers,
       expiresAt: new Date(expiresAt).toISOString(),
       ttlSeconds,
     };
+
+    try {
+      broadcastSeatLocked(eventId, seatNumbers, lockResult.expiresAt);
+    } catch (err) {
+      logger.warn('Failed to broadcast seat:locked', { error: err });
+    }
+
+    return lockResult;
   }
 
   private static acquireMemoryLocks(
@@ -342,6 +351,14 @@ export class SeatLockService {
       }
     } else {
       releasedCount = this.releaseMemoryLocks(keys, userId, sessionId);
+    }
+
+    if (releasedCount > 0) {
+      try {
+        broadcastSeatReleased(eventId, seatNumbers);
+      } catch (err) {
+        logger.warn('Failed to broadcast seat:released', { error: err });
+      }
     }
 
     return { releasedCount };
