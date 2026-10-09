@@ -10,7 +10,10 @@ import { TourIncludesExcludes } from '@/features/tours/components/TourDetails/To
 import { FoodMenu } from '@/features/tours/components/TourDetails/FoodMenu';
 import { TravelTimeline } from '@/features/tours/components/TourDetails/TravelTimeline';
 import { PlacesToVisit } from '@/features/tours/components/TourDetails/PlacesToVisit';
-import { RouteMapPlaceholder } from '@/features/tours/components/TourDetails/RouteMapPlaceholder';
+import { InteractiveRouteMap } from '@/features/tours/components/TourDetails/InteractiveRouteMap';
+import { DestinationAdvisory } from '@/features/tours/components/TourDetails/DestinationAdvisory';
+import { TourPackingChecklist } from '@/features/tours/components/TourDetails/TourPackingChecklist';
+import { TourCostCalculator } from '@/features/tours/components/TourDetails/TourCostCalculator';
 import { HotelInfo } from '@/features/tours/components/TourDetails/HotelInfo';
 import { HostInfo } from '@/features/tours/components/TourDetails/HostInfo';
 import { TourReviews } from '@/features/tours/components/TourDetails/TourReviews';
@@ -43,11 +46,9 @@ function DetailBlock({
 }
 
 /**
- * Tour Details page — looks up the tour by `slug` from the shared TOURS
- * catalog. Every section below is conditionally rendered based on
- * whether that tour's data actually has it, since real tours (a Day
- * Tour vs. a multi-day Premium tour) won't all populate every field —
- * see features/tours/types.ts for which fields are optional and why.
+ * Tour Details page — looks up the tour by `slug` from the shared TOURS catalog.
+ * Renders full itinerary, pricing, food menus, interactive Leaflet route map,
+ * destination travel advisory, interactive packing checklist, and group cost calculator.
  */
 export function TourDetailsPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -94,6 +95,10 @@ export function TourDetailsPage() {
               <PackagePricing packages={tour.packages ?? []} />
             </DetailBlock>
 
+            <DetailBlock title="Group Cost & Deposit Calculator" show={true}>
+              <TourCostCalculator tour={tour} />
+            </DetailBlock>
+
             <TourIncludesExcludes includes={tour.includes} excludes={tour.excludes} />
 
             <DetailBlock title="Food Menu" show={!!tour.foodMenu?.length}>
@@ -108,8 +113,16 @@ export function TourDetailsPage() {
               <PlacesToVisit places={tour.placesToVisit} />
             </DetailBlock>
 
-            <DetailBlock title="Route Map" show={!!tour.route?.length}>
-              <RouteMapPlaceholder route={tour.route} />
+            <DetailBlock title="Interactive Route Map" show={!!tour.route?.length}>
+              <InteractiveRouteMap route={tour.route} tourName={tour.name} />
+            </DetailBlock>
+
+            <DetailBlock title="Destination Travel Advisory" show={true}>
+              <DestinationAdvisory tour={tour} />
+            </DetailBlock>
+
+            <DetailBlock title="Trip Packing Checklist" show={true}>
+              <TourPackingChecklist tour={tour} />
             </DetailBlock>
 
             <DetailBlock title="Hotel Information" show={!!tour.hotel}>
