@@ -152,3 +152,4 @@ function TourSeatMap({ eventId }: { eventId: string }) {
 1. **Server-Side Authorization**: Every room join (`event:join`, `conversation:join`) and state mutation executes database authorization checks.
 2. **GPS Throttling**: GPS pings are throttled in memory to at most 1 database write every 1.5 seconds per tour event, preventing database write spikes while maintaining smooth live client map movement.
 3. **Graceful Fallback**: If the WebSocket connection disconnects, TanStack Query polling acts as a secondary background fallback, ensuring high availability even in low-bandwidth or restricted network environments.
+
