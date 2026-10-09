@@ -55,7 +55,7 @@ function ToursToolbar({
       <div className="flex items-center gap-2">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" size="sm" className="laptop:hidden gap-1.5">
+            <Button variant="outline" size="sm" className="laptop:hidden gap-1.5 lg:hidden">
               <SlidersHorizontal className="size-4" />
               Filters
               {activeFilterCount > 0 && (

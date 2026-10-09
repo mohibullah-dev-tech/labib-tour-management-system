@@ -50,7 +50,7 @@ const TourCard = memo(function TourCard({ tour }: TourCardProps) {
 
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-display text-foreground text-lg leading-tight font-semibold">
+          <h3 className="font-display text-foreground line-clamp-2 text-lg leading-tight font-semibold">
             <Link to={`/tours/${tour.slug}`} className="hover:text-primary">
               {tour.name}
             </Link>
@@ -67,22 +67,22 @@ const TourCard = memo(function TourCard({ tour }: TourCardProps) {
         </p>
 
         <dl className="text-muted-foreground grid grid-cols-3 gap-2 text-xs">
-          <div className="flex items-center gap-1">
+          <div className="flex min-w-0 items-center gap-1">
             <Clock className="size-3.5 shrink-0" aria-hidden="true" />
             <dt className="sr-only">Duration</dt>
-            <dd>
+            <dd className="truncate">
               {tour.durationDays}D{tour.durationNights > 0 ? `/${tour.durationNights}N` : ''}
             </dd>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex min-w-0 items-center gap-1">
             <CalendarDays className="size-3.5 shrink-0" aria-hidden="true" />
             <dt className="sr-only">Next departure</dt>
-            <dd>{formatDate(tour.nextDepartureDate)}</dd>
+            <dd className="truncate">{formatDate(tour.nextDepartureDate)}</dd>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex min-w-0 items-center gap-1">
             <Users className="size-3.5 shrink-0" aria-hidden="true" />
             <dt className="sr-only">Available seats</dt>
-            <dd className={cn(isFillingFast && 'text-danger-600 font-medium')}>
+            <dd className={cn('truncate', isFillingFast && 'text-danger-600 font-medium')}>
               {tour.availableSeats} left
             </dd>
           </div>

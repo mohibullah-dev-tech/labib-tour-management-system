@@ -74,11 +74,26 @@ export function ToursPage() {
         description="Relax getaways, premium retreats, quick day trips, and seasonal specials across Bangladesh."
       />
 
-      <Section className="laptop:grid-cols-[280px_1fr] grid grid-cols-1 gap-8">
-        {/* Desktop sidebar — hidden on mobile/tablet, where ToursToolbar's Sheet trigger takes over. */}
-        <aside className="laptop:block hidden">
-          <div className="sticky top-24">
-            <ToursFilters
+      <Section className="py-8 sm:py-12">
+        <div className="laptop:grid-cols-[280px_1fr] grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
+          {/* Desktop sidebar — hidden on mobile/tablet, where ToursToolbar's Sheet trigger takes over. */}
+          <aside className="laptop:block hidden lg:block">
+            <div className="sticky top-24">
+              <ToursFilters
+                filters={filters}
+                onChange={handleFilterChange}
+                destinations={destinations}
+                busTypes={busTypes}
+                priceBounds={priceBounds}
+                activeFilterCount={activeFilterCount}
+                onReset={resetFilters}
+              />
+            </div>
+          </aside>
+
+          <div className="flex min-w-0 flex-1 flex-col gap-6">
+            <ToursToolbar
+              resultCount={filteredTours.length}
               filters={filters}
               onChange={handleFilterChange}
               destinations={destinations}
@@ -87,59 +102,46 @@ export function ToursPage() {
               activeFilterCount={activeFilterCount}
               onReset={resetFilters}
             />
-          </div>
-        </aside>
 
-        <div className="flex flex-col gap-6">
-          <ToursToolbar
-            resultCount={filteredTours.length}
-            filters={filters}
-            onChange={handleFilterChange}
-            destinations={destinations}
-            busTypes={busTypes}
-            priceBounds={priceBounds}
-            activeFilterCount={activeFilterCount}
-            onReset={resetFilters}
-          />
-
-          {isLoading ? (
-            <div className="desktop:grid-cols-3 grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {Array.from({ length: 6 }, (_, i) => (
-                <TourCardSkeleton key={i} />
-              ))}
-            </div>
-          ) : pagedTours.length === 0 ? (
-            <EmptyState
-              icon={CompassIcon}
-              title="No tours match your filters"
-              description="Try adjusting or resetting your filters to see more results."
-              action={
-                <Button variant="outline" onClick={resetFilters}>
-                  Reset Filters
-                </Button>
-              }
-            />
-          ) : (
-            <>
-              <motion.div
-                variants={staggerContainer}
-                initial="hidden"
-                animate="visible"
-                className="desktop:grid-cols-3 grid grid-cols-1 gap-6 sm:grid-cols-2"
-              >
-                {pagedTours.map((tour) => (
-                  <TourCard key={tour.id} tour={tour} />
+            {isLoading ? (
+              <div className="desktop:grid-cols-3 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                {Array.from({ length: 6 }, (_, i) => (
+                  <TourCardSkeleton key={i} />
                 ))}
-              </motion.div>
-
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                className="mt-4"
+              </div>
+            ) : pagedTours.length === 0 ? (
+              <EmptyState
+                icon={CompassIcon}
+                title="No tours match your filters"
+                description="Try adjusting or resetting your filters to see more results."
+                action={
+                  <Button variant="outline" onClick={resetFilters}>
+                    Reset Filters
+                  </Button>
+                }
               />
-            </>
-          )}
+            ) : (
+              <>
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                  className="desktop:grid-cols-3 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3"
+                >
+                  {pagedTours.map((tour) => (
+                    <TourCard key={tour.id} tour={tour} />
+                  ))}
+                </motion.div>
+
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  className="mt-4"
+                />
+              </>
+            )}
+          </div>
         </div>
       </Section>
     </PageWrapper>
