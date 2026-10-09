@@ -10,6 +10,7 @@ import { MOCK_GUEST_BOOKINGS } from '@/features/guest/data/mock-bookings';
 import { MOCK_GUEST_PAYMENTS } from '@/features/guest/data/mock-payments';
 import { MOCK_GUEST_NOTIFICATIONS } from '@/features/guest/data/mock-notifications';
 import { MOCK_GUEST_REVIEWS } from '@/features/guest/data/mock-reviews';
+import { apiClient } from '@/lib/axios';
 
 /**
  * Standard backend API endpoints contract for future backend integration.
@@ -132,7 +133,17 @@ export const guestService = {
   async submitReview(
     data: Omit<GuestReview, 'id' | 'createdAt' | 'isApproved'>,
   ): Promise<GuestReview> {
-    await delay(400);
+    try {
+      await apiClient.post('/reviews', {
+        bookingId: data.bookingId,
+        rating: data.rating,
+        title: data.destination,
+        comment: data.comment,
+      });
+    } catch {
+      // Graceful fallback to local state for demo/offline sessions
+    }
+
     const newReview: GuestReview = {
       ...data,
       id: `rev-${Date.now()}`,

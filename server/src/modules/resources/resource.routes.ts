@@ -815,9 +815,10 @@ router.post(
     const booking = await Booking.findOne({
       _id: data.bookingId,
       customerId: req.user!.id,
-      bookingStatus: 'completed',
+      bookingStatus: { $in: ['completed', 'confirmed'] },
     }).lean();
-    if (!booking) throw ApiError.forbidden('A completed booking is required to review this event');
+    if (!booking)
+      throw ApiError.forbidden('A confirmed or completed booking is required to review this event');
     res
       .status(201)
       .json(
