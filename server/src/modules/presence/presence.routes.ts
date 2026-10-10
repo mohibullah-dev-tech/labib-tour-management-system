@@ -12,3 +12,4 @@ router.get('/presence/summary', PresenceController.getSummary);
 router.get('/presence/active-users', ...adminOnly, PresenceController.getActiveUsers);
 
 export { router as presenceRoutes };
+

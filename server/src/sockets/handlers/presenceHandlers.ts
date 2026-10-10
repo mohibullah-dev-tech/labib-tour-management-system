@@ -73,3 +73,4 @@ export function registerPresenceHandlers(io: IOServer, socket: AppSocket): void 
     });
   });
 }
+
