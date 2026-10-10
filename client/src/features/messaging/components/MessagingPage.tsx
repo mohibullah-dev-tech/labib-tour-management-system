@@ -33,6 +33,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { NotificationCenter } from '@/features/notifications/components/NotificationCenter';
+import { AdminUnifiedInbox } from '@/features/communications/components/AdminUnifiedInbox';
 import { MOCK_MESSAGE_EVENTS } from '../data/mock-messaging';
 import {
   useConversation,
@@ -669,8 +670,9 @@ export function GuestMessagesRoutePage() {
 export function HostMessagesRoutePage() {
   return <MessagingPage currentRole="host" />;
 }
+
 export function AdminMessagesRoutePage() {
-  return <MessagingPage currentRole="admin" />;
+  return <AdminUnifiedInbox />;
 }
 
 export function EventAnnouncementsRoutePage({

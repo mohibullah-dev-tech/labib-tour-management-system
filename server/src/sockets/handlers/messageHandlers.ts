@@ -193,6 +193,7 @@ export function registerMessageHandlers(io: TypedIO, socket: TypedSocket): void 
 
       // Deliver notification to other participants' personal rooms
       for (const participant of conversation.participants) {
+        if (!participant.userId) continue;
         const participantId = participant.userId.toString();
         if (participantId !== user.id) {
           // Push notification to user personal room

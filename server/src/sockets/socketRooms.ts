@@ -21,6 +21,9 @@ export const ROOMS = {
   /** Scoped chat room for a conversation between guests, host, and admin */
   conversation: (conversationId: string) => `conversation:${conversationId}`,
 
+  /** Staff / Admin Unified Inbox room for all conversation updates */
+  inbox: () => 'inbox:admin',
+
   /** Live location broadcast room for authorized participants of an event */
   liveLocation: (eventId: string) => `live-location:${eventId}`,
 

@@ -36,10 +36,32 @@ export const NOTIFICATION_TYPES = [
   'message',
 ] as const;
 export const CONVERSATION_TYPES = ['guest-host', 'event', 'admin', 'support'] as const;
-export const MESSAGE_STATUSES = ['sent', 'delivered', 'seen', 'failed'] as const;
+export const MESSAGE_STATUSES = ['sent', 'delivered', 'seen', 'failed', 'pending'] as const;
 export const LIVE_LOCATION_STATUSES = ['inactive', 'active', 'stopped'] as const;
 export const PACKAGE_TIERS = ['single', 'couple', 'premium', 'vip'] as const;
 export const DEFAULT_MINIMUM_ADVANCE_PERCENT = 30;
+
+export const COMMUNICATION_CHANNELS = [
+  'website',
+  'whatsapp',
+  'facebook',
+  'instagram',
+  'telegram',
+  'internal',
+] as const;
+export type CommunicationChannel = (typeof COMMUNICATION_CHANNELS)[number];
+
+export const CONVERSATION_STATUSES = ['open', 'pending', 'resolved', 'closed'] as const;
+export type ConversationStatus = (typeof CONVERSATION_STATUSES)[number];
+
+export const CONVERSATION_PRIORITIES = ['low', 'medium', 'high', 'urgent'] as const;
+export type ConversationPriority = (typeof CONVERSATION_PRIORITIES)[number];
+
+export const HANDLING_MODES = ['ai', 'human'] as const;
+export type HandlingMode = (typeof HANDLING_MODES)[number];
+
+export const SENDER_TYPES = ['customer', 'staff', 'ai', 'system'] as const;
+export type SenderType = (typeof SENDER_TYPES)[number];
 
 export const PASSENGER_SEAT_NUMBERS = [
   ...'ABCDEFGHIJ'.split('').flatMap((row) => [1, 2, 3, 4].map((position) => `${row}${position}`)),

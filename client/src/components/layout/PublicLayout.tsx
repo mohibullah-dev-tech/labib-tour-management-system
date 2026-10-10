@@ -2,8 +2,8 @@ import { Outlet, useMatches } from 'react-router';
 import { SkipToContent } from '@/components/layout/SkipToContent';
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
-import { WhatsAppButton } from '@/components/layout/FloatingActions/WhatsAppButton';
 import { ScrollToTopButton } from '@/components/layout/FloatingActions/ScrollToTopButton';
+import { FloatingChatWidget } from '@/features/communications/components/FloatingChatWidget';
 
 interface RouteHandle {
   /** Route opts in via `handle: { transparentNavbar: true }` — used by pages with a full-bleed hero (e.g. Home). */
@@ -30,7 +30,7 @@ function PublicLayout() {
       <Outlet />
       <Footer />
       <ScrollToTopButton />
-      <WhatsAppButton />
+      <FloatingChatWidget />
     </div>
   );
 }

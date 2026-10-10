@@ -4,7 +4,9 @@ export interface SocketUser {
   id: string;
   name: string;
   email: string;
-  role: UserRole;
+  role: UserRole | 'customer' | 'visitor';
+  isVisitor?: boolean;
+  guestConversationId?: string;
 }
 
 export interface SocketData {
@@ -129,8 +131,11 @@ export interface SendMessagePayload {
 export interface MessagePayload {
   id: string;
   conversationId: string;
-  senderId: string;
+  senderId?: string;
   senderName?: string;
+  senderType?: 'customer' | 'staff' | 'ai' | 'system';
+  direction?: 'inbound' | 'outbound';
+  channel?: string;
   content: string;
   attachments?: Array<{
     name: string;
@@ -138,7 +143,7 @@ export interface MessagePayload {
     mimeType: string;
     sizeBytes?: number;
   }>;
-  status: 'sent' | 'delivered' | 'seen' | 'failed';
+  status: 'sent' | 'delivered' | 'seen' | 'failed' | 'pending';
   createdAt: string;
 }
 
@@ -207,6 +212,11 @@ export interface ServerToClientEvents {
   'message:seen': (payload: { conversationId: string; messageId: string }) => void;
   'message:typing': (payload: { conversationId: string; userId: string; userName: string }) => void;
   'message:stop-typing': (payload: { conversationId: string; userId: string }) => void;
+
+  // Unified Communications Admin Inbox Events
+  'conversation:new': (payload: Record<string, unknown>) => void;
+  'conversation:updated': (payload: Record<string, unknown>) => void;
+  'conversation:handover': (payload: Record<string, unknown>) => void;
 
   // Events & Announcements
   'event:announcement': (payload: EventAnnouncementPayload) => void;

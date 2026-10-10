@@ -5,6 +5,7 @@ import { env } from '@/config/env.js';
 import authRoutes from '@/modules/auth/auth.routes.js';
 import seatRoutes from '@/modules/seats/seat.routes.js';
 import resourceRoutes from '@/modules/resources/resource.routes.js';
+import communicationRoutes from '@/modules/communications/routes/communication.routes.js';
 
 /**
  * Root API router. Feature modules (auth, tours, bookings, payments, ...)
@@ -31,5 +32,6 @@ router.get('/health', healthHandler);
 router.use('/auth', authRoutes);
 router.use('/', seatRoutes);
 router.use('/', resourceRoutes);
+router.use('/', communicationRoutes);
 
 export default router;

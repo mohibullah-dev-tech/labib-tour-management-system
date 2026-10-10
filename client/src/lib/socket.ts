@@ -65,8 +65,11 @@ export interface NotificationPayload {
 export interface MessagePayload {
   id: string;
   conversationId: string;
-  senderId: string;
+  senderId?: string;
   senderName?: string;
+  senderType?: 'customer' | 'staff' | 'ai' | 'system';
+  direction?: 'inbound' | 'outbound';
+  channel?: string;
   content: string;
   attachments?: Array<{
     name: string;
@@ -74,7 +77,7 @@ export interface MessagePayload {
     mimeType: string;
     sizeBytes?: number;
   }>;
-  status: 'sent' | 'delivered' | 'seen' | 'failed';
+  status: 'sent' | 'delivered' | 'seen' | 'failed' | 'pending';
   createdAt: string;
 }
 
@@ -123,6 +126,11 @@ export interface ServerToClientEvents {
   'message:seen': (payload: { conversationId: string; messageId: string }) => void;
   'message:typing': (payload: { conversationId: string; userId: string; userName: string }) => void;
   'message:stop-typing': (payload: { conversationId: string; userId: string }) => void;
+
+  // Unified Communications
+  'conversation:new': (payload: Record<string, unknown>) => void;
+  'conversation:updated': (payload: Record<string, unknown>) => void;
+  'conversation:handover': (payload: Record<string, unknown>) => void;
 
   // Announcements & Updates
   'event:announcement': (payload: EventAnnouncementPayload) => void;
@@ -212,7 +220,19 @@ export function getSocket(): TypedSocket {
 
     socketInstance = io(socketUrl, {
       auth: (cb) => {
-        cb({ token: getAccessToken() || '' });
+        let token = getAccessToken();
+        if (!token) {
+          try {
+            const guest = localStorage.getItem('ltms_guest_chat_session');
+            if (guest) {
+              const parsed = JSON.parse(guest);
+              token = parsed.token || '';
+            }
+          } catch {
+            // ignore
+          }
+        }
+        cb({ token: token || '' });
       },
       transports: ['websocket', 'polling'],
       autoConnect: false,

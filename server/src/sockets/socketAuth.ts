@@ -40,6 +40,42 @@ export async function socketAuthMiddleware(
       return next(new Error('UNAUTHORIZED'));
     }
 
+    // 1. Check if token is a website visitor guest session token
+    try {
+      const decoded = jwt.decode(token) as { type?: string } | null;
+      if (decoded && decoded.type === 'guest_chat_session') {
+        const guestClaims = jwt.verify(token, env.JWT_ACCESS_SECRET, {
+          issuer: 'ltms-guest-session',
+        }) as jwt.JwtPayload & {
+          sessionId: string;
+          conversationId?: string;
+          name?: string;
+          email?: string;
+        };
+
+        socket.data.user = {
+          id: `visitor_${guestClaims.sessionId}`,
+          name: guestClaims.name || 'Website Visitor',
+          email: guestClaims.email || '',
+          role: 'visitor',
+          isVisitor: true,
+          guestConversationId: guestClaims.conversationId,
+        };
+        socket.data.joinedRooms = new Set<string>();
+
+        if (guestClaims.conversationId) {
+          const convRoom = ROOMS.conversation(guestClaims.conversationId);
+          await socket.join(convRoom);
+          socket.data.joinedRooms.add(convRoom);
+        }
+
+        return next();
+      }
+    } catch {
+      // Not a valid guest session token, continue to check regular user JWT
+    }
+
+    // 2. Standard authenticated user token verification
     let claims: AccessClaims;
     try {
       claims = jwt.verify(token, env.JWT_ACCESS_SECRET, {
@@ -74,6 +110,13 @@ export async function socketAuthMiddleware(
     const personalRoom = ROOMS.user(socket.data.user.id);
     await socket.join(personalRoom);
     socket.data.joinedRooms.add(personalRoom);
+
+    // If staff/admin, join Unified Inbox room
+    if (user.role === 'admin' || user.role === 'super_admin') {
+      const inboxRoom = ROOMS.inbox();
+      await socket.join(inboxRoom);
+      socket.data.joinedRooms.add(inboxRoom);
+    }
 
     next();
   } catch (error) {
@@ -132,9 +175,13 @@ export async function verifyConversationAccess(
     return true;
   }
 
+  if (user.isVisitor) {
+    return user.guestConversationId === conversationId;
+  }
+
   const isParticipant = await Conversation.exists({
     _id: conversationId,
-    'participants.userId': user.id,
+    $or: [{ 'participants.userId': user.id }, { customerId: user.id }],
     isClosed: false,
   });
 

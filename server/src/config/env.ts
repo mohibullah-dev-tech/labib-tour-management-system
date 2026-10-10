@@ -20,6 +20,29 @@ const envSchema = z.object({
   RATE_LIMIT_MAX_REQUESTS: z.coerce.number().int().positive().default(100),
   SEAT_LOCK_TTL_SECONDS: z.coerce.number().int().positive().default(600),
   MAX_SEAT_LOCK_DURATION_SECONDS: z.coerce.number().int().positive().default(900),
+
+  // Public Social & Contact URLs
+  PUBLIC_FACEBOOK_PAGE_URL: z.string().trim().optional(),
+  PUBLIC_INSTAGRAM_URL: z.string().trim().optional(),
+  PUBLIC_WHATSAPP_NUMBER: z.string().trim().optional(),
+  PUBLIC_TELEGRAM_URL: z.string().trim().optional(),
+
+  // Meta / Facebook / WhatsApp / Instagram Integration
+  META_APP_SECRET: z.string().trim().optional(),
+  META_VERIFY_TOKEN: z.string().trim().optional(),
+  META_PAGE_ACCESS_TOKEN: z.string().trim().optional(),
+  WHATSAPP_PHONE_NUMBER_ID: z.string().trim().optional(),
+  WHATSAPP_BUSINESS_ACCOUNT_ID: z.string().trim().optional(),
+
+  // Telegram Bot Integration
+  TELEGRAM_BOT_TOKEN: z.string().trim().optional(),
+  TELEGRAM_WEBHOOK_SECRET: z.string().trim().optional(),
+
+  // AI Assistant Configuration
+  AI_PROVIDER: z.enum(['local', 'gemini', 'openai']).default('local'),
+  AI_MODEL: z.string().trim().optional(),
+  AI_API_KEY: z.string().trim().optional(),
+  AI_ENABLED: z.coerce.boolean().default(true),
 });
 
 const parsed = envSchema.safeParse(process.env);
