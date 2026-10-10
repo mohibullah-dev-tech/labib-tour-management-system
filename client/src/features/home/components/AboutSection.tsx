@@ -8,35 +8,35 @@ import { fadeInUp, staggerContainer } from '@/lib/animations/variants';
 const HIGHLIGHTS = [
   {
     icon: Compass,
-    title: 'Experienced Tour Hosts',
+    title: 'অভিজ্ঞ ট্যুর হোস্ট',
     description:
-      'Every journey is led by trained, professional trip leads who oversee logistics, passenger safety, and local experiences.',
+      'প্রতিটি ট্যুর পরিচালিত হয় দক্ষ ও দায়িত্বশীল ট্রিপ লিডারদের দ্বারা, যারা যাত্রীদের নিরাপত্তা ও ভ্রমণ আনন্দ নিশ্চিত করেন।',
   },
   {
     icon: Bus,
-    title: 'AC Fleet & Live Seat Selection',
+    title: 'বিলাসবহুল এসি বাস ও লাইভ সিট সিলেকশন',
     description:
-      'Air-conditioned Scania and Hino coaches with real-time seat locking so you always get the exact seat you picked.',
+      'স্ক্যানিয়া ও হিনো বিলাসবহুল এসি কোচে রিয়েল-টাইম সিট লকিং সিস্টেম—আপনার পছন্দের আসনটি শতভাগ নিশ্চিত।',
   },
   {
     icon: Radio,
-    title: 'Live Tour & GPS Tracking',
+    title: 'লাইভ ট্যুর ও জিপিএস ট্র্যাকিং',
     description:
-      'Real-time bus tracking and broadcast announcements keep travelers and families informed throughout the journey.',
+      'যাত্রাপথে বাসের রিয়েল-টাইম লোকেশন ট্র্যাকিং ও তাৎক্ষণিক ঘোষণা যাতে আপনি ও আপনার পরিবার নিশ্চিন্ত থাকতে পারেন।',
   },
   {
     icon: ShieldCheck,
-    title: 'Transparent & Safe Booking',
+    title: 'স্বচ্ছ ও নিরাপদ বুকিং ব্যবস্থা',
     description:
-      'Instant digital PDF confirmation slips, verified booking records, and direct support from our Dhanmondi central office.',
+      'তাৎক্ষণিক ডিজিটাল পিডিএফ টিকেট কনফার্মেশন এবং আমাদের ধানমন্ডি সেন্ট্রাল অফিস থেকে সরাসরি সাপোর্ট।',
   },
 ];
 
 const METRICS = [
-  { value: '8,500+', label: 'Happy Travelers' },
-  { value: '320+', label: 'Successful Tours' },
-  { value: '24', label: 'Scenic Destinations' },
-  { value: '2019', label: 'Founded in Dhaka' },
+  { value: '৮,৫০০+', label: 'সন্তুষ্ট পর্যটক' },
+  { value: '৩২০+', label: 'সফল ট্যুর সম্পন্ন' },
+  { value: '২৪+', label: 'মনোরম গন্তব্য' },
+  { value: '২০১৯', label: 'প্রতিষ্ঠার বছর' },
 ];
 
 function AboutSection() {
@@ -44,9 +44,9 @@ function AboutSection() {
     <Section id="about" aria-labelledby="about-heading" className="scroll-mt-20">
       <SectionTitle
         id="about-heading"
-        eyebrow="Our Story & Mission"
-        title="About Labib Tour"
-        description="Pioneering modern, safe, and thoughtfully curated group travel across Bangladesh since 2019."
+        eyebrow="আমাদের গল্প ও লক্ষ্য"
+        title="লাবিব ট্যুর সম্পর্কে জানুন"
+        description="২০১৯ সাল থেকে বাংলাদেশের প্রতিটি প্রান্তে আধুনিক, নিরাপদ এবং নিখুঁত গ্রুপ ট্যুর আয়োজন করে আসছি।"
       />
 
       <div className="mt-12 grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
@@ -60,30 +60,24 @@ function AboutSection() {
         >
           <div className="space-y-4">
             <h3 className="font-display text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
-              Curated journeys designed to be remembered.
+              স্মরণীয় ভ্রমণের সুপরিকল্পিত আয়োজন।
             </h3>
             <p className="text-muted-foreground text-base leading-relaxed">
-              Labib Tour Management was founded in 2019 with a straightforward mission: to eliminate
-              the stress of traveling in Bangladesh and replace it with reliable, well-coordinated,
-              and comfortable group expeditions.
+              লাবিব ট্যুর ম্যানেজমেন্ট ২০১৯ সালে যাত্রা শুরু করে একটি স্পষ্ট লক্ষ্য নিয়ে: বাংলাদেশে ভ্রমণের সকল জটিলতা ও ক্লান্তি দূর করে আরামদায়ক, নিরাপদ ও সুসংগঠিত গ্রুপ ট্যুর উপহার দেওয়া।
             </p>
             <p className="text-muted-foreground text-base leading-relaxed">
-              Headquartered at Dhanmondi, Dhaka, we design every itinerary from the ground up — from
-              reserving premium AC coaches and securing handpicked hillside eco-resorts to
-              stationing experienced tour hosts on every trip. Whether you are trekking the peaks of
-              Bandarban or sailing the calm waters of Tanguar Haor, our team handles all logistics
-              so you can focus entirely on the journey.
+              ঢাকার ধানমন্ডিতে প্রধান কার্যালয় নিয়ে আমরা প্রতিটি ট্যুর প্ল্যান তৈরি করি শুরু থেকে শেষ পর্যন্ত—বিলাসবহুল এসি বাস রিজার্ভেশন, সেরা ইকো-রিসোর্ট নিশ্চিতকরণ এবং প্রতিটি ট্রিপে অভিজ্ঞ হোস্টের উপস্থিতি। আপনি সাজেকের মেঘের রাজ্যে যান বা টাঙ্গুয়ার হাওরের শান্ত জলে ভাসেন, লজিস্টিকসের সব দায়িত্ব আমাদের।
             </p>
           </div>
 
           <div className="border-border/80 bg-muted/30 rounded-xl border p-5">
-            <h4 className="text-foreground text-sm font-semibold">Our Travel Standards</h4>
+            <h4 className="text-foreground text-sm font-semibold">আমাদের ভ্রমণ নীতিমালা</h4>
             <ul className="mt-3 space-y-2.5">
               {[
-                'Strict bus departure schedules with timely boarding from Dhaka hubs',
-                'Pre-vetted boutique hotels, lakeside cottages, and hillside resorts',
-                'Transparent pricing with clear inclusion of transport, stay, and meals',
-                '24/7 dedicated support and in-trip assistance from your host',
+                'ঢাকা থেকে নির্দিষ্ট সময়ে নিখুঁতভাবে বাস ছাড়া ও ড্রপ সেবা',
+                'পূর্ব-যাচাইকৃত মানসম্পন্ন হোটেল, কটেজ এবং পাহাড়ের ইকো-রিসোর্ট',
+                'পরিবহন, থাকা ও খাওয়া অন্তর্ভুক্ত সম্পূর্ণ স্বচ্ছ প্যাকেজ মূল্য',
+                'ট্যুর হোস্টের মাধ্যমে যাত্রাপথে সার্বক্ষণিক সহায়তা ও ২৪/৭ হেল্পলাইন',
               ].map((item) => (
                 <li
                   key={item}
@@ -99,14 +93,14 @@ function AboutSection() {
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <Button asChild>
               <a href="#upcoming-events">
-                View Upcoming Tours
+                আসন্ন ট্যুরসমূহ দেখুন
                 <ArrowRight className="ml-2 size-4" />
               </a>
             </Button>
             <Button variant="outline" asChild>
               <a href="#contact">
                 <MapPin className="mr-2 size-4" />
-                Contact Our Office
+                অফিসে যোগাযোগ করুন
               </a>
             </Button>
           </div>

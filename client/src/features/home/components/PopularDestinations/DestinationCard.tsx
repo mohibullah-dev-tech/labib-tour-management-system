@@ -52,13 +52,13 @@ const DestinationCard = memo(function DestinationCard({ destination }: Destinati
         <div className="text-muted-foreground flex items-center gap-4 text-xs">
           <span className="flex items-center gap-1">
             <Clock className="size-3.5" aria-hidden="true" />
-            {destination.durationDays} {destination.durationDays === 1 ? 'Day' : 'Days'}
+            {destination.durationDays} দিন
           </span>
         </div>
 
         <div className="border-border mt-1 flex items-center justify-between border-t pt-3">
           <div>
-            <p className="text-muted-foreground text-xs">Starting from</p>
+            <p className="text-muted-foreground text-xs">শুরু মাত্র</p>
             <p className="font-display text-primary text-lg font-semibold">
               ৳{destination.startingPriceBDT.toLocaleString('en-BD')}
             </p>
@@ -67,7 +67,7 @@ const DestinationCard = memo(function DestinationCard({ destination }: Destinati
             to={`/tours/${destination.slug}`}
             className="border-border text-foreground hover:border-primary hover:bg-primary hover:text-primary-foreground inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm font-medium transition-colors"
           >
-            Explore
+            বিস্তারিত দেখুন
             <ArrowUpRight className="size-3.5" aria-hidden="true" />
           </Link>
         </div>

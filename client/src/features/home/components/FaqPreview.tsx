@@ -16,8 +16,8 @@ function FaqPreview() {
       <div className="mx-auto max-w-3xl">
         <SectionTitle
           id="faq-heading"
-          eyebrow="Questions & Answers"
-          title="Frequently Asked Questions"
+          eyebrow="সাধারণ প্রশ্নোত্তর"
+          title="সচরাচর জিজ্ঞাসিত প্রশ্নাবলি"
           align="center"
           className="mx-auto"
         />

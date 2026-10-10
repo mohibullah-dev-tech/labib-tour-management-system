@@ -76,7 +76,7 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
 
       {/* Theme Switcher Segmented Control */}
       <div className="border-border bg-muted/40 mb-3 flex items-center justify-between rounded-lg border p-1.5">
-        <span className="text-muted-foreground pl-1.5 text-xs font-medium">Theme</span>
+        <span className="text-muted-foreground pl-1.5 text-xs font-medium">থিম</span>
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -89,7 +89,7 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
             )}
           >
             <Sun className="size-3.5 text-amber-500" />
-            <span>Light</span>
+            <span>লাইট</span>
           </button>
           <button
             type="button"
@@ -102,7 +102,7 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
             )}
           >
             <Moon className="size-3.5 text-amber-300" />
-            <span>Dark</span>
+            <span>ডার্ক</span>
           </button>
           <button
             type="button"
@@ -115,7 +115,7 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
             )}
           >
             <Monitor className="size-3.5" />
-            <span>System</span>
+            <span>সিস্টেম</span>
           </button>
         </div>
       </div>
@@ -123,7 +123,7 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
       <div className="flex flex-col gap-2 px-1">
         <Button variant="outline" className="justify-start gap-2" onClick={onNavigate}>
           <Search className="size-4" />
-          Search
+          ট্যুর খুঁজুন
         </Button>
 
         {isAuthenticated && role ? (
@@ -131,7 +131,7 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
             <Button variant="outline" className="justify-start gap-2" onClick={onNavigate} asChild>
               <Link to={ROLE_HOME_PATH[role]}>
                 <User className="size-4" />
-                Dashboard
+                ড্যাশবোর্ড
               </Link>
             </Button>
             <Button
@@ -143,7 +143,7 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
               }}
             >
               <LogOut className="size-4" />
-              Log Out
+              লগআউট
             </Button>
           </>
         ) : (
@@ -151,7 +151,7 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
             <Button variant="outline" className="justify-start gap-2" onClick={onNavigate} asChild>
               <Link to="/login">
                 <LogIn className="size-4" />
-                Login
+                লগইন
               </Link>
             </Button>
             <Button
@@ -162,14 +162,14 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
             >
               <Link to="/register">
                 <UserPlus className="size-4" />
-                Register
+                রেজিস্টার
               </Link>
             </Button>
           </>
         )}
 
         <Button className="mt-2" onClick={onNavigate} asChild>
-          <Link to="/booking">Book Tour</Link>
+          <Link to="/booking">ট্যুর বুক করুন</Link>
         </Button>
       </div>
     </nav>

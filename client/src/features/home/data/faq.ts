@@ -7,32 +7,32 @@ export interface FaqItem {
 export const FAQ_ITEMS: FaqItem[] = [
   {
     id: 'faq-booking',
-    question: 'How do I book a tour with Labib Tour?',
+    question: 'লাবিব ট্যুরে কীভাবে ট্যুর বুক করবেন?',
     answer:
-      'Choose a tour or upcoming event, select your seats, and confirm your booking with a partial advance payment. You\u2019ll receive a confirmation with your seat number, bus details, and departure point.',
+      'আপনার পছন্দের গন্তব্য বা আসন্ন ইভেন্ট বেছে নিন, আসন নির্বাচন করুন এবং আংশিক অগ্রিম পেমেন্টের মাধ্যমে বুকিং নিশ্চিত করুন। তাৎক্ষণিকভাবে সিট নম্বর, বাসের তথ্য ও বোর্ডিং পয়েন্ট সম্বলিত ডিজিটাল কনফার্মেশন পেয়ে যাবেন।',
   },
   {
     id: 'faq-payment',
-    question: 'What payment methods are accepted?',
+    question: 'পেমেন্টের জন্য কোন কোন মাধ্যম গ্রহণ করা হয়?',
     answer:
-      'We accept bKash, Nagad, Rocket, and direct bank transfer. Full payment details are shared once your booking is confirmed.',
+      'আমরা বিকাশ, নগদ, রকেট এবং সরাসরি ব্যাংক ট্রান্সফার গ্রহণ করি। বুকিং কনফার্ম করার সময় বিস্তারিত পেমেন্ট অপশন ও ইনস্ট্রাকশন দেওয়া হয়।',
   },
   {
     id: 'faq-cancellation',
-    question: 'What is the cancellation policy?',
+    question: 'বুকিং বাতিল বা রিফান্ড পলিসি কী?',
     answer:
-      'Cancellations made at least 7 days before departure are eligible for a partial refund. Please see the specific tour\u2019s terms for exact cutoff dates and fees.',
+      'যাত্রার অন্তত ৭ দিন পূর্বে বুকিং বাতিল করলে শর্তসাপেক্ষে আংশিক রিফান্ড প্রযোজ্য। বিস্তারিত সময়সীমা ও ফি জানতে প্রতিটি ট্যুরের শর্তাবলী দেখুন।',
   },
   {
     id: 'faq-group',
-    question: 'Do you offer group or corporate discounts?',
+    question: 'গ্রুপ বা কর্পোরেট ভ্রমণের ক্ষেত্রে কি বিশেষ ছাড় রয়েছে?',
     answer:
-      'Yes — groups of 10 or more, and corporate bookings, are eligible for custom pricing. Contact our support team for a tailored quote.',
+      'হ্যাঁ — ১০ জন বা তার বেশি সদস্যের দল এবং কর্পোরেট বুকিংয়ের ক্ষেত্রে বিশেষ কাস্টম প্যাকেজ ও আকর্ষণীয় মূল্যছাড় রয়েছে। বিস্তারিত জানতে আমাদের কাস্টমার কেয়ারে যোগাযোগ করুন।',
   },
   {
     id: 'faq-safety',
-    question: 'How is guest safety handled during the trip?',
+    question: 'ভ্রমণকালে যাত্রীদের নিরাপত্তা কীভাবে নিশ্চিত করা হয়?',
     answer:
-      'Every tour travels with an experienced host and a licensed driver, and we maintain 24/7 support contact throughout the journey for any emergency.',
+      'প্রতিটি ট্যুরেই দায়িত্বপ্রাপ্ত অভিজ্ঞ ট্যুর হোস্ট এবং পেশাদার লাইসেন্সধারী ড্রাইভার থাকেন। যেকোনো জরুরি প্রয়োজনে সহায়তার জন্য সার্বক্ষণিক ২৪/৭ হেল্পলাইন সক্রিয় থাকে।',
   },
 ];

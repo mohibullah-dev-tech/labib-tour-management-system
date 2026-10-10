@@ -24,17 +24,17 @@ import { apiClient } from '@/lib/axios';
 import { fadeInUp } from '@/lib/animations/variants';
 
 const contactSchema = z.object({
-  name: z.string().trim().min(2, 'Please enter your full name (at least 2 characters)'),
-  email: z.string().trim().email('Please enter a valid email address'),
+  name: z.string().trim().min(2, 'দয়া করে আপনার পূর্ণ নাম লিখুন (কমপক্ষে ২ অক্ষর)'),
+  email: z.string().trim().email('দয়া করে একটি সঠিক ইমেইল ঠিকানা দিন'),
   phone: z
     .string()
     .trim()
-    .min(6, 'Please enter a valid phone number')
-    .max(20, 'Phone number is too long')
+    .min(6, 'সঠিক ফোন নম্বর প্রদান করুন')
+    .max(20, 'ফোন নম্বরটি অতিরিক্ত দীর্ঘ')
     .optional()
     .or(z.literal('')),
-  subject: z.string().trim().min(3, 'Please specify the subject or tour you are asking about'),
-  message: z.string().trim().min(10, 'Message must be at least 10 characters long'),
+  subject: z.string().trim().min(3, 'দয়া করে বিষয় বা ট্যুরের নাম উল্লেখ করুন'),
+  message: z.string().trim().min(10, 'বার্তাটি কমপক্ষে ১০ অক্ষরের হতে হবে'),
 });
 
 type ContactFormValues = z.infer<typeof contactSchema>;
@@ -77,7 +77,7 @@ function ContactSection() {
       setErrorMessage(
         errorObj.response?.data?.error?.message ||
           errorObj.message ||
-          'Failed to send message. Please try again or reach out directly via phone or WhatsApp.',
+          'বার্তা পাঠাতে সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন বা সরাসরি ফোন/হোয়াটসঅ্যাপে যোগাযোগ করুন।',
       );
     } finally {
       setIsSubmitting(false);
@@ -88,9 +88,9 @@ function ContactSection() {
     <Section id="contact" aria-labelledby="contact-heading" className="bg-muted/40 scroll-mt-20">
       <SectionTitle
         id="contact-heading"
-        eyebrow="We Are Here To Help"
-        title="Contact & Tour Inquiries"
-        description="Have a question about an upcoming departure, customized group package, or seat booking? Get in touch with our team."
+        eyebrow="আমরা সবসময় আপনার পাশে আছি"
+        title="যোগাযোগ ও ট্যুর অনুসন্ধান"
+        description="আসন্ন ট্যুরের তথ্য, কাস্টমাইজড গ্রুপ প্যাকেজ বা সিট বুকিং সংক্রান্ত যেকোনো তথ্যের জন্য আমাদের সাথে সরাসরি যোগাযোগ করুন।"
       />
 
       <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-12">
@@ -104,11 +104,10 @@ function ContactSection() {
         >
           <div className="border-border bg-card rounded-2xl border p-6 shadow-xs">
             <h3 className="font-display text-foreground text-xl font-bold">
-              Labib Tour Headquarters
+              লাবিব ট্যুর প্রধান কার্যালয়
             </h3>
             <p className="text-muted-foreground mt-1 text-sm">
-              Visit our central operations office or get in touch through any of our direct
-              channels.
+              আমাদের কেন্দ্রীয় অফিসে সরাসরি আসুন অথবা যেকোনো মাধ্যমে যোগাযোগ করুন।
             </p>
 
             <div className="mt-6 space-y-4">
@@ -118,9 +117,9 @@ function ContactSection() {
                   <MapPin className="size-4" />
                 </div>
                 <div>
-                  <p className="text-foreground text-xs font-semibold">Head Office</p>
+                  <p className="text-foreground text-xs font-semibold">হেড অফিস</p>
                   <p className="text-muted-foreground mt-0.5 text-sm">
-                    House 12, Road 5, Dhanmondi, Dhaka 1209, Bangladesh
+                    বাড়ি ১২, রোড ৫, ধানমন্ডি, ঢাকা ১২০৯, বাংলাদেশ
                   </p>
                 </div>
               </div>
@@ -131,12 +130,12 @@ function ContactSection() {
                   <Phone className="size-4" />
                 </div>
                 <div>
-                  <p className="text-foreground text-xs font-semibold">Call & Support</p>
+                  <p className="text-foreground text-xs font-semibold">কল ও কাস্টমার কেয়ার</p>
                   <a
                     href="tel:+8801700000000"
                     className="text-foreground hover:text-primary mt-0.5 block text-sm font-medium transition-colors"
                   >
-                    +880 1700-000000
+                    +৮৮০ ১৭০০-০০০০০০
                   </a>
                 </div>
               </div>
@@ -147,7 +146,7 @@ function ContactSection() {
                   <Mail className="size-4" />
                 </div>
                 <div>
-                  <p className="text-foreground text-xs font-semibold">Email Us</p>
+                  <p className="text-foreground text-xs font-semibold">ইমেইল করুন</p>
                   <a
                     href="mailto:support@labibtours.com"
                     className="text-foreground hover:text-primary mt-0.5 block text-sm font-medium transition-colors"
@@ -163,13 +162,13 @@ function ContactSection() {
                   <Clock className="size-4" />
                 </div>
                 <div>
-                  <p className="text-foreground text-xs font-semibold">Office Hours</p>
+                  <p className="text-foreground text-xs font-semibold">অফিস সময়সূচি</p>
                   <p className="text-muted-foreground mt-0.5 text-xs">
-                    Saturday – Thursday: 9:00 AM – 8:00 PM
+                    শনিবার – বৃহস্পতিবার: সকাল ৯:০০ – রাত ৮:০০
                   </p>
-                  <p className="text-muted-foreground text-xs">Friday: 2:00 PM – 8:00 PM</p>
+                  <p className="text-muted-foreground text-xs">শুক্রবার: দুপুর ২:০০ – রাত ৮:০০</p>
                   <p className="text-primary mt-1 text-[11px] font-medium">
-                    Average response time: &lt; 2 hours
+                    গড় রেসপন্স সময়: ২ ঘণ্টার মধ্যে
                   </p>
                 </div>
               </div>
@@ -178,7 +177,7 @@ function ContactSection() {
             {/* Quick Actions (WhatsApp & Facebook) */}
             <div className="border-border mt-6 border-t pt-5">
               <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                Instant Chat & Social
+                সোশ্যাল মিডিয়া ও চ্যাট
               </p>
               <div className="mt-3 flex flex-wrap gap-2.5">
                 <Button
@@ -194,7 +193,7 @@ function ContactSection() {
                     aria-label="Chat with Labib Tour on WhatsApp"
                   >
                     <MessageSquare className="size-3.5 text-emerald-500" />
-                    WhatsApp Direct
+                    হোয়াটসঅ্যাপে চ্যাট করুন
                     <ExternalLink className="size-3 opacity-60" />
                   </a>
                 </Button>
@@ -211,7 +210,7 @@ function ContactSection() {
                     rel="noopener noreferrer"
                     aria-label="Visit Labib Tour on Facebook"
                   >
-                    <span>Facebook Community</span>
+                    <span>ফেসবুক পেজ</span>
                     <ExternalLink className="size-3 opacity-60" />
                   </a>
                 </Button>
@@ -229,10 +228,9 @@ function ContactSection() {
           className="lg:col-span-7"
         >
           <div className="border-border bg-card rounded-2xl border p-6 shadow-xs sm:p-8">
-            <h3 className="font-display text-foreground text-xl font-bold">Send Us an Inquiry</h3>
+            <h3 className="font-display text-foreground text-xl font-bold">আমাদের বার্তা পাঠান</h3>
             <p className="text-muted-foreground mt-1 text-sm">
-              Fill in your details and tour preferences. Our reservation coordinators will get back
-              to you promptly.
+              আপনার বিবরণ ও পছন্দের ট্যুরের তথ্য পূরণ করুন। আমাদের টিম দ্রুত আপনার সাথে যোগাযোগ করবে।
             </p>
 
             {submitSuccess && (
@@ -242,10 +240,9 @@ function ContactSection() {
               >
                 <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <div className="text-sm">
-                  <p className="font-semibold">Message sent successfully!</p>
+                  <p className="font-semibold">আপনার বার্তা সফলভাবে পাঠানো হয়েছে!</p>
                   <p className="mt-0.5 text-xs opacity-90">
-                    Thank you for reaching out. A Labib Tour coordinator has received your inquiry
-                    and will reply within office hours.
+                    যোগাযোগের জন্য ধন্যবাদ। আমাদের প্রতিনিধি আপনার বার্তা পেয়েছেন এবং দ্রুত যোগাযোগ করবেন।
                   </p>
                 </div>
               </div>
@@ -258,7 +255,7 @@ function ContactSection() {
               >
                 <AlertCircle className="mt-0.5 size-5 shrink-0" />
                 <div className="text-sm">
-                  <p className="font-semibold">Failed to send message</p>
+                  <p className="font-semibold">বার্তা পাঠানো ব্যর্থ হয়েছে</p>
                   <p className="mt-0.5 text-xs opacity-90">{errorMessage}</p>
                 </div>
               </div>
@@ -269,11 +266,11 @@ function ContactSection() {
                 {/* Name */}
                 <div className="space-y-1.5">
                   <Label htmlFor="contact-name">
-                    Full Name <span className="text-destructive">*</span>
+                    আপনার পুরো নাম <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="contact-name"
-                    placeholder="e.g. Tanvir Ahmed"
+                    placeholder="যেমন: তানভীর আহমেদ"
                     invalid={Boolean(errors.name)}
                     {...register('name')}
                   />
@@ -283,12 +280,12 @@ function ContactSection() {
                 {/* Email */}
                 <div className="space-y-1.5">
                   <Label htmlFor="contact-email">
-                    Email Address <span className="text-destructive">*</span>
+                    ইমেইল ঠিকানা <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="contact-email"
                     type="email"
-                    placeholder="e.g. tanvir@example.com"
+                    placeholder="যেমন: tanvir@example.com"
                     invalid={Boolean(errors.email)}
                     {...register('email')}
                   />
@@ -301,11 +298,11 @@ function ContactSection() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* Phone */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="contact-phone">Phone Number (Optional)</Label>
+                  <Label htmlFor="contact-phone">মোবাইল নম্বর (ঐচ্ছিক)</Label>
                   <Input
                     id="contact-phone"
                     type="tel"
-                    placeholder="e.g. +880 1712-345678"
+                    placeholder="যেমন: ০১৭০০-০০০০০০"
                     invalid={Boolean(errors.phone)}
                     {...register('phone')}
                   />
@@ -317,11 +314,11 @@ function ContactSection() {
                 {/* Subject / Tour Interested */}
                 <div className="space-y-1.5">
                   <Label htmlFor="contact-subject">
-                    Subject / Tour <span className="text-destructive">*</span>
+                    বিষয় / ট্যুরের নাম <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="contact-subject"
-                    placeholder="e.g. Bandarban Tour / Custom Group"
+                    placeholder="যেমন: সাজেক ভ্যালি ট্যুর / গ্রুপ প্যাকেজ"
                     invalid={Boolean(errors.subject)}
                     {...register('subject')}
                   />
@@ -334,12 +331,12 @@ function ContactSection() {
               {/* Message */}
               <div className="space-y-1.5">
                 <Label htmlFor="contact-message">
-                  Your Message <span className="text-destructive">*</span>
+                  আপনার বার্তা বা প্রশ্ন <span className="text-destructive">*</span>
                 </Label>
                 <Textarea
                   id="contact-message"
                   rows={4}
-                  placeholder="Tell us about your travel dates, group size, or questions..."
+                  placeholder="ভ্রমণের তারিখ, সদস্য সংখ্যা বা আপনার যেকোনো জিজ্ঞাসা লিখুন..."
                   invalid={Boolean(errors.message)}
                   {...register('message')}
                 />
@@ -351,11 +348,11 @@ function ContactSection() {
               <div className="pt-2">
                 <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
                   {isSubmitting ? (
-                    'Sending Message...'
+                    'বার্তা পাঠানো হচ্ছে...'
                   ) : (
                     <>
                       <Send className="mr-2 size-4" />
-                      Submit Inquiry
+                      বার্তা পাঠান
                     </>
                   )}
                 </Button>

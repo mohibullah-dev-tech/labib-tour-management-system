@@ -56,9 +56,9 @@ function ReviewsPreview() {
     <Section id="reviews" aria-labelledby="reviews-heading" className="bg-muted/40 scroll-mt-20">
       <SectionTitle
         id="reviews-heading"
-        eyebrow="Guest Stories"
-        title="What Our Guests Say"
-        description="Authentic experiences from travelers who explored Bangladesh with Labib Tour."
+        eyebrow="পর্যটকদের অভিজ্ঞতা"
+        title="আমাদের অতিথিরা যা বলেন"
+        description="লাবিব ট্যুরের সাথে বাংলাদেশ ভ্রমণকারী সন্তুষ্ট পর্যটকদের বাস্তব অনুভূতি ও অভিজ্ঞতা।"
       />
 
       {isLoading ? (
@@ -108,13 +108,11 @@ function ReviewsPreview() {
           </div>
 
           <h3 className="font-display text-foreground mt-5 text-xl font-bold md:text-2xl">
-            Verified Guest Reviews Coming Soon
+            যাচাইকৃত অতিথি রিভিউ শীঘ্রই প্রকাশিত হচ্ছে
           </h3>
 
           <p className="text-muted-foreground mx-auto mt-2 max-w-xl text-sm leading-relaxed">
-            Every review on Labib Tour is written exclusively by travelers who have completed their
-            journey with us. As our upcoming tour batches return, their honest stories and ratings
-            will be featured right here.
+            লাবিব ট্যুরের প্রতিটি রিভিউ শুধুমাত্র সেইসব পর্যটকদের দ্বারা রচিত যারা আমাদের সাথে ভ্রমণ সম্পন্ন করেছেন। আসন্ন ট্যুর দলগুলো ফিরে আসার সাথে সাথে তাদের অভিজ্ঞতা ও রেটিং এখানে সরাসরি প্রকাশিত হবে।
           </p>
 
           {/* Trust commitments */}
@@ -122,9 +120,9 @@ function ReviewsPreview() {
             <div className="border-border/60 bg-background/80 flex items-start gap-3 rounded-lg border p-3.5">
               <ShieldCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
               <div>
-                <p className="text-foreground text-xs font-semibold">100% Verified</p>
+                <p className="text-foreground text-xs font-semibold">১০০% যাচাইকৃত</p>
                 <p className="text-muted-foreground text-[11px]">
-                  Only real booked travelers can review
+                  শুধুমাত্র আসল বুকিংকারী রিভিউ দিতে পারেন
                 </p>
               </div>
             </div>
@@ -132,9 +130,9 @@ function ReviewsPreview() {
             <div className="border-border/60 bg-background/80 flex items-start gap-3 rounded-lg border p-3.5">
               <Sparkles className="text-accent-500 mt-0.5 size-4 shrink-0" />
               <div>
-                <p className="text-foreground text-xs font-semibold">Unedited Feedback</p>
+                <p className="text-foreground text-xs font-semibold">স্বচ্ছ মতামত</p>
                 <p className="text-muted-foreground text-[11px]">
-                  Transparent ratings for hosts & trips
+                  হোস্ট এবং ট্যুরের নিরপেক্ষ রেটিং
                 </p>
               </div>
             </div>
@@ -142,9 +140,9 @@ function ReviewsPreview() {
             <div className="border-border/60 bg-background/80 flex items-start gap-3 rounded-lg border p-3.5">
               <Compass className="text-primary mt-0.5 size-4 shrink-0" />
               <div>
-                <p className="text-foreground text-xs font-semibold">Real Destinations</p>
+                <p className="text-foreground text-xs font-semibold">বাস্তব গন্তব্য</p>
                 <p className="text-muted-foreground text-[11px]">
-                  Direct insights on routes & stays
+                  রুট ও থাকার ব্যবস্থা সম্পর্কে সঠিক তথ্য
                 </p>
               </div>
             </div>
@@ -152,7 +150,7 @@ function ReviewsPreview() {
 
           <div className="mt-8 flex justify-center">
             <Button asChild>
-              <a href="#upcoming-events">Be Among Our First Guests</a>
+              <a href="#upcoming-events">আমাদের সাথে ভ্রমণের আনন্দ নিন</a>
             </Button>
           </div>
         </motion.div>

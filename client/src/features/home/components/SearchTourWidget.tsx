@@ -52,11 +52,11 @@ function SearchTourWidget() {
           className="text-foreground/80 flex items-center gap-1.5 text-xs font-semibold"
         >
           <MapPin className="text-primary size-4" aria-hidden="true" />
-          Destination
+          গন্তব্য
         </Label>
         <Select value={destination} onValueChange={setDestination}>
           <SelectTrigger id="search-destination" className="bg-background/60 h-11 rounded-xl">
-            <SelectValue placeholder="Where do you want to go?" />
+            <SelectValue placeholder="কোথায় যেতে চান?" />
           </SelectTrigger>
           <SelectContent>
             {DESTINATIONS.map((d) => (
@@ -74,7 +74,7 @@ function SearchTourWidget() {
           className="text-foreground/80 flex items-center gap-1.5 text-xs font-semibold"
         >
           <CalendarDays className="text-primary size-4" aria-hidden="true" />
-          Travel Date
+          ভ্রমণের তারিখ
         </Label>
         <Input
           id="search-date"
@@ -91,13 +91,13 @@ function SearchTourWidget() {
           className="text-foreground/80 flex items-center gap-1.5 text-xs font-semibold"
         >
           <Users className="text-primary size-4" aria-hidden="true" />
-          Guests
+          যাত্রী সংখ্যা
         </Label>
         <Input
           id="search-guests"
           type="number"
           min={1}
-          placeholder="2"
+          placeholder="২"
           className="bg-background/60 h-11 rounded-xl"
           value={guests}
           onChange={(e) => setGuests(e.target.value)}
@@ -106,7 +106,7 @@ function SearchTourWidget() {
 
       <Button type="submit" className="h-11 gap-2 rounded-xl px-6 font-medium shadow-sm">
         <Search className="size-4" />
-        Search Tours
+        ট্যুর খুঁজুন
       </Button>
     </form>
   );

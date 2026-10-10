@@ -11,9 +11,9 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 const HERO_IMAGE = '/images/hero-banner.jpg';
 
 const HERO_MINI_STATS = [
-  { id: 'guests', value: 8500, suffix: '+', label: 'Happy Guests' },
-  { id: 'destinations', value: 24, suffix: '+', label: 'Destinations' },
-  { id: 'rating', value: 4.8, suffix: '/5', label: 'Guest Rating' },
+  { id: 'guests', value: 8500, suffix: '+', label: 'সন্তুষ্ট পর্যটক' },
+  { id: 'destinations', value: 24, suffix: '+', label: 'জনপ্রিয় গন্তব্য' },
+  { id: 'rating', value: 4.8, suffix: '/5', label: 'অতিথি রেটিং' },
 ];
 
 /**
@@ -51,18 +51,17 @@ function HeroSection() {
           className="flex max-w-2xl flex-col gap-5"
         >
           <span className="w-fit rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide text-white uppercase backdrop-blur">
-            Bangladesh&rsquo;s Trusted Travel Partner
+            বাংলাদেশের সবচেয়ে নির্ভরযোগ্য ট্রাভেল পার্টনার
           </span>
           <h1 className="font-display laptop:text-6xl text-4xl leading-[1.1] font-semibold tracking-tight text-white sm:text-5xl">
-            Discover Bangladesh&rsquo;s Untold Beauty
+            আবিষ্কার করুন বাংলাদেশের রূপময় সৌন্দর্য
           </h1>
           <p className="laptop:text-lg max-w-lg text-base leading-relaxed text-white/85">
-            From cloud-wrapped hills to golden beaches — curated group tours, experienced hosts, and
-            journeys designed to be remembered.
+            মেঘের উপত্যকা থেকে সোনালী সমুদ্র সৈকত — সেরা গ্রুপ ট্যুর, অভিজ্ঞ গাইড এবং আজীবন মনে রাখার মতো অসাধারণ ভ্রমণ অভিজ্ঞতা।
           </p>
           <div className="mt-2 flex flex-col gap-3 sm:flex-row">
             <Button size="lg" asChild>
-              <Link to="/booking">Book Tour</Link>
+              <Link to="/booking">ট্যুর বুক করুন</Link>
             </Button>
             <Button
               size="lg"
@@ -70,7 +69,7 @@ function HeroSection() {
               className="border-white/40 bg-transparent text-white hover:bg-white/10"
               asChild
             >
-              <Link to="/events">View Events</Link>
+              <Link to="/events">ইভেন্ট দেখুন</Link>
             </Button>
           </div>
         </motion.div>

@@ -9,9 +9,9 @@ function WhyChooseUs() {
     <Section aria-labelledby="why-choose-us-heading">
       <SectionTitle
         id="why-choose-us-heading"
-        eyebrow="Why Travel With Us"
-        title="Why Choose Labib Tour"
-        description="What thousands of guests keep coming back for."
+        eyebrow="কেন আমাদের সাথে ভ্রমণ করবেন"
+        title="কেন বেছে নেবেন লাবিব ট্যুর"
+        description="যেসব সুবিধার কারণে হাজারো পর্যটক বারবার আমাদের সাথেই ভ্রমণ করেন।"
       />
 
       <motion.ul

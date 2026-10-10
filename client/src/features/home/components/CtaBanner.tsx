@@ -24,15 +24,14 @@ function CtaBanner() {
             id="cta-heading"
             className="font-display laptop:text-4xl text-3xl font-semibold tracking-tight"
           >
-            Book Your Next Adventure Today
+            আজই বুক করুন আপনার স্বপ্নের রোমাঞ্চকর ভ্রমণ
           </h2>
           <p className="text-primary-foreground/85">
-            Seats fill up fast on our most popular routes — reserve yours before the next group
-            departs.
+            আমাদের জনপ্রিয় রুটগুলোতে আসন দ্রুত পূর্ণ হয়ে যায় — পরবর্তী গ্রুপ যাত্রার আগেই আপনার আসনটি নিশ্চিত করুন।
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button size="lg" variant="secondary" asChild>
-              <Link to="/booking">Book a Tour</Link>
+              <Link to="/booking">ট্যুর বুক করুন</Link>
             </Button>
             <Button
               size="lg"
@@ -40,7 +39,7 @@ function CtaBanner() {
               className="text-primary-foreground border-white/40 bg-transparent hover:bg-white/10"
               asChild
             >
-              <Link to="/contact">Talk to Us</Link>
+              <Link to="/contact">যোগাযোগ করুন</Link>
             </Button>
           </div>
         </motion.div>

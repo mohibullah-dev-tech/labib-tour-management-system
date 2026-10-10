@@ -51,7 +51,7 @@ const ReviewCard = memo(function ReviewCard({ review }: ReviewCardProps) {
             className="gap-1 border-emerald-500/30 text-[11px] text-emerald-600 dark:text-emerald-400"
           >
             <CheckCircle2 className="size-3" />
-            Verified Booker
+            যাচাইকৃত ভ্রমণকারী
           </Badge>
         </div>
 
@@ -81,7 +81,7 @@ const ReviewCard = memo(function ReviewCard({ review }: ReviewCardProps) {
           <div className="min-w-0">
             <p className="text-foreground truncate text-sm font-medium">{review.name}</p>
             <p className="text-muted-foreground truncate text-xs">
-              {review.tourTitle || review.location || 'Tour Member'}
+              {review.tourTitle || review.location || 'ট্যুর সদস্য'}
             </p>
           </div>
         </figcaption>

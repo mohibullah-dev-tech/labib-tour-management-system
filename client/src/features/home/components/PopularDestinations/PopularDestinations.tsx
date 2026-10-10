@@ -17,9 +17,9 @@ function PopularDestinations() {
     <Section aria-labelledby="popular-destinations-heading">
       <SectionTitle
         id="popular-destinations-heading"
-        eyebrow="Explore Bangladesh"
-        title="Popular Destinations"
-        description="Hand-picked destinations across the hills, beaches, and wetlands of Bangladesh."
+        eyebrow="বাংলাদেশ ভ্রমণ করুন"
+        title="জনপ্রিয় ভ্রমণ গন্তব্যসমূহ"
+        description="পাহাড়, সমুদ্র সৈকত ও নদী-হাওরের সেরা সব বাছাইকৃত ভ্রমণ গন্তব্য।"
       />
 
       <motion.div

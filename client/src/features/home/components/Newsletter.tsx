@@ -21,7 +21,9 @@ function Newsletter() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email) return;
-    toast.success("You're on the list!", { description: `We'll send travel updates to ${email}.` });
+    toast.success('আপনাকে ধন্যবাদ! সাবস্ক্রিপশন সম্পন্ন হয়েছে।', {
+      description: `ভ্রমণ সংক্রান্ত আকর্ষণীয় আপডেট পাঠানো হবে ${email} এ।`,
+    });
     setEmail('');
   };
 
@@ -41,26 +43,26 @@ function Newsletter() {
           id="newsletter-heading"
           className="font-display text-foreground laptop:text-3xl text-2xl font-semibold"
         >
-          Get Travel Deals in Your Inbox
+          সেরা ট্রাভেল অফারগুলো পান আপনার ইনবক্সে
         </h2>
         <p className="text-muted-foreground">
-          New destinations, early access to events, and seasonal discounts — no spam.
+          নতুন গন্তব্য, স্পেশাল ইভেন্ট টিকিট ও সিজনাল আকর্ষণীয় ছাড় — কোনো স্প্যাম নয়।
         </p>
 
         <form onSubmit={handleSubmit} className="mt-2 flex w-full flex-col gap-3 sm:flex-row">
           <Label htmlFor="newsletter-email" className="sr-only">
-            Email address
+            ইমেইল ঠিকানা
           </Label>
           <Input
             id="newsletter-email"
             type="email"
             required
-            placeholder="you@example.com"
+            placeholder="আপনার ইমেইল লিখুন..."
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="flex-1"
           />
-          <Button type="submit">Subscribe</Button>
+          <Button type="submit">সাবস্ক্রাইব করুন</Button>
         </form>
       </motion.div>
     </Section>

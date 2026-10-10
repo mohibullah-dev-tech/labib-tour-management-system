@@ -81,9 +81,9 @@ function UpcomingEvents() {
     >
       <SectionTitle
         id="upcoming-events-heading"
-        eyebrow="Fixed Date Departures"
-        title="Upcoming Events"
-        description="Curated group tours with confirmed dates and dedicated AC transport. Book early before seats sell out."
+        eyebrow="নির্দিষ্ট তারিখের যাত্রা"
+        title="আসন্ন ট্যুর ইভেন্টসমূহ"
+        description="নিশ্চিত তারিখ এবং আরামদায়ক এসি বাসসহ আমাদের আকর্ষণীয় গ্রুপ ট্যুর। আসন পূর্ণ হওয়ার আগেই বুক করুন।"
       />
 
       {isLoading ? (

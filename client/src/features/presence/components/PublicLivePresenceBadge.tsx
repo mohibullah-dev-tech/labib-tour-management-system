@@ -33,11 +33,10 @@ export function PublicLivePresenceBadge({
         </div>
         <p className="text-foreground mt-2 text-2xl font-bold tracking-tight">
           {onlineCount}{' '}
-          <span className="text-muted-foreground text-sm font-normal">online now</span>
+          <span className="text-muted-foreground text-sm font-normal">অনলাইনে আছেন</span>
         </p>
         <p className="text-muted-foreground mt-1 text-xs">
-          Travelers and visitors are currently exploring tours and checking seat availability across
-          Bangladesh.
+          বর্তমানে পর্যটকরা প্যাকেজ দেখছেন এবং আসন প্রাপ্যতা যাচাই করছেন।
         </p>
       </div>
     );
@@ -55,16 +54,16 @@ export function PublicLivePresenceBadge({
               <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
             </span>
             <span>
-              <strong className="font-semibold">{onlineCount}</strong> online right now
+              <strong className="font-semibold">{onlineCount}</strong> জন এখন অনলাইনে আছেন
             </span>
           </div>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="max-w-xs p-3 text-xs">
-          <p className="text-foreground font-semibold">Real-time Activity</p>
+          <p className="text-foreground font-semibold">লাইভ কার্যক্রম</p>
           <p className="text-muted-foreground mt-1">
-            {summary.guestsCount > 0 && `${summary.guestsCount} logged-in travelers, `}
-            {summary.hostsCount > 0 && `${summary.hostsCount} tour guides on road, `}
-            {summary.visitorsCount > 0 && `${summary.visitorsCount} exploring packages.`}
+            {summary.guestsCount > 0 && `${summary.guestsCount} জন পর্যটক, `}
+            {summary.hostsCount > 0 && `${summary.hostsCount} জন ট্যুর গাইড, `}
+            {summary.visitorsCount > 0 && `${summary.visitorsCount} জন প্যাকেজ দেখছেন।`}
           </p>
         </TooltipContent>
       </Tooltip>

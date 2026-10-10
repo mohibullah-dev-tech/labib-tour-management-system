@@ -61,11 +61,11 @@ const EventCard = memo(function EventCard({ event }: EventCardProps) {
             <Link to={detailsUrl}>{event.title}</Link>
           </h3>
           {isSoldOut ? (
-            <Badge variant="destructive">Sold Out</Badge>
+            <Badge variant="destructive">আসন পূর্ণ</Badge>
           ) : isFillingFast ? (
-            <Badge variant="warning">Filling Fast</Badge>
+            <Badge variant="warning">আসন দ্রুত পূর্ণ হচ্ছে</Badge>
           ) : (
-            <Badge variant="success">Seats Open</Badge>
+            <Badge variant="success">আসন খালি আছে</Badge>
           )}
         </div>
 
@@ -81,14 +81,14 @@ const EventCard = memo(function EventCard({ event }: EventCardProps) {
             <Clock className="text-primary size-3.5 shrink-0" aria-hidden="true" />
             <dt className="sr-only">Duration</dt>
             <dd>
-              {event.durationDays} {event.durationDays === 1 ? 'Day' : 'Days'}
+              {event.durationDays} দিন
             </dd>
           </div>
           <div className="flex items-center gap-1.5">
             <Users className="text-primary size-3.5 shrink-0" aria-hidden="true" />
             <dt className="sr-only">Available seats</dt>
             <dd className={isFillingFast ? 'font-semibold text-amber-600' : ''}>
-              {event.availableSeats} of {event.totalSeats} seats left
+              {event.availableSeats}টি আসন বাকি ({event.totalSeats}টির মধ্যে)
             </dd>
           </div>
           <div className="flex items-center gap-1.5">
@@ -101,7 +101,7 @@ const EventCard = memo(function EventCard({ event }: EventCardProps) {
         {event.packages && event.packages.length > 0 && (
           <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
             <Layers className="text-primary size-3.5 shrink-0" />
-            <span className="text-[11px] font-medium">Tiers:</span>
+            <span className="text-[11px] font-medium">প্যাকেজ:</span>
             <div className="flex flex-wrap gap-1">
               {event.packages.map((pkg) => (
                 <span
@@ -118,7 +118,7 @@ const EventCard = memo(function EventCard({ event }: EventCardProps) {
         <div className="border-border mt-auto flex flex-wrap items-center justify-between gap-3 border-t pt-3">
           <div>
             <p className="text-muted-foreground text-[11px] font-medium tracking-wider uppercase">
-              Starts From
+              শুরু মাত্র
             </p>
             <p className="font-display text-primary text-lg font-bold">
               ৳{event.priceBDT.toLocaleString('en-BD')}
@@ -126,10 +126,10 @@ const EventCard = memo(function EventCard({ event }: EventCardProps) {
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" asChild>
-              <Link to={detailsUrl}>View Details</Link>
+              <Link to={detailsUrl}>বিস্তারিত দেখুন</Link>
             </Button>
             <Button size="sm" disabled={isSoldOut} asChild={!isSoldOut}>
-              {isSoldOut ? <span>Sold Out</span> : <Link to={bookingUrl}>Book Now</Link>}
+              {isSoldOut ? <span>আসন পূর্ণ</span> : <Link to={bookingUrl}>বুক করুন</Link>}
             </Button>
           </div>
         </div>

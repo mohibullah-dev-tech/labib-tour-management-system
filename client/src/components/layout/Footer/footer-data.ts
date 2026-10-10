@@ -7,15 +7,12 @@ export interface SocialLink {
   icon: LucideIcon;
 }
 
-/** Placeholder destination list — replaced by real data once the Tours
- *  feature/API exists. Kept here (not hardcoded in Footer.tsx) so it's
- *  a single obvious place to wire up real data later. */
 export const POPULAR_DESTINATIONS = [
-  { label: "Cox's Bazar", path: '/tours' },
-  { label: 'Sundarbans', path: '/tours' },
-  { label: 'Sylhet', path: '/tours' },
-  { label: 'Bandarban', path: '/tours' },
-  { label: 'Saint Martin', path: '/tours' },
+  { label: 'কক্সবাজার', path: '/tours' },
+  { label: 'সুন্দরবন', path: '/tours' },
+  { label: 'সিলেট', path: '/tours' },
+  { label: 'বান্দরবান', path: '/tours' },
+  { label: 'সেন্টমার্টিন', path: '/tours' },
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = [
@@ -26,6 +23,6 @@ export const SOCIAL_LINKS: SocialLink[] = [
 ];
 
 export const EMERGENCY_CONTACT = {
-  phone: '+880 1XXX-XXXXXX',
+  phone: '+৮৮০ ১৭০০-০০০০০০',
   email: 'support@labibtours.com',
 };

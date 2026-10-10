@@ -15,6 +15,16 @@ import {
 } from '@/features/home/data/gallery';
 import { fadeIn, staggerContainer } from '@/lib/animations/variants';
 
+const CATEGORY_NAMES_BN: Record<GalleryCategory, string> = {
+  All: 'সকল ছবি',
+  Mountain: 'পাহাড়',
+  Sea: 'সমুদ্র',
+  Waterfall: 'ঝর্ণা',
+  'Tea Garden': 'চা বাগান',
+  Haor: 'হাওর',
+  Sunset: 'সূর্যাস্ত',
+};
+
 function GalleryPreview() {
   const [selectedCategory, setSelectedCategory] = useState<GalleryCategory>('All');
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
@@ -62,9 +72,9 @@ function GalleryPreview() {
     <Section id="gallery" aria-labelledby="gallery-heading" className="scroll-mt-20">
       <SectionTitle
         id="gallery-heading"
-        eyebrow="Moments From The Road"
-        title="Travel Gallery"
-        description="Breathtaking destinations, cloud-wrapped hills, and coastlines captured across Bangladesh."
+        eyebrow="ভ্রমণের সুন্দর মুহূর্ত"
+        title="ভ্রমণ ফটো গ্যালারি"
+        description="মেঘের উপত্যকা, পাহাড়, সমুদ্র সৈকত ও নদীমাতৃক রূপসী বাংলার মুগ্ধকর দৃশ্য।"
       />
 
       {/* Category Filter Pills */}
@@ -92,7 +102,7 @@ function GalleryPreview() {
                   : 'bg-muted/70 text-muted-foreground hover:bg-muted hover:text-foreground'
               }`}
             >
-              <span>{cat}</span>
+              <span>{CATEGORY_NAMES_BN[cat]}</span>
               <span
                 className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                   isActive
@@ -157,7 +167,7 @@ function GalleryPreview() {
                   variant="secondary"
                   className="bg-background/80 text-[10px] backdrop-blur-xs"
                 >
-                  {item.category}
+                  {CATEGORY_NAMES_BN[item.category]}
                 </Badge>
               </div>
 
@@ -189,7 +199,7 @@ function GalleryPreview() {
             onClick={() => setVisibleCount((prev) => Math.min(prev + 12, filteredImages.length))}
             className="rounded-full px-6 py-2 text-sm font-medium shadow-xs hover:border-primary hover:text-primary transition-all duration-200"
           >
-            Show More Photos ({filteredImages.length - visibleCount} remaining)
+            আরও ছবি দেখুন ({filteredImages.length - visibleCount}টি বাকি)
           </Button>
         </div>
       )}
@@ -244,7 +254,7 @@ function GalleryPreview() {
                 <div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className="border-white/30 text-[10px] text-white">
-                      {activeImage.category}
+                      {CATEGORY_NAMES_BN[activeImage.category]}
                     </Badge>
                     <span className="flex items-center gap-1 text-xs text-neutral-300">
                       <MapPin className="size-3" />

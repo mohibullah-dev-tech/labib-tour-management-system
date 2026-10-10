@@ -9,8 +9,8 @@ function TourProcess() {
     <Section aria-labelledby="tour-process-heading">
       <SectionTitle
         id="tour-process-heading"
-        eyebrow="How It Works"
-        title="Your Journey, Five Simple Steps"
+        eyebrow="ট্যুর প্রক্রিয়া"
+        title="মাত্র ৫টি সহজ ধাপে আপনার ভ্রমণ"
         align="center"
         className="mx-auto"
       />
@@ -39,7 +39,7 @@ function TourProcess() {
               <Icon className="size-6" aria-hidden="true" />
             </div>
             <span className="text-primary text-xs font-semibold tracking-wide uppercase">
-              Step {step}
+              ধাপ {step}
             </span>
             <h3 className="font-display text-foreground text-base font-semibold">{title}</h3>
             <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>

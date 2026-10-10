@@ -31,8 +31,7 @@ function Footer() {
             LTMS
           </Link>
           <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
-            Labib Tour Management System — curated tours and unforgettable travel experiences,
-            planned end to end.
+            লাবিব ট্যুর ম্যানেজমেন্ট সিস্টেম — বাংলাদেশের সেরা গ্রুপ ট্যুর ও স্মরণীয় ভ্রমণ অভিজ্ঞতা।
           </p>
           <ul className="mt-1 flex items-center gap-2">
             {SOCIAL_LINKS.map(({ label, href, icon: SocialIcon }) => (
@@ -53,7 +52,7 @@ function Footer() {
 
         {/* Quick links */}
         <div className="flex flex-col gap-3">
-          <Caption>Quick Links</Caption>
+          <Caption>প্রয়োজনীয় লিংক</Caption>
           <ul className="flex flex-col gap-2">
             {NAV_ITEMS.map((item) => (
               <li key={item.path}>
@@ -70,7 +69,7 @@ function Footer() {
 
         {/* Popular destinations */}
         <div className="flex flex-col gap-3">
-          <Caption>Popular Destinations</Caption>
+          <Caption>জনপ্রিয় গন্তব্যসমূহ</Caption>
           <ul className="flex flex-col gap-2">
             {POPULAR_DESTINATIONS.map((dest) => (
               <li key={dest.label}>
@@ -87,7 +86,7 @@ function Footer() {
 
         {/* Emergency contact */}
         <div className="flex flex-col gap-3">
-          <Caption>Emergency Contact</Caption>
+          <Caption>জরুরি যোগাযোগ</Caption>
           <a
             href={`tel:${EMERGENCY_CONTACT.phone.replace(/\s/g, '')}`}
             className="text-muted-foreground hover:text-primary flex items-center gap-2 text-sm transition-colors"
@@ -108,7 +107,7 @@ function Footer() {
       <Separator />
 
       <Container className="text-muted-foreground flex flex-col items-center justify-between gap-3 py-6 text-sm sm:flex-row">
-        <p>© {year} Labib Tour Management System. All rights reserved.</p>
+        <p>© {year} লাবিব ট্যুর ম্যানেজমেন্ট সিস্টেম। সর্বস্বত্ব সংরক্ষিত।</p>
         <ul className="flex items-center gap-4">
           {LEGAL_ITEMS.map((item) => (
             <li key={item.path}>

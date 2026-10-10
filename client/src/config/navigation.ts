@@ -1,25 +1,19 @@
-/**
- * Single source of truth for primary navigation. Navbar (desktop + mobile
- * drawer) AND Footer's "Quick Links" both read from this same list, so
- * adding/renaming/reordering a nav item never requires touching more than
- * one file.
- */
 export interface NavItem {
   label: string;
   path: string;
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: 'Home', path: '/' },
-  { label: 'Tours', path: '/tours' },
-  { label: 'Upcoming Events', path: '/#upcoming-events' },
-  { label: 'Gallery', path: '/#gallery' },
-  { label: 'Reviews', path: '/#reviews' },
-  { label: 'About', path: '/#about' },
-  { label: 'Contact', path: '/#contact' },
+  { label: 'হোম', path: '/' },
+  { label: 'ট্যুরসমূহ', path: '/tours' },
+  { label: 'আসন্ন ইভেন্ট', path: '/#upcoming-events' },
+  { label: 'গ্যালারি', path: '/#gallery' },
+  { label: 'রিভিউ', path: '/#reviews' },
+  { label: 'আমাদের সম্পর্কে', path: '/#about' },
+  { label: 'যোগাযোগ', path: '/#contact' },
 ];
 
 export const LEGAL_ITEMS: NavItem[] = [
-  { label: 'Privacy Policy', path: '/privacy-policy' },
-  { label: 'Terms & Conditions', path: '/terms' },
+  { label: 'গোপনীয়তা নীতি', path: '/privacy-policy' },
+  { label: 'শর্তাবলী', path: '/terms' },
 ];
