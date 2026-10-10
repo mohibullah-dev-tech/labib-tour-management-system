@@ -60,3 +60,4 @@ External messaging webhooks (particularly Meta Cloud API) frequently re-deliver 
 3. **Safe Knowledge Extraction**:
    - The AI Travel Assistant queries only public, sanitized fields (`title`, `destination`, `durationDays`, `pricing`, `inclusions`).
    - Customer PII, admin private notes, booking payment tokens, and password hashes are excluded at the database projection level.
+

@@ -15,6 +15,7 @@ import { Sheet, SheetContent, SheetTitle, SheetHeader } from '@/components/ui/sh
 import { AdminSidebar } from '@/features/admin/components/layout/AdminSidebar';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { NotificationCenter } from '@/features/notifications/components/NotificationCenter';
+import { AdminTopbarPresencePill } from '@/features/presence';
 
 function AdminTopbar() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -42,6 +43,8 @@ function AdminTopbar() {
       </div>
 
       <div className="flex items-center gap-2">
+        <AdminTopbarPresencePill />
+
         <ThemeToggle />
 
         <NotificationCenter />

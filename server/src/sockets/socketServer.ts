@@ -17,6 +17,7 @@ import {
   registerNotificationHandlers,
   registerNotificationBroadcaster,
 } from './handlers/notificationHandlers.js';
+import { registerPresenceHandlers } from './handlers/presenceHandlers.js';
 
 let ioInstance: SocketIOServer<
   ClientToServerEvents,
@@ -76,6 +77,7 @@ export function initSocketServer(
     registerLocationHandlers(io, socket);
     registerMessageHandlers(io, socket);
     registerNotificationHandlers(io, socket);
+    registerPresenceHandlers(io, socket);
 
     socket.on('disconnect', (reason) => {
       logger.info(`Socket disconnected: ${socket.id} (User: ${user.id}, Reason: ${reason})`);

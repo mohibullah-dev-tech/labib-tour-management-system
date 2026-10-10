@@ -29,4 +29,7 @@ export const ROOMS = {
 
   /** Seat reservation real-time update room for an event */
   seat: (eventId: string) => `seat:${eventId}`,
+
+  /** Operations & Admin room for real-time presence monitoring */
+  presenceAdmins: () => 'presence:admins',
 } as const;

@@ -92,3 +92,4 @@ export interface BaseChannelAdapter {
 }
 ```
 This modular structure allows adding new channels (e.g. Viber, SMS Gateway, Email) without modifying the core messaging, conversation, or AI pipelines.
+

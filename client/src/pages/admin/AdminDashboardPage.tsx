@@ -17,6 +17,7 @@ import {
 } from '@/features/admin/data/dashboard';
 import { formatBDT } from '@/lib/format';
 import { useAdminLiveLocation, LocationStatusBadge } from '@/features/live-location';
+import { AdminLivePresenceCard } from '@/features/presence';
 
 /**
  * Admin Dashboard Overview — the module this phase fully implements.
@@ -53,6 +54,9 @@ export function AdminDashboardPage() {
           ))}
         </div>
       )}
+
+      {/* Real-time Online Users & Live Operations */}
+      <AdminLivePresenceCard />
 
       {/* Live Tours Real-Time Tracking Section */}
       <div className="flex flex-col gap-3">

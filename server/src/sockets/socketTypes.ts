@@ -3,7 +3,7 @@ import type { UserRole } from '@/constants/index.js';
 export interface SocketUser {
   id: string;
   name: string;
-  email: string;
+  email?: string;
   role: UserRole | 'customer' | 'visitor';
   isVisitor?: boolean;
   guestConversationId?: string;
@@ -157,6 +157,32 @@ export interface EventAnnouncementPayload {
 }
 
 // ==========================================
+// Presence Payloads
+// ==========================================
+export interface ActiveUserPresence {
+  socketId: string;
+  userId: string;
+  name: string;
+  email?: string;
+  role: string;
+  isVisitor: boolean;
+  currentPath?: string;
+  pageTitle?: string;
+  device?: string;
+  connectedAt: string;
+  lastActiveAt: string;
+  status: 'active' | 'idle';
+}
+
+export interface PresenceSummary {
+  totalOnline: number;
+  guestsCount: number;
+  hostsCount: number;
+  adminsCount: number;
+  visitorsCount: number;
+}
+
+// ==========================================
 // Client-to-Server Events
 // ==========================================
 export interface ClientToServerEvents {
@@ -184,6 +210,17 @@ export interface ClientToServerEvents {
   'message:seen': (payload: { conversationId: string; messageId: string }) => void;
   'message:typing': (payload: { conversationId: string }) => void;
   'message:stop-typing': (payload: { conversationId: string }) => void;
+
+  // Real-Time Presence & Activity Tracking
+  'presence:activity': (
+    payload: {
+      currentPath?: string;
+      pageTitle?: string;
+      status?: 'active' | 'idle';
+      device?: string;
+    },
+    callback?: SocketCallback,
+  ) => void;
 }
 
 // ==========================================
@@ -217,6 +254,10 @@ export interface ServerToClientEvents {
   'conversation:new': (payload: Record<string, unknown>) => void;
   'conversation:updated': (payload: Record<string, unknown>) => void;
   'conversation:handover': (payload: Record<string, unknown>) => void;
+
+  // Real-time Presence Events
+  'presence:summary': (payload: PresenceSummary) => void;
+  'presence:roster': (payload: { items: ActiveUserPresence[]; summary: PresenceSummary }) => void;
 
   // Events & Announcements
   'event:announcement': (payload: EventAnnouncementPayload) => void;

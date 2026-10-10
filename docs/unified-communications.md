@@ -91,3 +91,4 @@ A modern, responsive floating widget on the public website:
 - **Quick Inquiry Prompts**: Suggested chips for popular questions (Upcoming tours, Booking process, Helpline).
 - **Human Handover Button**: Allows guests to request a human operator at any moment.
 - **Direct Channel Shortcuts**: Quick-action links to WhatsApp Click-to-Chat, Facebook Messenger, Instagram, and Telegram.
+

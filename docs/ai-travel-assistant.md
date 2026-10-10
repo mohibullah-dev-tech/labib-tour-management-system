@@ -46,3 +46,4 @@ The AI Assistant actively monitors conversation intent to determine when a human
 3. **Admin Alerting**: The server emits a `conversation:handover` event via Socket.IO directly to the `inbox:admin` room.
 4. **AI Silence**: Once transferred, automated AI replies are silenced for the thread until staff explicitly re-enables AI assistance.
 5. **Staff Takeover**: Support staff receive the full conversation transcript and customer context drawer inside the Admin Unified Inbox (`/admin/messages`).
+

@@ -26,6 +26,7 @@ import { NavLinks } from '@/components/layout/Navbar/NavLinks';
 import { MobileNav } from '@/components/layout/Navbar/MobileNav';
 import { Container } from '@/components/common/Container';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { PublicLivePresenceBadge } from '@/features/presence';
 import { cn } from '@/lib/utils';
 
 export interface NavbarProps {
@@ -80,6 +81,8 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
 
           {/* Desktop actions */}
           <div className="laptop:flex hidden items-center gap-2">
+            <PublicLivePresenceBadge className="mr-1 hidden xl:inline-flex" />
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

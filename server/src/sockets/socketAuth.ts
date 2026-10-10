@@ -111,11 +111,15 @@ export async function socketAuthMiddleware(
     await socket.join(personalRoom);
     socket.data.joinedRooms.add(personalRoom);
 
-    // If staff/admin, join Unified Inbox room
+    // If staff/admin, join Unified Inbox and Presence Admin room
     if (user.role === 'admin' || user.role === 'super_admin') {
       const inboxRoom = ROOMS.inbox();
       await socket.join(inboxRoom);
       socket.data.joinedRooms.add(inboxRoom);
+
+      const presenceRoom = ROOMS.presenceAdmins();
+      await socket.join(presenceRoom);
+      socket.data.joinedRooms.add(presenceRoom);
     }
 
     next();
