@@ -33,7 +33,7 @@ const NavLinks = memo(function NavLinks({
   };
 
   return (
-    <ul className={cn('flex items-center gap-1', className)}>
+    <ul className={cn('flex items-center gap-0.5 xl:gap-1 shrink-0', className)}>
       {NAV_ITEMS.map((item) => {
         const isHashLink = item.path.includes('#');
         const itemHash = isHashLink ? item.path.slice(item.path.indexOf('#')) : '';
@@ -44,13 +44,13 @@ const NavLinks = memo(function NavLinks({
             : pathname.startsWith(item.path);
 
         return (
-          <li key={item.path}>
+          <li key={item.path} className="shrink-0">
             <Link
               to={item.path}
               onClick={(e) => handleLinkClick(e, item.path)}
               aria-current={isActive ? 'page' : undefined}
               className={cn(
-                'focus-visible:ring-primary rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-hidden',
+                'focus-visible:ring-primary whitespace-nowrap rounded-md px-2.5 py-1.5 xl:px-3 xl:py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-hidden',
                 onTransparentSurface
                   ? 'text-white/90 hover:bg-white/10 hover:text-white'
                   : 'text-foreground/80 hover:bg-muted hover:text-foreground',

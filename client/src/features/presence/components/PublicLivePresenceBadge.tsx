@@ -1,15 +1,19 @@
 import { Sparkles } from 'lucide-react';
 import { usePresenceTracker } from '../hooks/usePresenceTracker';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface PublicLivePresenceBadgeProps {
   className?: string;
   variant?: 'pill' | 'card';
+  /** True when rendered over dark hero image on transparent navbar */
+  onTransparentSurface?: boolean;
 }
 
 export function PublicLivePresenceBadge({
   className = '',
   variant = 'pill',
+  onTransparentSurface = false,
 }: PublicLivePresenceBadgeProps) {
   const { summary } = usePresenceTracker();
   const onlineCount = Math.max(1, summary.totalOnline);
@@ -42,19 +46,37 @@ export function PublicLivePresenceBadge({
     );
   }
 
+  const pillStyles = onTransparentSurface
+    ? 'border-emerald-400/50 bg-emerald-950/75 text-emerald-100 hover:bg-emerald-900/80 shadow-sm backdrop-blur-md'
+    : 'border-emerald-400/60 bg-emerald-50 text-emerald-900 hover:bg-emerald-100/90 dark:border-emerald-500/40 dark:bg-emerald-950/60 dark:text-emerald-100 dark:hover:bg-emerald-900/70 shadow-xs';
+
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
         <TooltipTrigger asChild>
           <div
-            className={`inline-flex cursor-pointer items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700 transition hover:bg-emerald-500/20 dark:text-emerald-300 ${className}`}
+            className={cn(
+              'inline-flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition select-none shrink-0 whitespace-nowrap',
+              pillStyles,
+              className,
+            )}
           >
-            <span className="relative flex size-2">
+            <span className="relative flex size-2.5 shrink-0">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              <span className="relative inline-flex size-2.5 rounded-full bg-emerald-400" />
             </span>
-            <span>
-              <strong className="font-semibold">{onlineCount}</strong> জন এখন অনলাইনে আছেন
+            <span className="tracking-wide">
+              <strong
+                className={cn(
+                  'font-bold',
+                  onTransparentSurface
+                    ? 'text-emerald-300'
+                    : 'text-emerald-950 dark:text-emerald-300',
+                )}
+              >
+                {onlineCount}
+              </strong>{' '}
+              জন এখন অনলাইনে আছেন
             </span>
           </div>
         </TooltipTrigger>

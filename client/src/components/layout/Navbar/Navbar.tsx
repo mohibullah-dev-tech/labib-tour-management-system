@@ -80,8 +80,11 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
           <NavLinks onTransparentSurface={isTransparent} className="laptop:flex hidden" />
 
           {/* Desktop actions */}
-          <div className="laptop:flex hidden items-center gap-2">
-            <PublicLivePresenceBadge className="mr-1 hidden xl:inline-flex" />
+          <div className="laptop:flex hidden items-center gap-2 shrink-0">
+            <PublicLivePresenceBadge
+              onTransparentSurface={isTransparent}
+              className="mr-1 hidden xl:inline-flex"
+            />
 
             <Tooltip>
               <TooltipTrigger asChild>

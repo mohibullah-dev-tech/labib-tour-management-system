@@ -7,6 +7,7 @@ import { useTheme } from '@/lib/theme/useTheme';
 import { ROLE_HOME_PATH } from '@/features/auth/constants/permissions';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { PublicLivePresenceBadge } from '@/features/presence';
 import { cn } from '@/lib/utils';
 
 export interface MobileNavProps {
@@ -71,6 +72,10 @@ const MobileNav = memo(function MobileNav({ onNavigate }: MobileNavProps) {
           );
         })}
       </ul>
+
+      <div className="mt-3 px-1">
+        <PublicLivePresenceBadge className="w-full justify-center py-2" />
+      </div>
 
       <Separator className="my-4" />
 
