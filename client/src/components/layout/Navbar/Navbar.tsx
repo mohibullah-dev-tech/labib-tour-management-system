@@ -96,7 +96,7 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
                   <Search className="size-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>ট্যুর খুঁজুন</TooltipContent>
+              <TooltipContent>Search tours</TooltipContent>
             </Tooltip>
 
             {/* Dark / Light Mode Switcher */}
@@ -131,13 +131,13 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
                   <DropdownMenuItem asChild>
                     <Link to={ROLE_HOME_PATH[role]}>
                       <User className="mr-2 size-4" />
-                      ড্যাশবোর্ড
+                      Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onSelect={() => logout()}>
                     <LogOut className="mr-2 size-4" />
-                    লগআউট
+                    Log Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -153,7 +153,7 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
                 >
                   <Link to="/login">
                     <LogIn className="size-4" />
-                    লগইন
+                    Login
                   </Link>
                 </Button>
                 <Button
@@ -166,13 +166,13 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
                 >
                   <Link to="/register">
                     <UserPlus className="size-4" />
-                    রেজিস্টার
+                    Register
                   </Link>
                 </Button>
               </>
             )}
             <Button asChild>
-              <Link to="/booking">ট্যুর বুক করুন</Link>
+              <Link to="/booking">Book Tour</Link>
             </Button>
           </div>
 
@@ -192,7 +192,7 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
               </DrawerTrigger>
               <DrawerContent>
                 <DrawerHeader>
-                  <DrawerTitle>মেন্যু</DrawerTitle>
+                  <DrawerTitle>Menu</DrawerTitle>
                 </DrawerHeader>
                 <MobileNav onNavigate={() => setMobileOpen(false)} />
               </DrawerContent>

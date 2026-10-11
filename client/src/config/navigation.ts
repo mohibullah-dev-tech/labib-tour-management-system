@@ -4,16 +4,16 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: 'হোম', path: '/' },
-  { label: 'ট্যুরসমূহ', path: '/tours' },
-  { label: 'আসন্ন ইভেন্ট', path: '/#upcoming-events' },
-  { label: 'গ্যালারি', path: '/#gallery' },
-  { label: 'রিভিউ', path: '/#reviews' },
-  { label: 'আমাদের সম্পর্কে', path: '/#about' },
-  { label: 'যোগাযোগ', path: '/#contact' },
+  { label: 'Home', path: '/' },
+  { label: 'Tours', path: '/tours' },
+  { label: 'Upcoming Events', path: '/#upcoming-events' },
+  { label: 'Gallery', path: '/#gallery' },
+  { label: 'Reviews', path: '/#reviews' },
+  { label: 'About', path: '/#about' },
+  { label: 'Contact', path: '/#contact' },
 ];
 
 export const LEGAL_ITEMS: NavItem[] = [
-  { label: 'গোপনীয়তা নীতি', path: '/privacy-policy' },
-  { label: 'শর্তাবলী', path: '/terms' },
+  { label: 'Privacy Policy', path: '/privacy-policy' },
+  { label: 'Terms & Conditions', path: '/terms' },
 ];
