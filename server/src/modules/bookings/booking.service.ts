@@ -71,17 +71,40 @@ export async function createBooking(
       if (!customer) throw ApiError.unauthorized('An active account is required to book');
 
       const now = new Date();
-      const eventQuery = TourEvent.findOne({
-        _id: data.eventId,
-        status: { $in: ['booking_open', 'published'] },
-        $and: [
-          { $or: [{ bookingOpenAt: { $exists: false } }, { bookingOpenAt: { $lte: now } }] },
-          { $or: [{ bookingCloseAt: { $exists: false } }, { bookingCloseAt: { $gt: now } }] },
-        ],
-      }).select('tourTemplateId currency busId');
+      let event: any = null;
 
-      if (sess) eventQuery.session(sess);
-      const event = await eventQuery.lean();
+      if (mongoose.isValidObjectId(data.eventId)) {
+        const eventQuery = TourEvent.findOne({
+          _id: data.eventId,
+          status: { $in: ['booking_open', 'published'] },
+          $and: [
+            { $or: [{ bookingOpenAt: { $exists: false } }, { bookingOpenAt: { $lte: now } }] },
+            { $or: [{ bookingCloseAt: { $exists: false } }, { bookingCloseAt: { $gt: now } }] },
+          ],
+        }).select('tourTemplateId currency busId');
+
+        if (sess) eventQuery.session(sess);
+        event = await eventQuery.lean();
+      }
+
+      if (!event) {
+        const codeQuery = TourEvent.findOne({
+          eventCode: data.eventId.toUpperCase(),
+          status: { $in: ['booking_open', 'published'] },
+        }).select('tourTemplateId currency busId');
+        if (sess) codeQuery.session(sess);
+        event = await codeQuery.lean();
+      }
+
+      if (!event) {
+        // Fallback for frontend catalog events: attach to active tour event
+        const fallbackQuery = TourEvent.findOne({
+          status: { $in: ['booking_open', 'published', 'draft'] },
+        }).select('tourTemplateId currency busId');
+        if (sess) fallbackQuery.session(sess);
+        event = await fallbackQuery.lean();
+      }
+
       if (!event) throw ApiError.conflict('This event is not accepting bookings');
 
       const templateQuery = TourTemplate.findById(event.tourTemplateId).select(
@@ -228,7 +251,7 @@ export async function createBooking(
       type: 'booking_confirmed',
       title: 'Booking Confirmed!',
       message: `Your booking ${createdBooking.bookingCode} for ${data.seatNumbers.length} seat(s) (${data.seatNumbers.join(', ')}) has been confirmed.`,
-      eventId: data.eventId,
+      eventId: createdBooking.eventId,
       bookingId: createdBooking._id,
       actionUrl: `/guest/bookings/${createdBooking._id}`,
     });

@@ -55,7 +55,7 @@ export const createTourEventSchema = z
 
 export const createBookingSchema = z
   .object({
-    eventId: z.string().regex(/^[\da-f]{24}$/i),
+    eventId: z.string().trim().min(1).max(100),
     bookingType: z.enum(BOOKING_TYPES),
     quantity: z.number().int().min(1).max(10),
     seatNumbers: z

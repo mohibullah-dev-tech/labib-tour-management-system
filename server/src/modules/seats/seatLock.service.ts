@@ -497,7 +497,10 @@ export class SeatLockService {
       }
 
       if (!lock) return false;
-      const isOwner = lock.userId === userId || (sessionId && lock.sessionId === sessionId);
+      const isOwner =
+        (sessionId && lock.sessionId === sessionId) ||
+        (userId && lock.userId === userId) ||
+        (!lock.userId && !userId);
       if (!isOwner) return false;
       if (Date.now() >= lock.expiresAt) return false;
     }

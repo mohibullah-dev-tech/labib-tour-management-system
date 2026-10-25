@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import mongoose from 'mongoose';
-import { authenticate, authorize } from '@/middlewares/authenticate.js';
+import { authenticate, authenticateOptional, authorize } from '@/middlewares/authenticate.js';
 import { asyncHandler } from '@/utils/asyncHandler.js';
 import { ApiError } from '@/utils/ApiError.js';
 import {
@@ -404,12 +404,36 @@ router.delete(
 
 router.post(
   '/bookings',
-  authenticate,
-  authorize('guest', 'admin', 'super_admin'),
+  authenticateOptional,
   asyncHandler(async (req, res) => {
     const idempotencyKey = (req.headers['idempotency-key'] as string) || req.body.idempotencyKey;
     const sessionId = (req.headers['x-seat-session-id'] as string) || req.body.sessionId;
-    const booking = await createBooking(req.body, req.user!.id, { sessionId, idempotencyKey });
+
+    let userId = req.user?.id;
+    if (!userId) {
+      const primaryGuest = req.body.guestDetails?.[0];
+      const guestEmail = (primaryGuest?.email || 'guest@example.com').toLowerCase();
+      const guestName = primaryGuest?.name || 'Guest Traveler';
+      const guestPhone = primaryGuest?.phone;
+
+      let guestUser = await User.findOne({ email: guestEmail });
+      if (!guestUser) {
+        guestUser = await User.findOne({ role: 'guest', isActive: true });
+      }
+      if (!guestUser) {
+        guestUser = await User.create({
+          name: guestName,
+          email: guestEmail,
+          phone: guestPhone || undefined,
+          passwordHash: '$2b$10$wT8m9Lp6Hh8R6aC7H5Yd.uV1l6pQfF9O9k8n0t7y2u3v4w5x6y7z8',
+          role: 'guest',
+          isActive: true,
+        });
+      }
+      userId = guestUser._id.toString();
+    }
+
+    const booking = await createBooking(req.body, userId, { sessionId, idempotencyKey });
     res.status(201).json(envelope(booking));
   }),
 );

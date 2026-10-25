@@ -57,16 +57,15 @@ function BookingSummaryStep() {
         bookingType: currentPackage.tier,
         quantity: draft.selectedSeatIds.length,
         seatNumbers: draft.selectedSeatIds,
-        guestDetails: [
-          {
-            name: draft.guestForm.fullName,
-            phone: draft.guestForm.phone,
-            email: draft.guestForm.email || undefined,
-            address: draft.guestForm.address || undefined,
-            emergencyContact: draft.guestForm.emergencyContactPhone || undefined,
-            emergencyContactName: draft.guestForm.emergencyContactName || undefined,
-          },
-        ],
+        guestDetails: draft.selectedSeatIds.map((_seatId, idx) => ({
+          name:
+            idx === 0 ? draft.guestForm.fullName : `${draft.guestForm.fullName} (Guest ${idx + 1})`,
+          phone: draft.guestForm.phone,
+          email: draft.guestForm.email || undefined,
+          address: draft.guestForm.address || undefined,
+          emergencyContact: draft.guestForm.emergencyContactPhone || undefined,
+          emergencyContactName: draft.guestForm.emergencyContactName || undefined,
+        })),
         pickupPoint: draft.guestForm.pickupLocation || undefined,
         specialNotes: draft.guestForm.specialNotes || undefined,
       };
@@ -84,7 +83,20 @@ function BookingSummaryStep() {
       // If error indicates expired lock or conflict, guide user back to seat step
       const msg = extractApiErrorMessage(err, 'Booking confirmation failed');
       toast.error(msg);
-      if (msg.toLowerCase().includes('expired') || msg.toLowerCase().includes('held')) {
+
+      const isAuthError =
+        msg.toLowerCase().includes('token') ||
+        msg.toLowerCase().includes('auth') ||
+        msg.toLowerCase().includes('account');
+
+      const isSeatExpired =
+        !isAuthError &&
+        (msg.toLowerCase().includes('expired') ||
+          msg.toLowerCase().includes('held') ||
+          msg.toLowerCase().includes('seat hold') ||
+          msg.toLowerCase().includes('seat lock'));
+
+      if (isSeatExpired) {
         markHoldExpired();
         goToStep('seat');
       }
