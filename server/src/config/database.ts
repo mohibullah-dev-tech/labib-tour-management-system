@@ -1,6 +1,14 @@
+import dns from 'node:dns';
 import mongoose from 'mongoose';
 import { env } from '@/config/env.js';
 import { logger } from '@/utils/logger.js';
+
+// Resolve DNS SRV query issues on local ISP networks
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch {
+  // ignore in environments where setting DNS servers is restricted
+}
 
 mongoose.set('strictQuery', true);
 
