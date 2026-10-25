@@ -248,7 +248,7 @@ export async function createBooking(
   try {
     const notif = await Notification.create({
       userId,
-      type: 'booking_confirmed',
+      type: 'booking',
       title: 'Booking Confirmed!',
       message: `Your booking ${createdBooking.bookingCode} for ${data.seatNumbers.length} seat(s) (${data.seatNumbers.join(', ')}) has been confirmed.`,
       eventId: createdBooking.eventId,
