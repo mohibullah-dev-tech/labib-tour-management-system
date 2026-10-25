@@ -46,6 +46,11 @@ const envSchema = z.object({
 
   // Google OAuth
   GOOGLE_CLIENT_ID: z.string().trim().optional(),
+
+  // SSLCommerz Payment Gateway
+  SSLCOMMERZ_STORE_ID: z.string().trim().default('testbox'),
+  SSLCOMMERZ_STORE_PASS: z.string().trim().default('qwerty'),
+  SSLCOMMERZ_IS_LIVE: z.coerce.boolean().default(false),
 });
 
 const parsed = envSchema.safeParse(process.env);

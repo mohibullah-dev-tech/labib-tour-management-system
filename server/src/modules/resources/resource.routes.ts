@@ -922,6 +922,271 @@ router.post(
   }),
 );
 
+router.get(
+  '/admin/bookings',
+  authenticate,
+  admin,
+  asyncHandler(async (_req, res) => {
+    const bookings = await Booking.find()
+      .populate('eventId tourTemplateId customerId')
+      .sort({ createdAt: -1 })
+      .lean();
+    res.json(envelope(bookings));
+  }),
+);
+
+router.post(
+  '/admin/bookings/offline',
+  authenticate,
+  admin,
+  asyncHandler(async (req, res) => {
+    const input = z
+      .object({
+        eventId: z.string().trim().min(1),
+        bookingType: z.enum(['single', 'couple', 'premium', 'vip']).default('single'),
+        seatNumbers: z.array(z.string().trim().min(1)).min(1),
+        guestName: z.string().trim().min(2).max(120),
+        guestPhone: z.string().trim().min(7).max(24),
+        guestEmail: z.string().email().optional(),
+        pickupPoint: z.string().trim().max(200).optional(),
+        specialNotes: z.string().trim().max(1000).optional(),
+        initialPayment: z
+          .object({
+            amount: z.number().nonnegative(),
+            method: z.enum(['cash', 'bank', 'mobile_banking', 'other']).default('cash'),
+            transactionId: z.string().trim().max(160).optional(),
+            note: z.string().trim().max(1000).optional(),
+          })
+          .optional(),
+      })
+      .parse(req.body);
+
+    let event: any = null;
+    if (mongoose.isValidObjectId(input.eventId)) {
+      event = await TourEvent.findById(input.eventId).lean();
+    }
+    if (!event) {
+      event = await TourEvent.findOne({ eventCode: input.eventId.toUpperCase() }).lean();
+    }
+    if (!event) {
+      event = await TourEvent.findOne().sort({ createdAt: -1 }).lean();
+    }
+    if (!event) throw ApiError.notFound('Tour event not found');
+
+    const template = await TourTemplate.findById(event.tourTemplateId).lean();
+    if (!template) throw ApiError.notFound('Tour template not found');
+
+    const alreadyBooked = await EventSeat.find({
+      eventId: event._id,
+      seatNumber: { $in: input.seatNumbers },
+      status: { $in: ['booked', 'reserved', 'blocked'] },
+    }).lean();
+
+    if (alreadyBooked.length > 0) {
+      const bookedSeats = alreadyBooked.map((s) => s.seatNumber).join(', ');
+      throw ApiError.conflict(`Seat(s) ${bookedSeats} are already booked.`);
+    }
+
+    const guestEmail = (input.guestEmail || `offline_${Date.now()}@labibtours.com`).toLowerCase();
+    let user = await User.findOne({
+      $or: [{ email: guestEmail }, { phone: input.guestPhone }],
+    });
+    if (!user) {
+      user = await User.create({
+        name: input.guestName,
+        email: guestEmail,
+        phone: input.guestPhone,
+        passwordHash: '$2b$10$wT8m9Lp6Hh8R6aC7H5Yd.uV1l6pQfF9O9k8n0t7y2u3v4w5x6y7z8',
+        role: 'guest',
+        isActive: true,
+      });
+    }
+
+    const tierPrice =
+      template.pricing?.packagePrices instanceof Map
+        ? template.pricing.packagePrices.get(input.bookingType)
+        : (template.pricing?.packagePrices as Record<string, number> | undefined)?.[
+            input.bookingType
+          ];
+    const unitPrice =
+      typeof tierPrice === 'number' && tierPrice > 0
+        ? tierPrice
+        : (template.pricing?.basePrice ?? 5000);
+    const quantity = input.seatNumbers.length;
+    const subtotal = unitPrice * quantity;
+    const totalAmount = subtotal;
+    const minimumAdvancePercent = template.minimumAdvancePercent || 30;
+    const minimumAdvance = Math.ceil((totalAmount * minimumAdvancePercent) / 100);
+
+    const paidAmount = input.initialPayment?.amount ?? 0;
+    const dueAmount = Math.max(0, totalAmount - paidAmount);
+    const paymentStatus = dueAmount === 0 ? 'paid' : paidAmount > 0 ? 'partial' : 'unpaid';
+    const bookingStatus =
+      paidAmount >= minimumAdvance || paymentStatus === 'paid' ? 'confirmed' : 'pending';
+
+    const bookingCode = `LT-OFFLINE-${Date.now().toString(36).toUpperCase()}-${new mongoose.Types.ObjectId().toString().slice(-4).toUpperCase()}`;
+
+    const guestDetails = input.seatNumbers.map((_seat, idx) => ({
+      name: idx === 0 ? input.guestName : `${input.guestName} (Guest ${idx + 1})`,
+      phone: input.guestPhone,
+      email: input.guestEmail || undefined,
+    }));
+
+    const [booking] = await Booking.create([
+      {
+        bookingCode,
+        customerId: user._id,
+        eventId: event._id,
+        tourTemplateId: event.tourTemplateId,
+        bookingType: input.bookingType,
+        personCount: quantity,
+        seatNumbers: input.seatNumbers,
+        guestDetails,
+        packagePrice: unitPrice,
+        subtotal,
+        discount: 0,
+        totalAmount,
+        minimumAdvancePercent,
+        minimumAdvance,
+        receivedAmount: paidAmount,
+        dueAmount,
+        paymentStatus,
+        bookingStatus,
+        pickupPoint: input.pickupPoint,
+        specialNotes: input.specialNotes,
+        currency: event.currency || 'BDT',
+      },
+    ]);
+
+    for (const seatNum of input.seatNumbers) {
+      await EventSeat.findOneAndUpdate(
+        { eventId: event._id, seatNumber: seatNum },
+        { $set: { status: 'booked', bookingId: booking._id, busId: event.busId } },
+        { upsert: true, new: true },
+      );
+    }
+
+    let createdPayment: any = null;
+    if (paidAmount > 0 && input.initialPayment) {
+      const [payment] = await Payment.create([
+        {
+          bookingId: booking._id,
+          amount: paidAmount,
+          method: input.initialPayment.method,
+          transactionId: input.initialPayment.transactionId || `OFFLINE-${Date.now()}`,
+          receivedBy: req.user!.id,
+          note: input.initialPayment.note || 'Offline payment recorded at booking creation',
+          status: 'completed',
+        },
+      ]);
+      createdPayment = payment;
+    }
+
+    res.status(201).json(envelope({ booking, payment: createdPayment }));
+  }),
+);
+
+router.patch(
+  '/admin/bookings/:id',
+  authenticate,
+  admin,
+  asyncHandler(async (req, res) => {
+    const input = z
+      .object({
+        guestName: z.string().trim().min(2).max(120).optional(),
+        guestPhone: z.string().trim().min(7).max(24).optional(),
+        guestEmail: z.string().email().optional(),
+        seatNumbers: z.array(z.string().trim()).min(1).optional(),
+        bookingStatus: z.enum(['pending', 'confirmed', 'completed', 'cancelled']).optional(),
+        pickupPoint: z.string().trim().max(200).optional(),
+        specialNotes: z.string().trim().max(1000).optional(),
+      })
+      .parse(req.body);
+
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) throw ApiError.notFound('Booking not found');
+
+    if (
+      input.seatNumbers &&
+      JSON.stringify(input.seatNumbers) !== JSON.stringify(booking.seatNumbers)
+    ) {
+      const conflicting = await EventSeat.find({
+        eventId: booking.eventId,
+        seatNumber: { $in: input.seatNumbers },
+        status: { $in: ['booked', 'reserved', 'blocked'] },
+        bookingId: { $ne: booking._id },
+      }).lean();
+
+      if (conflicting.length > 0) {
+        const seats = conflicting.map((s) => s.seatNumber).join(', ');
+        throw ApiError.conflict(`Seat(s) ${seats} are already taken.`);
+      }
+
+      const oldSeats = booking.seatNumbers.filter((s) => !input.seatNumbers!.includes(s));
+      if (oldSeats.length > 0) {
+        await EventSeat.updateMany(
+          { eventId: booking.eventId, seatNumber: { $in: oldSeats } },
+          { $set: { status: 'available' }, $unset: { bookingId: 1 } },
+        );
+      }
+
+      for (const seatNum of input.seatNumbers) {
+        await EventSeat.findOneAndUpdate(
+          { eventId: booking.eventId, seatNumber: seatNum },
+          { $set: { status: 'booked', bookingId: booking._id } },
+          { upsert: true, new: true },
+        );
+      }
+
+      booking.seatNumbers = input.seatNumbers;
+      booking.personCount = input.seatNumbers.length;
+      booking.subtotal = booking.packagePrice * booking.personCount;
+      booking.totalAmount = Math.max(0, booking.subtotal - booking.discount);
+      booking.dueAmount = Math.max(0, booking.totalAmount - booking.receivedAmount);
+      booking.paymentStatus =
+        booking.dueAmount === 0 ? 'paid' : booking.receivedAmount > 0 ? 'partial' : 'unpaid';
+
+      const primaryGuest = booking.guestDetails[0] || { name: 'Traveler', phone: 'N/A' };
+      booking.set(
+        'guestDetails',
+        input.seatNumbers.map((_seat, idx) => ({
+          name:
+            idx === 0
+              ? input.guestName || primaryGuest.name
+              : `${input.guestName || primaryGuest.name} (Guest ${idx + 1})`,
+          phone: input.guestPhone || primaryGuest.phone,
+          email: input.guestEmail || primaryGuest.email,
+        })),
+      );
+    }
+
+    if (input.guestName && booking.guestDetails[0]) {
+      booking.guestDetails[0].name = input.guestName;
+    }
+    if (input.guestPhone && booking.guestDetails[0]) {
+      booking.guestDetails[0].phone = input.guestPhone;
+    }
+    if (input.guestEmail && booking.guestDetails[0]) {
+      booking.guestDetails[0].email = input.guestEmail;
+    }
+    if (input.pickupPoint !== undefined) booking.pickupPoint = input.pickupPoint;
+    if (input.specialNotes !== undefined) booking.specialNotes = input.specialNotes;
+
+    if (input.bookingStatus) {
+      booking.bookingStatus = input.bookingStatus;
+      if (input.bookingStatus === 'cancelled') {
+        await EventSeat.updateMany(
+          { eventId: booking.eventId, bookingId: booking._id },
+          { $set: { status: 'available' }, $unset: { bookingId: 1 } },
+        );
+      }
+    }
+
+    await booking.save();
+    res.json(envelope(booking));
+  }),
+);
+
 const coordinates = z.object({
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),

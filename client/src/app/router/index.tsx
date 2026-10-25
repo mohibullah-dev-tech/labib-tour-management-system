@@ -56,6 +56,20 @@ export const router = createBrowserRouter([
             path: '/booking',
             lazy: () => import('@/pages/BookingPage').then((m) => ({ Component: m.BookingPage })),
           },
+          {
+            path: '/booking/payment-simulation',
+            lazy: () =>
+              import('@/pages/booking/PaymentSimulationPage').then((m) => ({
+                Component: m.PaymentSimulationPage,
+              })),
+          },
+          {
+            path: '/booking/payment-result',
+            lazy: () =>
+              import('@/pages/booking/PaymentResultPage').then((m) => ({
+                Component: m.PaymentResultPage,
+              })),
+          },
           { path: '/unauthorized', element: <UnauthorizedPage /> },
 
           // Direct path redirects to the corresponding homepage sections

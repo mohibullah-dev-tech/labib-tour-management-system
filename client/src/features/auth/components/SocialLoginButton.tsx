@@ -98,6 +98,7 @@ function SocialLoginButton() {
     } else {
       initGsi();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [env.googleClientId]);
 
   const handleCustomButtonClick = () => {
@@ -119,7 +120,7 @@ function SocialLoginButton() {
       </div>
 
       {env.googleClientId ? (
-        <div ref={googleBtnContainerRef} className="w-full flex justify-center min-h-[40px]" />
+        <div ref={googleBtnContainerRef} className="flex min-h-[40px] w-full justify-center" />
       ) : (
         <Button
           type="button"
@@ -147,14 +148,14 @@ function SocialLoginButton() {
           </DialogHeader>
 
           <div className="space-y-4 py-2 text-sm">
-            <div className="rounded-lg border border-primary/20 bg-primary/5 p-3.5 space-y-2">
-              <p className="font-semibold text-foreground">Option 1: Test Login Instantly</p>
-              <p className="text-xs text-muted-foreground">
+            <div className="border-primary/20 bg-primary/5 space-y-2 rounded-lg border p-3.5">
+              <p className="text-foreground font-semibold">Option 1: Test Login Instantly</p>
+              <p className="text-muted-foreground text-xs">
                 Simulates real Google authentication with backend verification, database user
                 creation, and full dashboard redirect.
               </p>
               <Button
-                className="w-full gap-2 mt-1"
+                className="mt-1 w-full gap-2"
                 onClick={() => {
                   setSetupModalOpen(false);
                   handleCredentialSuccess('demo-google-token');
@@ -165,9 +166,9 @@ function SocialLoginButton() {
               </Button>
             </div>
 
-            <div className="rounded-lg border bg-muted/40 p-3 space-y-1.5 text-xs">
-              <p className="font-medium text-foreground">Option 2: Use Real Google Client ID</p>
-              <ol className="list-decimal pl-4 space-y-1 text-muted-foreground">
+            <div className="bg-muted/40 space-y-1.5 rounded-lg border p-3 text-xs">
+              <p className="text-foreground font-medium">Option 2: Use Real Google Client ID</p>
+              <ol className="text-muted-foreground list-decimal space-y-1 pl-4">
                 <li>
                   Go to{' '}
                   <a
@@ -181,13 +182,16 @@ function SocialLoginButton() {
                 </li>
                 <li>Create an OAuth 2.0 Client ID (Web application)</li>
                 <li>
-                  Add authorized Javascript origins: <code className="bg-muted px-1">http://localhost:5173</code>
+                  Add authorized Javascript origins:{' '}
+                  <code className="bg-muted px-1">http://localhost:5173</code>
                 </li>
                 <li>
-                  Add <code className="bg-muted px-1">VITE_GOOGLE_CLIENT_ID=your_id</code> to <code className="bg-muted px-1">client/.env</code>
+                  Add <code className="bg-muted px-1">VITE_GOOGLE_CLIENT_ID=your_id</code> to{' '}
+                  <code className="bg-muted px-1">client/.env</code>
                 </li>
                 <li>
-                  Add <code className="bg-muted px-1">GOOGLE_CLIENT_ID=your_id</code> to <code className="bg-muted px-1">server/.env</code>
+                  Add <code className="bg-muted px-1">GOOGLE_CLIENT_ID=your_id</code> to{' '}
+                  <code className="bg-muted px-1">server/.env</code>
                 </li>
               </ol>
             </div>

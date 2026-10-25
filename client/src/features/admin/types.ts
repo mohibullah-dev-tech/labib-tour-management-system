@@ -130,6 +130,7 @@ export interface BookingAdmin {
   bookingCode: string;
   guestName: string;
   guestPhone: string;
+  guestEmail?: string;
   eventId: string;
   eventName: string;
   seatIds: string[];
@@ -139,6 +140,8 @@ export interface BookingAdmin {
   bookingStatus: AdminBookingStatus;
   paymentStatus: AdminPaymentStatus;
   createdAt: string; // ISO
+  pickupPoint?: string;
+  specialNotes?: string;
 }
 
 // ---------------------------------------------------------------------

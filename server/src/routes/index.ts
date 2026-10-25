@@ -7,6 +7,7 @@ import seatRoutes from '@/modules/seats/seat.routes.js';
 import resourceRoutes from '@/modules/resources/resource.routes.js';
 import communicationRoutes from '@/modules/communications/routes/communication.routes.js';
 import { presenceRoutes } from '@/modules/presence/presence.routes.js';
+import paymentRoutes from '@/modules/payments/payment.routes.js';
 
 /**
  * Root API router. Feature modules (auth, tours, bookings, payments, ...)
@@ -35,5 +36,6 @@ router.use('/', seatRoutes);
 router.use('/', resourceRoutes);
 router.use('/', communicationRoutes);
 router.use('/', presenceRoutes);
+router.use('/payments', paymentRoutes);
 
 export default router;
