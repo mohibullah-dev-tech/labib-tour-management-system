@@ -476,7 +476,7 @@ router.get(
 
 router.get(
   ['/bookings/:id/ticket.pdf', '/bookings/:id/ticket'],
-  authenticate,
+  authenticateOptional,
   asyncHandler(async (req, res) => {
     const rawId = req.params.id;
     const bookingId = typeof rawId === 'string' ? rawId : rawId?.[0];
@@ -487,7 +487,7 @@ router.get(
     const { doc, filename } = await generateBookingPdf({
       bookingId,
       documentType: 'ticket',
-      user: { id: req.user!.id, role: req.user!.role },
+      user: req.user ? { id: req.user.id, role: req.user.role } : undefined,
     });
 
     res.setHeader('Content-Type', 'application/pdf');
@@ -500,7 +500,7 @@ router.get(
 
 router.get(
   ['/bookings/:id/receipt.pdf', '/bookings/:id/receipt'],
-  authenticate,
+  authenticateOptional,
   asyncHandler(async (req, res) => {
     const rawId = req.params.id;
     const bookingId = typeof rawId === 'string' ? rawId : rawId?.[0];
@@ -511,7 +511,7 @@ router.get(
     const { doc, filename } = await generateBookingPdf({
       bookingId,
       documentType: 'receipt',
-      user: { id: req.user!.id, role: req.user!.role },
+      user: req.user ? { id: req.user.id, role: req.user.role } : undefined,
     });
 
     res.setHeader('Content-Type', 'application/pdf');

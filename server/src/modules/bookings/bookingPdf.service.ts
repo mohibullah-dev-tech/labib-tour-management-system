@@ -7,7 +7,7 @@ import { calculateBookingFinance } from '@/modules/bookings/bookingFinance.js';
 export interface GeneratePdfOptions {
   bookingId: string;
   documentType: 'ticket' | 'receipt';
-  user: {
+  user?: {
     id: string;
     role: string;
   };
@@ -76,43 +76,36 @@ export async function generateBookingPdf(options: GeneratePdfOptions): Promise<G
     ? await User.findById(event.hostId).select('name phone email').lean()
     : null;
 
-  // 3. Strict Authorization (RBAC)
-  const isGuest = user.role === 'guest';
-  const isHost = user.role === 'host';
-  const isAdmin = user.role === 'admin' || user.role === 'super_admin';
+  // 3. Authorization (RBAC)
+  if (user) {
+    const isGuest = user.role === 'guest';
+    const isHost = user.role === 'host';
+    const isAdmin = user.role === 'admin' || user.role === 'super_admin';
 
-  if (isGuest) {
-    if (String(booking.customerId) !== user.id) {
-      throw ApiError.forbidden('You are not authorized to download this booking document');
+    if (isGuest) {
+      if (String(booking.customerId) !== user.id && !('bookingCode' in bookingQuery)) {
+        throw ApiError.forbidden('You are not authorized to download this booking document');
+      }
+    } else if (isHost) {
+      const isDirectHost = String(event.hostId) === user.id;
+      let isProfileAssigned = false;
+      if (!isDirectHost) {
+        const profile = await HostProfile.findOne({ userId: user.id }).lean();
+        isProfileAssigned = Boolean(
+          profile?.assignedEventIds?.some((id) => id.toString() === event._id.toString()),
+        );
+      }
+      if (!isDirectHost && !isProfileAssigned) {
+        throw ApiError.forbidden('Hosts can only access documents for their assigned events');
+      }
+    } else if (!isAdmin) {
+      throw ApiError.forbidden('Unauthorized role');
     }
-  } else if (isHost) {
-    const isDirectHost = String(event.hostId) === user.id;
-    let isProfileAssigned = false;
-    if (!isDirectHost) {
-      const profile = await HostProfile.findOne({ userId: user.id }).lean();
-      isProfileAssigned = Boolean(
-        profile?.assignedEventIds?.some((id) => id.toString() === event._id.toString()),
-      );
-    }
-    if (!isDirectHost && !isProfileAssigned) {
-      throw ApiError.forbidden('Hosts can only access documents for their assigned events');
-    }
-  } else if (!isAdmin) {
-    throw ApiError.forbidden('Unauthorized role');
   }
 
   // 4. Booking Eligibility Check
-  const isConfirmed =
-    booking.bookingStatus === 'confirmed' || booking.bookingStatus === 'completed';
-  if (documentType === 'ticket') {
-    if (!isConfirmed) {
-      if (booking.bookingStatus === 'cancelled') {
-        throw ApiError.conflict('Cannot generate a confirmed ticket for a cancelled booking.');
-      }
-      throw ApiError.conflict(
-        'Booking is pending confirmation and is not eligible for a confirmed ticket. Please download the receipt instead or complete the required advance payment.',
-      );
-    }
+  if (booking.bookingStatus === 'cancelled') {
+    throw ApiError.conflict('Cannot generate a document for a cancelled booking.');
   }
 
   // 5. Recalculate Financial Figures using trusted financial service
@@ -229,12 +222,10 @@ export async function generateBookingPdf(options: GeneratePdfOptions): Promise<G
     .fontSize(7.5)
     .text('BOOKING STATUS', margin + 270, boxTop + 8);
 
+  const isConfirmed =
+    booking.bookingStatus === 'confirmed' || booking.bookingStatus === 'completed';
   const statusLabel = booking.bookingStatus.toUpperCase();
-  const statusColor = isConfirmed
-    ? '#047857'
-    : booking.bookingStatus === 'cancelled'
-      ? '#b91c1c'
-      : '#d97706';
+  const statusColor = isConfirmed ? '#047857' : '#d97706';
   doc
     .fillColor(statusColor)
     .font('Helvetica-Bold')
