@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { formatBDT } from '@/lib/format';
 import { paymentService } from '@/features/booking/services/payment.service';
 import { toast } from 'sonner';
+import { extractApiErrorMessage } from '@/lib/axios';
 
 export interface SSLCommerzPaymentModalProps {
   open: boolean;
@@ -66,11 +67,7 @@ export function SSLCommerzPaymentModal({
         toast.error('Unable to establish payment session. Please try again.');
       }
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        (err as Error)?.message ||
-        'Payment initiation failed.';
-      toast.error(msg);
+      toast.error(extractApiErrorMessage(err, 'Payment initiation failed.'));
     } finally {
       setIsInitiating(false);
     }

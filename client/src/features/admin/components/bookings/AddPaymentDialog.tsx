@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { formatBDT } from '@/lib/format';
-import { apiClient } from '@/lib/axios';
+import { apiClient, extractApiErrorMessage } from '@/lib/axios';
 import { toast } from 'sonner';
 
 export interface BookingToPay {
@@ -81,11 +81,7 @@ export function AddPaymentDialog({
       setTransactionId('');
       setNote('');
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        (err as Error)?.message ||
-        'Failed to record payment.';
-      toast.error(msg);
+      toast.error(extractApiErrorMessage(err, 'Failed to record payment.'));
     } finally {
       setIsSubmitting(false);
     }

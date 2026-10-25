@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { apiClient } from '@/lib/axios';
+import { apiClient, extractApiErrorMessage } from '@/lib/axios';
 import { toast } from 'sonner';
 
 export interface BookingToEdit {
@@ -100,11 +100,7 @@ export function EditBookingDialog({
       onBookingUpdated();
       onOpenChange(false);
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        (err as Error)?.message ||
-        'Failed to update booking.';
-      toast.error(msg);
+      toast.error(extractApiErrorMessage(err, 'Failed to update booking.'));
     } finally {
       setIsSubmitting(false);
     }

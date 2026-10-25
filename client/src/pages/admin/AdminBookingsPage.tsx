@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatBDT } from '@/lib/format';
-import { apiClient } from '@/lib/axios';
+import { apiClient, extractApiErrorMessage } from '@/lib/axios';
 
 const BOOKING_STATUS_VARIANT: Record<
   AdminBookingStatus,
@@ -138,11 +138,7 @@ export function AdminBookingsPage() {
       toast.success(`${cancelTarget.bookingCode} cancelled successfully`);
       void fetchLiveBookings();
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        (err as Error)?.message ||
-        'Failed to cancel booking.';
-      toast.error(msg);
+      toast.error(extractApiErrorMessage(err, 'Failed to cancel booking.'));
     } finally {
       setCancelTarget(null);
     }
