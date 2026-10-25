@@ -6,7 +6,12 @@ import { SeatLockService } from '@/modules/seats/seatLock.service.js';
 
 const router = Router();
 
-const objectIdSchema = z.string().regex(/^[\da-f]{24}$/i, 'Invalid MongoDB ObjectId');
+const eventIdParamSchema = z
+  .string()
+  .trim()
+  .min(2)
+  .max(100)
+  .regex(/^[\w-]+$/, 'Invalid event ID format');
 
 const lockSeatsSchema = z.object({
   seatNumbers: z.array(z.string().min(2).max(4)).min(1).max(10),
@@ -32,7 +37,7 @@ router.get(
   authenticateOptional,
   asyncHandler(async (req, res) => {
     const eventId = String(req.params.eventId);
-    objectIdSchema.parse(eventId);
+    eventIdParamSchema.parse(eventId);
     const sessionId = typeof req.query.sessionId === 'string' ? req.query.sessionId : undefined;
 
     const seats = await SeatLockService.getEventSeatStatuses({
@@ -57,7 +62,7 @@ router.post(
   authenticateOptional,
   asyncHandler(async (req, res) => {
     const eventId = String(req.params.eventId);
-    objectIdSchema.parse(eventId);
+    eventIdParamSchema.parse(eventId);
     const { seatNumbers, sessionId } = lockSeatsSchema.parse(req.body);
 
     const lockResult = await SeatLockService.lockSeats({
@@ -83,7 +88,7 @@ router.post(
   authenticateOptional,
   asyncHandler(async (req, res) => {
     const eventId = String(req.params.eventId);
-    objectIdSchema.parse(eventId);
+    eventIdParamSchema.parse(eventId);
     const { seatNumbers, sessionId } = releaseSeatsSchema.parse(req.body);
 
     const result = await SeatLockService.releaseSeats({
@@ -109,7 +114,7 @@ router.post(
   authenticateOptional,
   asyncHandler(async (req, res) => {
     const eventId = String(req.params.eventId);
-    objectIdSchema.parse(eventId);
+    eventIdParamSchema.parse(eventId);
     const { seatNumbers, sessionId } = heartbeatSchema.parse(req.body);
 
     const result = await SeatLockService.heartbeatSeats({

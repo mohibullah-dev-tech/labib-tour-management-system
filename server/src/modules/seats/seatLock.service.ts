@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import mongoose from 'mongoose';
 import { redisClient, isRedisConnected } from '@/config/redis.js';
 import { env } from '@/config/env.js';
 import { logger } from '@/utils/logger.js';
@@ -202,11 +203,14 @@ export class SeatLockService {
     }
 
     // 1. Verify Event exists and is open for booking
-    const event = await TourEvent.findById(eventId).select('status').lean();
-    if (!event) {
-      throw ApiError.notFound('Tour event not found');
+    let event: { status: string } | null = null;
+    if (mongoose.isValidObjectId(eventId)) {
+      event = await TourEvent.findById(eventId).select('status').lean();
+    } else {
+      event = await TourEvent.findOne({ eventCode: eventId.toUpperCase() }).select('status').lean();
     }
-    if (event.status !== 'booking_open' && event.status !== 'published') {
+
+    if (event && event.status !== 'booking_open' && event.status !== 'published') {
       throw ApiError.conflict('This event is not accepting seat bookings');
     }
 
@@ -219,12 +223,15 @@ export class SeatLockService {
 
     // 3. Permanent Check: MongoDB EventSeat
     // Redis is NOT the source of truth; MongoDB booked/reserved/blocked overrides Redis
-    const mongoSeats = await EventSeat.find({
-      eventId,
-      seatNumber: { $in: seatNumbers },
-    })
-      .select('seatNumber status')
-      .lean();
+    let mongoSeats: Array<{ seatNumber: string; status: string }> = [];
+    if (mongoose.isValidObjectId(eventId)) {
+      mongoSeats = await EventSeat.find({
+        eventId,
+        seatNumber: { $in: seatNumbers },
+      })
+        .select('seatNumber status')
+        .lean();
+    }
 
     for (const seat of mongoSeats) {
       if (['booked', 'reserved', 'blocked'].includes(seat.status)) {
@@ -509,9 +516,12 @@ export class SeatLockService {
     const { eventId, userId, sessionId } = params;
 
     // Fetch permanent seat status from MongoDB
-    const mongoSeats = await EventSeat.find({ eventId })
-      .select('seatNumber status busId bookingId')
-      .lean();
+    let mongoSeats: Array<{ seatNumber: string; status: any; busId?: any; bookingId?: any }> = [];
+    if (mongoose.isValidObjectId(eventId)) {
+      mongoSeats = await EventSeat.find({ eventId })
+        .select('seatNumber status busId bookingId')
+        .lean();
+    }
 
     // Map by seat number
     const mongoMap = new Map(mongoSeats.map((s) => [s.seatNumber, s]));
