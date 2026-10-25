@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { authenticate, authenticateOptional } from '@/middlewares/authenticate.js';
+import { authenticateOptional } from '@/middlewares/authenticate.js';
 import { asyncHandler } from '@/utils/asyncHandler.js';
 import { SeatLockService } from '@/modules/seats/seatLock.service.js';
 
@@ -54,7 +54,7 @@ router.get(
  */
 router.post(
   '/events/:eventId/seats/lock',
-  authenticate,
+  authenticateOptional,
   asyncHandler(async (req, res) => {
     const eventId = String(req.params.eventId);
     objectIdSchema.parse(eventId);
@@ -63,7 +63,7 @@ router.post(
     const lockResult = await SeatLockService.lockSeats({
       eventId,
       seatNumbers,
-      userId: req.user!.id,
+      userId: req.user?.id || sessionId || 'guest_user',
       sessionId,
     });
 
