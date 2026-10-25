@@ -4,6 +4,7 @@ import { authService } from '@/modules/auth/auth.service.js';
 import { ApiError } from '@/utils/ApiError.js';
 import {
   changePasswordSchema,
+  googleLoginSchema,
   identifierSchema,
   loginSchema,
   registerSchema,
@@ -61,6 +62,17 @@ export const authController = {
         data: { accessToken: result.accessToken, expiresIn: result.expiresIn, user: result.user },
         message: 'Logged in',
       });
+  },
+
+  async googleLogin(req: Request, res: Response) {
+    const input = googleLoginSchema.parse(req.body);
+    const result = await authService.googleLogin(input.credential);
+    setRefreshCookie(res, result.refreshToken);
+    res.status(200).json({
+      success: true,
+      data: { accessToken: result.accessToken, expiresIn: result.expiresIn, user: result.user },
+      message: 'Logged in with Google',
+    });
   },
 
   async refresh(req: Request, res: Response) {

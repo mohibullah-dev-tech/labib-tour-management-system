@@ -4,6 +4,7 @@ import { apiClient } from '@/lib/axios';
 
 export const AUTH_ENDPOINTS = {
   login: '/auth/login',
+  googleLogin: '/auth/google',
   register: '/auth/register',
   logout: '/auth/logout',
   refresh: '/auth/refresh',
@@ -87,6 +88,36 @@ export const authService = {
       const lower = input.identifier.trim().toLowerCase();
       const demoUser = DEMO_USERS_MAP[lower];
       if (demoUser && input.password === 'password123') {
+        localStorage.setItem(LOCAL_DEMO_KEY, JSON.stringify(demoUser));
+        return saveToken({
+          accessToken: `demo-token-${demoUser.id}`,
+          expiresIn: 86400,
+          user: demoUser,
+        });
+      }
+      throw error;
+    }
+  },
+
+  async googleLogin(credential: string): Promise<LoginResult> {
+    try {
+      const { data } = await apiClient.post<{ data: AuthResponse }>(AUTH_ENDPOINTS.googleLogin, {
+        credential,
+      });
+      localStorage.removeItem(LOCAL_DEMO_KEY);
+      return saveToken(data.data);
+    } catch (error) {
+      if (credential === 'demo-google-token') {
+        const demoUser: AuthUser = {
+          id: 'demo-google-user',
+          fullName: 'Google Demo Traveler',
+          email: 'google.traveler@example.com',
+          phone: '',
+          role: 'guest',
+          avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+          isEmailVerified: true,
+          createdAt: new Date().toISOString(),
+        };
         localStorage.setItem(LOCAL_DEMO_KEY, JSON.stringify(demoUser));
         return saveToken({
           accessToken: `demo-token-${demoUser.id}`,

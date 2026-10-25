@@ -19,6 +19,7 @@ export const env = {
   socketUrl: getEnvVar('VITE_SOCKET_URL', 'http://localhost:5000'),
   appName: getEnvVar('VITE_APP_NAME', 'Labib Tour Management System'),
   cloudinaryCloudName: getEnvVar('VITE_CLOUDINARY_CLOUD_NAME', ''),
+  googleClientId: getEnvVar('VITE_GOOGLE_CLIENT_ID', ''),
   isDev: import.meta.env.DEV,
   isProd: import.meta.env.PROD,
 } as const;

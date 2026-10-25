@@ -125,6 +125,86 @@ export const authService = {
     };
   },
 
+  async googleLogin(credential: string) {
+    let email: string;
+    let name: string;
+    let picture: string | undefined;
+
+    if (credential === 'demo-google-token' && env.NODE_ENV !== 'production') {
+      email = 'google.traveler@example.com';
+      name = 'Google Demo Traveler';
+      picture = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+    } else {
+      let payload: {
+        email?: string;
+        email_verified?: string | boolean;
+        name?: string;
+        picture?: string;
+        sub?: string;
+        aud?: string;
+      };
+
+      try {
+        const res = await fetch(
+          `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(credential)}`,
+        );
+        if (!res.ok) {
+          throw new Error('Google token verification failed');
+        }
+        payload = (await res.json()) as typeof payload;
+      } catch {
+        throw ApiError.unauthorized('Invalid or expired Google token');
+      }
+
+      if (
+        !payload.email ||
+        (payload.email_verified !== 'true' && payload.email_verified !== true)
+      ) {
+        throw ApiError.badRequest('Google account email is not verified');
+      }
+
+      if (env.GOOGLE_CLIENT_ID && payload.aud !== env.GOOGLE_CLIENT_ID) {
+        throw ApiError.badRequest('Google token audience mismatch');
+      }
+
+      email = payload.email.toLowerCase();
+      name = payload.name || email.split('@')[0];
+      picture = payload.picture;
+    }
+
+    let user = await User.findOne({ email });
+    if (user) {
+      if (!user.isActive) {
+        throw ApiError.forbidden('Your account is deactivated');
+      }
+      user.isVerified = true;
+      user.lastLoginAt = new Date();
+      if (picture && !user.avatar) {
+        user.avatar = picture;
+      }
+      await user.save();
+    } else {
+      const passwordHash = await bcrypt.hash(randomUUID(), PASSWORD_HASH_COST);
+      user = await User.create({
+        name,
+        email,
+        passwordHash,
+        role: 'guest',
+        avatar: picture,
+        isVerified: true,
+        lastLoginAt: new Date(),
+      });
+    }
+
+    const tokens = await saveRefreshToken(user._id.toString());
+    return {
+      user: toPublicUser(user),
+      accessToken: tokens.accessToken,
+      expiresIn: tokens.expiresIn,
+      refreshToken: tokens.refreshToken,
+    };
+  },
+
   async refresh(refreshToken: string) {
     let claims: jwt.JwtPayload;
     try {

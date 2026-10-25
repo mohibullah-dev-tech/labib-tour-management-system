@@ -34,6 +34,12 @@ export const loginSchema = z
   })
   .strict();
 
+export const googleLoginSchema = z
+  .object({
+    credential: z.string().min(5, 'Google credential token is required'),
+  })
+  .strict();
+
 export const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(1).max(128),

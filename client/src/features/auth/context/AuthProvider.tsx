@@ -14,6 +14,7 @@ import { getAccessToken } from '@/features/auth/services/token-manager';
 import { registerAuthInterceptorHandlers } from '@/lib/axios';
 import { authQueryKeys, useCurrentUserQuery } from '@/features/auth/hooks/useCurrentUserQuery';
 import {
+  useGoogleLoginMutation,
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
@@ -43,6 +44,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [sessionExpiredOpen, setSessionExpiredOpen] = useState(false);
 
   const loginMutation = useLoginMutation();
+  const googleLoginMutation = useGoogleLoginMutation();
   const registerMutation = useRegisterMutation();
   const logoutMutation = useLogoutMutation();
 
@@ -95,6 +97,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
     [loginMutation],
   );
 
+  const googleLogin = useCallback(
+    async (credential: string): Promise<AuthUser> => {
+      const result = await googleLoginMutation.mutateAsync(credential);
+      connectSocket();
+      return result.user;
+    },
+    [googleLoginMutation],
+  );
+
   const register = useCallback(
     async (input: RegisterInput): Promise<AuthUser> => {
       const user = await registerMutation.mutateAsync(input);
@@ -125,12 +136,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
       isAuthenticated: !!user,
       isLoading: isRestoring,
       login,
+      googleLogin,
       logout,
       register,
       refreshSession,
       updateUser,
     }),
-    [user, isRestoring, login, logout, register, refreshSession, updateUser],
+    [user, isRestoring, login, googleLogin, logout, register, refreshSession, updateUser],
   );
 
   return (

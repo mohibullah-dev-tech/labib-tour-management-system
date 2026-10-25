@@ -19,6 +19,7 @@ export interface AuthContextValue {
   /** True only during initial session restoration on app load. */
   isLoading: boolean;
   login: (input: LoginInput) => Promise<AuthUser>;
+  googleLogin: (credential: string) => Promise<AuthUser>;
   logout: () => Promise<void>;
   register: (input: RegisterInput) => Promise<AuthUser>;
   refreshSession: () => Promise<AuthUser | null>;

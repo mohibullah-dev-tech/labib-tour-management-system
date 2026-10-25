@@ -24,6 +24,16 @@ export function useLoginMutation() {
   });
 }
 
+export function useGoogleLoginMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (credential: string) => authService.googleLogin(credential),
+    onSuccess: ({ user }) => {
+      queryClient.setQueryData(authQueryKeys.currentUser, user);
+    },
+  });
+}
+
 export function useRegisterMutation() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -94,6 +104,7 @@ export function useRefreshSession() {
 
 // Friendly aliases matching TanStack Query convention & prompt specifications
 export const useLogin = useLoginMutation;
+export const useGoogleLogin = useGoogleLoginMutation;
 export const useRegister = useRegisterMutation;
 export const useLogout = useLogoutMutation;
 export const useForgotPassword = useForgotPasswordMutation;

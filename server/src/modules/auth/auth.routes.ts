@@ -23,6 +23,7 @@ const router = Router();
 router.use(authLimiter);
 router.post('/register', requireTrustedOrigin, asyncHandler(authController.register));
 router.post('/login', requireTrustedOrigin, asyncHandler(authController.login));
+router.post('/google', requireTrustedOrigin, asyncHandler(authController.googleLogin));
 router.post('/refresh', requireTrustedOrigin, asyncHandler(authController.refresh));
 router.post('/logout', requireTrustedOrigin, asyncHandler(authController.logout));
 router.get('/me', authenticate, asyncHandler(authController.me));

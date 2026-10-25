@@ -43,6 +43,9 @@ const envSchema = z.object({
   AI_MODEL: z.string().trim().optional(),
   AI_API_KEY: z.string().trim().optional(),
   AI_ENABLED: z.coerce.boolean().default(true),
+
+  // Google OAuth
+  GOOGLE_CLIENT_ID: z.string().trim().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
