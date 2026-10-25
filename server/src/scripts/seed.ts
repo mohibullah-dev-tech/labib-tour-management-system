@@ -21,6 +21,77 @@ async function seed(): Promise<void> {
   await connectDatabase();
 
   const passwordHash = await bcrypt.hash('Demo-Only-2026!', 12);
+  const standardDemoPasswordHash = await bcrypt.hash('password123', 12);
+
+  // Standard Labib Tours Demo accounts (matching client demo buttons)
+  await User.findOneAndUpdate(
+    { email: 'admin@labibtours.com' },
+    {
+      $set: {
+        name: 'Demo Admin',
+        email: 'admin@labibtours.com',
+        passwordHash: standardDemoPasswordHash,
+        role: 'admin',
+        isVerified: true,
+      },
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true },
+  );
+
+  const labibHost = await User.findOneAndUpdate(
+    { email: 'host@labibtours.com' },
+    {
+      $set: {
+        name: 'Demo Host',
+        email: 'host@labibtours.com',
+        passwordHash: standardDemoPasswordHash,
+        role: 'host',
+        isVerified: true,
+      },
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true },
+  );
+
+  await User.findOneAndUpdate(
+    { email: 'guest@labibtours.com' },
+    {
+      $set: {
+        name: 'Demo Guest',
+        email: 'guest@labibtours.com',
+        passwordHash: standardDemoPasswordHash,
+        role: 'guest',
+        isVerified: true,
+      },
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true },
+  );
+
+  await User.findOneAndUpdate(
+    { email: 'superadmin@labibtours.com' },
+    {
+      $set: {
+        name: 'Demo Super Admin',
+        email: 'superadmin@labibtours.com',
+        passwordHash: standardDemoPasswordHash,
+        role: 'super_admin',
+        isVerified: true,
+      },
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true },
+  );
+
+  await HostProfile.findOneAndUpdate(
+    { userId: labibHost._id },
+    {
+      $setOnInsert: {
+        userId: labibHost._id,
+        bio: 'Labib Tours tour host',
+        languages: ['Bangla', 'English'],
+      },
+    },
+    { upsert: true, new: true },
+  );
+
   const admin = await User.findOneAndUpdate(
     { email: 'admin@example.com' },
     {

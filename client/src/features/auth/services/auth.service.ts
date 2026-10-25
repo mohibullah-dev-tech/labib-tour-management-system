@@ -84,7 +84,7 @@ export const authService = {
       });
       localStorage.removeItem(LOCAL_DEMO_KEY);
       return saveToken(data.data);
-    } catch {
+    } catch (error) {
       const lower = input.identifier.trim().toLowerCase();
       const demoUser = DEMO_USERS_MAP[lower];
       if (demoUser && input.password === 'password123') {
@@ -106,7 +106,7 @@ export const authService = {
       });
       localStorage.removeItem(LOCAL_DEMO_KEY);
       return saveToken(data.data);
-    } catch {
+    } catch (error) {
       if (credential === 'demo-google-token') {
         const demoUser: AuthUser = {
           id: 'demo-google-user',
