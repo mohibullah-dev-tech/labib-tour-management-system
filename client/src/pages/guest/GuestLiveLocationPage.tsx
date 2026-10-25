@@ -20,6 +20,7 @@ import {
   MessageSquare,
   Sparkles,
   Info,
+  Radio,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -29,6 +30,7 @@ import {
   LiveLocationMap,
   LocationStatusBadge,
   NetworkStatusIndicator,
+  locationService,
 } from '@/features/live-location';
 
 export function GuestLiveLocationPage() {
@@ -117,6 +119,18 @@ export function GuestLiveLocationPage() {
                     onClick={() => window.location.reload()}
                   >
                     Check Again
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="gap-2 border border-primary/20"
+                    onClick={async () => {
+                      await locationService.startSharing('evt-sajek-01');
+                      window.location.reload();
+                    }}
+                  >
+                    <Radio className="size-4 text-emerald-500 animate-pulse" />
+                    Simulate Host Broadcast (Demo)
                   </Button>
                 </div>
               </>
