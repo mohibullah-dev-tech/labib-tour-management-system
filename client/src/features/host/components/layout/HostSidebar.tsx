@@ -13,6 +13,7 @@ import {
   LogOut,
   Shield,
 } from 'lucide-react';
+import labibLogo from '@/assets/labib_logo.jpg';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -90,9 +91,11 @@ export function HostSidebar({
       <div>
         <div className="border-border/70 flex items-center justify-between border-b p-5">
           <div className="flex items-center gap-2.5">
-            <div className="bg-primary text-primary-foreground font-display flex size-9 items-center justify-center rounded-xl font-bold shadow-xs">
-              LT
-            </div>
+            <img
+              src={labibLogo}
+              alt="Labib Tours"
+              className="ring-border size-9 rounded-full object-cover shadow-xs ring-1"
+            />
             <div>
               <span className="font-display text-foreground block text-sm leading-tight font-black tracking-tight">
                 Labib Tours

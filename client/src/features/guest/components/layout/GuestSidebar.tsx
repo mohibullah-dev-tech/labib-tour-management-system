@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
+import labibLogo from '@/assets/labib_logo.jpg';
 import {
-  Compass,
   LayoutDashboard,
   CalendarCheck2,
   CalendarDays,
@@ -71,11 +71,13 @@ export function GuestSidebar({ activeTab, onTabChange, className }: GuestSidebar
           to="/"
           className="font-display text-foreground flex items-center gap-2.5 text-lg font-bold tracking-tight transition-opacity hover:opacity-90"
         >
-          <div className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-xl shadow-xs">
-            <Compass className="size-5" />
-          </div>
+          <img
+            src={labibLogo}
+            alt="Labib Tours"
+            className="ring-border size-9 rounded-full object-cover shadow-xs ring-1"
+          />
           <div>
-            <span className="block leading-none">LTMS Guest</span>
+            <span className="block leading-none">Labib Tours</span>
             <span className="text-muted-foreground text-[10px] font-normal">Traveler Portal</span>
           </div>
         </Link>

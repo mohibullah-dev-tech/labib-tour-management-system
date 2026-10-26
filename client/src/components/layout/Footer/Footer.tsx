@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
-import { Compass, Phone, Mail } from 'lucide-react';
+import { Phone, Mail } from 'lucide-react';
+import labibLogo from '@/assets/labib_logo.jpg';
 import { NAV_ITEMS, LEGAL_ITEMS } from '@/config/navigation';
 import {
   POPULAR_DESTINATIONS,
@@ -25,13 +26,18 @@ function Footer() {
         <div className="flex flex-col gap-3">
           <Link
             to="/"
-            className="font-display text-foreground flex items-center gap-2 text-lg font-semibold"
+            className="font-display text-foreground flex items-center gap-2.5 text-lg font-bold"
           >
-            <Compass className="text-primary size-6" aria-hidden="true" />
-            LTMS
+            <img
+              src={labibLogo}
+              alt="Labib Tours Logo"
+              className="ring-border size-8 rounded-full object-cover shadow-xs ring-1"
+            />
+            <span>Labib Tours</span>
           </Link>
           <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
-            লাবিব ট্যুর ম্যানেজমেন্ট সিস্টেম — বাংলাদেশের সেরা গ্রুপ ট্যুর ও স্মরণীয় ভ্রমণ অভিজ্ঞতা।
+            লাবিব ট্যুর ম্যানেজমেন্ট সিস্টেম — বাংলাদেশের সেরা গ্রুপ ট্যুর ও স্মরণীয় ভ্রমণ
+            অভিজ্ঞতা।
           </p>
           <ul className="mt-1 flex items-center gap-2">
             {SOCIAL_LINKS.map(({ label, href, icon: SocialIcon }) => (

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { Menu, Search, LogIn, UserPlus, Compass, LogOut, User } from 'lucide-react';
+import { Menu, Search, LogIn, UserPlus, LogOut, User } from 'lucide-react';
+import labibLogo from '@/assets/labib_logo.jpg';
 import { useScrolled } from '@/hooks/useScrolled';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ROLE_HOME_PATH } from '@/features/auth/constants/permissions';
@@ -61,26 +62,30 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
     >
       <Container>
         <nav aria-label="Primary" className="flex h-16 items-center justify-between gap-4">
-          {/* Logo — placeholder wordmark until brand assets exist. */}
+          {/* Logo — Labib Tours brand mark */}
           <Link
             to="/"
             className={cn(
-              'font-display flex items-center gap-2 text-lg font-semibold tracking-tight transition-colors',
+              'font-display flex items-center gap-2.5 text-lg font-bold tracking-tight transition-colors',
               isTransparent ? 'text-white' : 'text-foreground',
             )}
           >
-            <Compass
-              className={cn('size-6', isTransparent ? 'text-white' : 'text-primary')}
-              aria-hidden="true"
+            <img
+              src={labibLogo}
+              alt="Labib Tours Logo"
+              className={cn(
+                'size-8 shrink-0 rounded-full object-cover shadow-xs ring-2',
+                isTransparent ? 'ring-white/40' : 'ring-primary/25',
+              )}
             />
-            LTMS
+            <span>Labib Tours</span>
           </Link>
 
           {/* Desktop nav — hidden below the laptop breakpoint. */}
           <NavLinks onTransparentSurface={isTransparent} className="laptop:flex hidden" />
 
           {/* Desktop actions */}
-          <div className="laptop:flex hidden items-center gap-2 shrink-0">
+          <div className="laptop:flex hidden shrink-0 items-center gap-2">
             <PublicLivePresenceBadge
               onTransparentSurface={isTransparent}
               className="mr-1 hidden xl:inline-flex"
@@ -194,8 +199,17 @@ function Navbar({ transparentOnTop = false }: NavbarProps) {
                 </Button>
               </DrawerTrigger>
               <DrawerContent>
-                <DrawerHeader>
-                  <DrawerTitle>Menu</DrawerTitle>
+                <DrawerHeader className="border-b pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <img
+                      src={labibLogo}
+                      alt="Labib Tours"
+                      className="ring-border size-8 shrink-0 rounded-full object-cover shadow-xs ring-1"
+                    />
+                    <DrawerTitle className="font-display text-lg font-bold">
+                      Labib Tours
+                    </DrawerTitle>
+                  </div>
                 </DrawerHeader>
                 <MobileNav onNavigate={() => setMobileOpen(false)} />
               </DrawerContent>

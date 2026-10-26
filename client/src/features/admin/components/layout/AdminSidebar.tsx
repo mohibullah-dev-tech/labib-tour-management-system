@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router';
-import { Compass } from 'lucide-react';
 import { ADMIN_NAV_GROUPS } from '@/features/admin/config/admin-navigation';
 import { cn } from '@/lib/utils';
 import { useConversations } from '@/features/messaging/hooks/useMessaging';
 import { Badge } from '@/components/ui/badge';
+import labibLogo from '@/assets/labib_logo.jpg';
 
 export interface AdminSidebarProps {
   /** Called after a nav click so a parent Sheet (mobile) can close itself. Undefined on the permanent desktop sidebar. */
@@ -20,9 +20,13 @@ function AdminSidebar({ onNavigate }: AdminSidebarProps) {
   const unreadMessages = conversations.reduce((count, item) => count + item.unreadCount, 0);
   return (
     <div className="flex h-full flex-col gap-6 overflow-y-auto">
-      <div className="border-border font-display text-foreground flex h-16 shrink-0 items-center gap-2 border-b px-4 text-lg font-semibold">
-        <Compass className="text-primary size-6" aria-hidden="true" />
-        LTMS Admin
+      <div className="border-border font-display text-foreground flex h-16 shrink-0 items-center gap-2.5 border-b px-4 text-base font-bold">
+        <img
+          src={labibLogo}
+          alt="Labib Tours"
+          className="ring-border size-8 rounded-full object-cover shadow-xs ring-1"
+        />
+        <span>Labib Tours Admin</span>
       </div>
 
       <nav aria-label="Admin" className="flex flex-col gap-6 px-3 pb-6">
