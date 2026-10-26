@@ -14,9 +14,17 @@ function getEnvVar(key: keyof ImportMetaEnv, fallback?: string): string {
   return value;
 }
 
+const defaultApiUrl = import.meta.env.PROD
+  ? 'https://labib-tour-management-system.onrender.com/api/v1'
+  : 'http://localhost:5000/api/v1';
+
+const defaultSocketUrl = import.meta.env.PROD
+  ? 'https://labib-tour-management-system.onrender.com'
+  : 'http://localhost:5000';
+
 export const env = {
-  apiBaseUrl: getEnvVar('VITE_API_BASE_URL', 'http://localhost:5000/api/v1'),
-  socketUrl: getEnvVar('VITE_SOCKET_URL', 'http://localhost:5000'),
+  apiBaseUrl: getEnvVar('VITE_API_BASE_URL', defaultApiUrl),
+  socketUrl: getEnvVar('VITE_SOCKET_URL', defaultSocketUrl),
   appName: getEnvVar('VITE_APP_NAME', 'Labib Tour Management System'),
   cloudinaryCloudName: getEnvVar('VITE_CLOUDINARY_CLOUD_NAME', ''),
   googleClientId: getEnvVar('VITE_GOOGLE_CLIENT_ID', ''),

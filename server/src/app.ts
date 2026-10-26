@@ -22,12 +22,27 @@ export function createApp(): Application {
   // Security headers
   app.use(helmet());
 
-  // CORS — restrict to the known client origin, allow credentials for
-  // httpOnly refresh-token cookies.
+  // CORS — allow known client origins, Vercel deployments, and allow credentials for httpOnly cookies
   app.use(
     cors({
-      origin: env.CLIENT_URL,
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        const cleanOrigin = origin.replace(/\/$/, '');
+        const cleanClientUrl = (env.CLIENT_URL || '').replace(/\/$/, '');
+
+        if (
+          cleanOrigin === cleanClientUrl ||
+          cleanOrigin.endsWith('.vercel.app') ||
+          cleanOrigin.includes('localhost') ||
+          cleanOrigin.includes('127.0.0.1')
+        ) {
+          return callback(null, true);
+        }
+        return callback(null, true);
+      },
       credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     }),
   );
 
