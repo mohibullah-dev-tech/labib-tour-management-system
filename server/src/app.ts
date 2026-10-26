@@ -49,6 +49,17 @@ export function createApp(): Application {
   app.use('/api', apiRouter);
   app.use('/api/v1', apiRouter);
 
+  // Root welcome / health ping
+  app.get('/', (_req, res) => {
+    res.json({
+      name: 'Labib Tour Management System API',
+      status: 'active',
+      environment: env.NODE_ENV,
+      healthCheck: '/api/v1/health',
+      timestamp: new Date().toISOString(),
+    });
+  });
+
   // 404 + centralized error handler (must be registered last, in this order)
   app.use(notFoundHandler);
   app.use(errorHandler);
