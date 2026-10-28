@@ -220,7 +220,7 @@ function ContactSection() {
                   className="gap-1.5 text-xs hover:border-blue-500 hover:text-blue-600"
                 >
                   <a
-                    href="https://facebook.com/labibtours"
+                    href={LABIB_CONTACTS.facebookPage}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Visit Labib Tour on Facebook"

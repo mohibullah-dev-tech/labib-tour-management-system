@@ -210,8 +210,8 @@ export class AiTravelAssistantService {
 
     if (isAskingContact) {
       return isBn
-        ? 'লাবিব ট্যুর অ্যান্ড ট্রাভেলসের অফিসিয়াল হেল্পলাইন ও যোগাযোগের নম্বরসমূহ:\n\n📞 হোয়াটসঅ্যাপ ও হটলাইন:\n১. 01602113987 (বুকিং ও ট্যুর অনুসন্ধান - প্রধান)\n২. 01991009767 (কাস্টমার সাপোর্ট ও তথ্য)\n৩. 01848474663 (জরুরি সেবা ও হটলাইন)\n\n📍 অফিস ঠিকানা: সেক্টর ৩, উত্তরা, ঢাকা, বাংলাদেশ।\n✉️ ইমেইল: support@labibtours.com\n\nআপনি চাইলে এখনই যেকোনো নাম্বারে সরাসরি কল বা হোয়াটসঅ্যাপে মেসেজ করতে পারেন!'
-        : 'Official Contact & Helpline for Labib Tour:\n\n📞 WhatsApp & Helplines:\n1. +8801602113987 (Booking & Tour Inquiries - Primary)\n2. +8801991009767 (Customer Support)\n3. +8801848474663 (Emergency Hotline)\n\n📍 Office: Sector 3, Uttara, Dhaka, Bangladesh.\n✉️ Email: support@labibtours.com\n\nFeel free to call or WhatsApp any of our lines directly!';
+        ? 'লাবিব ট্যুর অ্যান্ড ট্রাভেলসের অফিসিয়াল হেল্পলাইন ও যোগাযোগের নম্বরসমূহ:\n\n📞 হোয়াটসঅ্যাপ ও হটলাইন:\n১. 01602113987 (বুকিং ও ট্যুর অনুসন্ধান - প্রধান)\n২. 01991009767 (কাস্টমার সাপোর্ট ও তথ্য)\n৩. 01848474663 (জরুরি সেবা ও হটলাইন)\n\n📍 অফিস ঠিকানা: সেক্টর ৩, উত্তরা, ঢাকা, বাংলাদেশ।\n✉️ ইমেইল: support@labibtours.com\n🌐 ফেসবুক পেজ: https://www.facebook.com/labibtourgroup/\n\nআপনি চাইলে এখনই যেকোনো নাম্বারে সরাসরি কল বা হোয়াটসঅ্যাপে মেসেজ করতে পারেন!'
+        : 'Official Contact & Helpline for Labib Tour:\n\n📞 WhatsApp & Helplines:\n1. +8801602113987 (Booking & Tour Inquiries - Primary)\n2. +8801991009767 (Customer Support)\n3. +8801848474663 (Emergency Hotline)\n\n📍 Office: Sector 3, Uttara, Dhaka, Bangladesh.\n✉️ Email: support@labibtours.com\n🌐 Facebook Page: https://www.facebook.com/labibtourgroup/\n\nFeel free to call or WhatsApp any of our lines directly!';
     }
 
     if (isAskingBooking) {

@@ -11,6 +11,8 @@ export interface WhatsAppContactItem {
 export const LABIB_CONTACTS = {
   primaryPhone: '01602113987',
   supportEmail: 'support@labibtours.com',
+  facebookPage: 'https://www.facebook.com/labibtourgroup/',
+  messengerUrl: 'https://m.me/labibtourgroup',
   whatsAppList: [
     {
       id: 'wa-1',

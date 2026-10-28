@@ -195,13 +195,14 @@ export function useWebsiteChat(isOpen: boolean) {
     onSuccess: (data: HandoverResponse) => {
       if (conversationId) {
         queryClient.invalidateQueries({ queryKey: ['website-chat-conversation', conversationId] });
-        if (data?.message) {
+        const handoverMsg = data?.message;
+        if (handoverMsg) {
           queryClient.setQueryData<CommunicationMessage[]>(
             ['website-chat-messages', conversationId],
             (old = []) => {
-              const msgId = data.message.id || data.message._id;
+              const msgId = handoverMsg.id || handoverMsg._id;
               if (msgId && !old.some((m) => (m.id || m._id) === msgId)) {
-                return [...old, data.message];
+                return [...old, handoverMsg];
               }
               return old;
             },

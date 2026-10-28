@@ -66,8 +66,8 @@ export class ChannelConfigService {
       },
       whatsAppList,
       facebook: {
-        enabled: Boolean(env.PUBLIC_FACEBOOK_PAGE_URL),
-        url: env.PUBLIC_FACEBOOK_PAGE_URL || 'https://facebook.com',
+        enabled: true,
+        url: env.PUBLIC_FACEBOOK_PAGE_URL || 'https://www.facebook.com/labibtourgroup/',
         label: 'Facebook Messenger',
         labelBn: 'মেসেঞ্জার চ্যাট',
       },

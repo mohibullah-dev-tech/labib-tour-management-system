@@ -265,13 +265,18 @@ export function FloatingChatWidget() {
                     </div>
                     <div className="flex flex-wrap items-center gap-2 pt-1">
                       <a
-                        href={
-                          contactChannels?.facebook.url ||
-                          'https://facebook.com/groups/labibtravelgroup'
-                        }
+                        href={contactChannels?.facebook.url || LABIB_CONTACTS.facebookPage}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 rounded-md bg-blue-600/90 px-2.5 py-1 text-white hover:bg-blue-600"
+                      >
+                        <span>ফেসবুক পেজ</span>
+                      </a>
+                      <a
+                        href={LABIB_CONTACTS.messengerUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 rounded-md bg-indigo-600/90 px-2.5 py-1 text-white hover:bg-indigo-600"
                       >
                         <span>Messenger</span>
                       </a>

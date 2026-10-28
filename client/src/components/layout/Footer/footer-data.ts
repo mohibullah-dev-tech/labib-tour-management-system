@@ -16,7 +16,7 @@ export const POPULAR_DESTINATIONS = [
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { label: 'Facebook', href: 'https://facebook.com', icon: Facebook },
+  { label: 'Facebook', href: 'https://www.facebook.com/labibtourgroup/', icon: Facebook },
   { label: 'Instagram', href: 'https://instagram.com', icon: Instagram },
   { label: 'Twitter / X', href: 'https://twitter.com', icon: Twitter },
   { label: 'YouTube', href: 'https://youtube.com', icon: Youtube },

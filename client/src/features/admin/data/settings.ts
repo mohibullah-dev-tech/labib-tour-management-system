@@ -9,7 +9,7 @@ export const DEFAULT_COMPANY_SETTINGS: CompanySettings = {
   supportPhone: '+8801602113987',
   whatsappNumber: '+8801602113987',
   socialLinks: [
-    { platform: 'Facebook', url: 'https://facebook.com/labibtours' },
+    { platform: 'Facebook', url: 'https://www.facebook.com/labibtourgroup/' },
     { platform: 'Instagram', url: 'https://instagram.com/labibtours' },
     { platform: 'YouTube', url: 'https://youtube.com/@labibtours' },
   ],
