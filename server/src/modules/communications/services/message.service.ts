@@ -105,6 +105,7 @@ export class MessageService {
     }
 
     // 6. Automated AI Travel Assistant Reply (if conversation is in AI handling mode)
+    let aiMessageDoc: any = null;
     if (conversation.handlingMode === 'ai' && payload.content.trim()) {
       try {
         const aiResult = await AiTravelAssistantService.generateReply(payload.content);
@@ -128,7 +129,7 @@ export class MessageService {
         }
 
         // Persist AI reply
-        const aiMessageDoc = await Message.create({
+        aiMessageDoc = await Message.create({
           conversationId: conversation._id,
           channel: payload.channel,
           direction: 'outbound',
@@ -189,7 +190,17 @@ export class MessageService {
       }
     }
 
-    return messageDoc;
+    const userDoc = (messageDoc as any).toObject ? (messageDoc as any).toObject() : messageDoc;
+    const aiDoc = aiMessageDoc
+      ? (aiMessageDoc as any).toObject
+        ? (aiMessageDoc as any).toObject()
+        : aiMessageDoc
+      : null;
+
+    return {
+      ...userDoc,
+      reply: aiDoc,
+    };
   }
 
   /**

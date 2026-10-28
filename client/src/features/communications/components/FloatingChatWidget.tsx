@@ -1,12 +1,23 @@
 import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Bot, UserCheck, User, Sparkles, ExternalLink } from 'lucide-react';
+import {
+  MessageCircle,
+  X,
+  Send,
+  Bot,
+  UserCheck,
+  User,
+  Sparkles,
+  ExternalLink,
+  Phone,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useWebsiteChat } from '../hooks/useWebsiteChat';
 import { communicationService } from '../services/communication.service';
 import type { PublicContactChannels } from '../types/communication.types';
+import { LABIB_CONTACTS } from '@/config/contacts';
 
 const QUICK_PROMPTS = [
   {
@@ -60,7 +71,7 @@ export function FloatingChatWidget() {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, isOpen, isTyping]);
+  }, [messages.length, isOpen, isTyping, isSending]);
 
   // Focus input on open
   useEffect(() => {
@@ -71,10 +82,11 @@ export function FloatingChatWidget() {
 
   const handleSubmit = async (e?: FormEvent) => {
     e?.preventDefault();
-    if (!inputText.trim() || isSending) return;
-    const text = inputText;
+    const text = inputText.trim();
+    if (!text || isSending) return;
     setInputText('');
     await sendMessage(text);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -84,8 +96,14 @@ export function FloatingChatWidget() {
     }
   };
 
-  const handleQuickPrompt = (query: string) => {
-    sendMessage(query);
+  const handleQuickPrompt = async (query: string) => {
+    await sendMessage(query);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleRequestHuman = async () => {
+    await requestHumanSupport();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -186,14 +204,16 @@ export function FloatingChatWidget() {
               <div className="mt-3 flex items-center justify-between gap-2 border-t border-white/15 pt-2 text-xs">
                 <button
                   type="button"
-                  onClick={requestHumanSupport}
+                  onClick={handleRequestHuman}
                   disabled={isHandingOver}
                   className="flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white transition hover:bg-white/25 active:scale-95 disabled:opacity-50"
                 >
                   <UserCheck className="size-3.5" />
                   <span>
                     {isHandingOver
-                      ? 'Connecting...'
+                      ? language === 'bn'
+                        ? 'যুক্ত করা হচ্ছে...'
+                        : 'Connecting...'
                       : language === 'bn'
                         ? 'মানুষের সাথে কথা বলুন'
                         : 'Talk to Human'}
@@ -212,53 +232,57 @@ export function FloatingChatWidget() {
 
               {/* Direct Social Channels Drawer */}
               <AnimatePresence>
-                {showChannelsDrawer && contactChannels && (
+                {showChannelsDrawer && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="mt-2.5 flex flex-wrap gap-2 border-t border-white/10 pt-2 text-xs"
+                    className="mt-2.5 flex flex-col gap-2 border-t border-white/15 pt-2 text-xs"
                   >
-                    {contactChannels.whatsapp.enabled && contactChannels.whatsapp.url && (
+                    <div className="text-[11px] font-semibold text-white/90">
+                      {language === 'bn'
+                        ? 'আমাদের অফিশিয়াল ৩টি হোয়াটসঅ্যাপ লাইন:'
+                        : 'Official 3 WhatsApp Lines:'}
+                    </div>
+                    <div className="grid grid-cols-1 gap-1.5">
+                      {LABIB_CONTACTS.whatsAppList.map((wa) => (
+                        <a
+                          key={wa.id}
+                          href={wa.waUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between rounded-lg bg-emerald-600/90 px-3 py-1.5 text-white transition hover:bg-emerald-600"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">{wa.number}</span>
+                            <span className="text-[10px] text-white/80">({wa.description})</span>
+                          </div>
+                          <span className="rounded bg-white/20 px-1.5 py-0.5 text-[9px] font-medium">
+                            {wa.badge} ↗
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
                       <a
-                        href={contactChannels.whatsapp.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 rounded-md bg-emerald-600/90 px-2.5 py-1 text-white hover:bg-emerald-600"
-                      >
-                        <span>WhatsApp</span>
-                      </a>
-                    )}
-                    {contactChannels.facebook.enabled && contactChannels.facebook.url && (
-                      <a
-                        href={contactChannels.facebook.url}
+                        href={
+                          contactChannels?.facebook.url ||
+                          'https://facebook.com/groups/labibtravelgroup'
+                        }
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 rounded-md bg-blue-600/90 px-2.5 py-1 text-white hover:bg-blue-600"
                       >
                         <span>Messenger</span>
                       </a>
-                    )}
-                    {contactChannels.instagram.enabled && contactChannels.instagram.url && (
                       <a
-                        href={contactChannels.instagram.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 rounded-md bg-pink-600/90 px-2.5 py-1 text-white hover:bg-pink-600"
+                        href={`tel:${LABIB_CONTACTS.primaryPhone}`}
+                        className="flex items-center gap-1 rounded-md bg-amber-600/90 px-2.5 py-1 text-white hover:bg-amber-600"
                       >
-                        <span>Instagram</span>
+                        <Phone className="size-3" />
+                        <span>হটলাইন ({LABIB_CONTACTS.primaryPhone})</span>
                       </a>
-                    )}
-                    {contactChannels.telegram.enabled && contactChannels.telegram.url && (
-                      <a
-                        href={contactChannels.telegram.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 rounded-md bg-sky-600/90 px-2.5 py-1 text-white hover:bg-sky-600"
-                      >
-                        <span>Telegram</span>
-                      </a>
-                    )}
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -294,6 +318,7 @@ export function FloatingChatWidget() {
                   const isUser = msg.direction === 'inbound';
                   const isAi = msg.senderType === 'ai';
                   const isStaff = msg.senderType === 'staff';
+                  const isSystem = msg.senderType === 'system';
 
                   return (
                     <div
@@ -316,6 +341,13 @@ export function FloatingChatWidget() {
                               className="h-4 gap-1 border-emerald-500/20 bg-emerald-500/10 px-1.5 text-[10px] text-emerald-600"
                             >
                               <User className="size-2.5" /> Staff ({msg.senderName || 'Team'})
+                            </Badge>
+                          ) : isSystem ? (
+                            <Badge
+                              variant="outline"
+                              className="h-4 gap-1 border-amber-500/30 bg-amber-500/15 px-1.5 text-[10px] text-amber-700 dark:text-amber-400"
+                            >
+                              <UserCheck className="size-2.5" /> Support Desk
                             </Badge>
                           ) : null}
                           <span className="text-[10px] opacity-75">
@@ -353,14 +385,16 @@ export function FloatingChatWidget() {
               )}
 
               {/* Typing indicator */}
-              {isTyping && (
+              {(isTyping || isSending) && (
                 <div className="text-muted-foreground flex items-center gap-2 text-xs">
                   <div className="bg-card border-border flex gap-1 rounded-full border px-3 py-1.5 shadow-xs">
                     <span className="bg-primary/70 size-1.5 animate-bounce rounded-full" />
                     <span className="bg-primary/70 size-1.5 animate-bounce rounded-full [animation-delay:0.2s]" />
                     <span className="bg-primary/70 size-1.5 animate-bounce rounded-full [animation-delay:0.4s]" />
                   </div>
-                  <span>{language === 'bn' ? 'টাইপ করছে...' : 'Typing...'}</span>
+                  <span>
+                    {language === 'bn' ? 'উত্তর তৈরি হচ্ছে...' : 'Generating response...'}
+                  </span>
                 </div>
               )}
 

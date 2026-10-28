@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Conversation } from '@/models/index.js';
+import { Conversation, Message } from '@/models/index.js';
 import { ApiError } from '@/utils/ApiError.js';
 import { getIO, ROOMS } from '@/sockets/index.js';
 import type { CommunicationChannel, ConversationStatus, HandlingMode } from '@/constants/index.js';
@@ -248,8 +248,46 @@ export class ConversationService {
 
     if (!conversation) throw ApiError.notFound('Conversation not found');
 
+    let handoverMessageDoc: any = null;
+    if (mode === 'human') {
+      try {
+        handoverMessageDoc = await Message.create({
+          conversationId: conversation._id,
+          channel: conversation.channel || 'website',
+          direction: 'outbound',
+          senderType: 'system',
+          senderName: 'Customer Support Desk',
+          content:
+            'আমাদের কাস্টমার সাপোর্ট টিমের সাথে সরাসরি যোগাযোগ করতে নিচের যেকোনো নম্বরে কল বা হোয়াটসঅ্যাপ করতে পারেন:\n\n১. 01602113987 (বুকিং ও ট্যুর অনুসন্ধান - প্রধান)\n২. 01991009767 (কাস্টমার সাপোর্ট ও তথ্য)\n৩. 01848474663 (জরুরি সেবা ও হটলাইন)\n\nআমাদের সাপোর্ট এজেন্ট আপনাকে সরাসরি সহায়তা করতে প্রস্তুত। আপনি চাইলে আপনার প্রশ্নটি এখানেও লিখে রাখতে পারেন।',
+          status: 'sent',
+          deliveredAt: new Date(),
+        });
+
+        await Conversation.findByIdAndUpdate(conversationId, {
+          lastMessageId: handoverMessageDoc._id,
+          lastMessageAt: handoverMessageDoc.createdAt,
+        });
+      } catch (err) {
+        // Logging or ignore
+      }
+    }
+
     try {
       const io = getIO();
+      if (handoverMessageDoc) {
+        io.to(ROOMS.conversation(conversationId)).emit('message:new', {
+          id: handoverMessageDoc._id.toString(),
+          conversationId,
+          senderType: 'system',
+          senderName: 'Customer Support Desk',
+          direction: 'outbound',
+          channel: conversation.channel || 'website',
+          content: handoverMessageDoc.content,
+          status: 'sent',
+          createdAt: handoverMessageDoc.createdAt.toISOString(),
+        });
+      }
+
       io.to(ROOMS.inbox()).emit('conversation:handover', {
         conversationId,
         mode,
@@ -263,7 +301,14 @@ export class ConversationService {
       // Socket optional
     }
 
-    return conversation;
+    return {
+      conversation,
+      message: handoverMessageDoc
+        ? handoverMessageDoc.toObject
+          ? handoverMessageDoc.toObject()
+          : handoverMessageDoc
+        : null,
+    };
   }
 
   /**

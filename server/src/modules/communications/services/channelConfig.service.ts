@@ -16,10 +16,40 @@ export class ChannelConfigService {
    * Only includes channels that are legitimately configured with a URL or phone.
    */
   static getPublicContactChannels() {
-    const rawWaNumber = env.PUBLIC_WHATSAPP_NUMBER || '+8801819800000'; // Default company contact
+    const rawWaNumber = env.PUBLIC_WHATSAPP_NUMBER || '+8801602113987';
     const defaultWaMessage =
       'Hello Labib Tour! I would like to inquire about your upcoming group tours.';
     const waUrl = formatWhatsAppClickToChat(rawWaNumber, defaultWaMessage);
+
+    const whatsAppList = [
+      {
+        id: 'wa-1',
+        name: 'হোয়াটসঅ্যাপ লাইন ১',
+        number: '01602113987',
+        raw: '+8801602113987',
+        url: formatWhatsAppClickToChat('+8801602113987', defaultWaMessage),
+        label: 'Booking & Inquiries',
+        labelBn: 'বুকিং ও অনুসন্ধান',
+      },
+      {
+        id: 'wa-2',
+        name: 'হোয়াটসঅ্যাপ লাইন ২',
+        number: '01991009767',
+        raw: '+8801991009767',
+        url: formatWhatsAppClickToChat('+8801991009767', defaultWaMessage),
+        label: 'Customer Support',
+        labelBn: 'কাস্টমার সাপোর্ট',
+      },
+      {
+        id: 'wa-3',
+        name: 'হোয়াটসঅ্যাপ লাইন ৩',
+        number: '01848474663',
+        raw: '+8801848474663',
+        url: formatWhatsAppClickToChat('+8801848474663', defaultWaMessage),
+        label: 'Hotline & Urgent',
+        labelBn: 'জরুরি হটলাইন',
+      },
+    ];
 
     return {
       websiteChat: {
@@ -34,6 +64,7 @@ export class ChannelConfigService {
         label: 'WhatsApp Chat',
         labelBn: 'হোয়াটসঅ্যাপ চ্যাট',
       },
+      whatsAppList,
       facebook: {
         enabled: Boolean(env.PUBLIC_FACEBOOK_PAGE_URL),
         url: env.PUBLIC_FACEBOOK_PAGE_URL || 'https://facebook.com',

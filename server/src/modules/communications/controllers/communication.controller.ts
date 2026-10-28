@@ -182,12 +182,19 @@ export class CommunicationController {
    */
   static requestHandover = asyncHandler(async (req, res) => {
     const conversationId = getParam(req.params.conversationId);
-    const conversation = await ConversationService.setHandlingMode(
+    const result = await ConversationService.setHandlingMode(
       conversationId,
       'human',
       'Customer clicked handover button',
     );
-    res.json(envelope({ success: true, handlingMode: conversation.handlingMode }));
+    res.json(
+      envelope({
+        success: true,
+        handlingMode: result.conversation.handlingMode,
+        conversation: result.conversation,
+        message: result.message,
+      }),
+    );
   });
 
   /**
@@ -319,8 +326,8 @@ export class CommunicationController {
       })
       .parse(req.body);
 
-    const conversation = await ConversationService.setHandlingMode(conversationId, mode, reason);
-    res.json(envelope(conversation));
+    const result = await ConversationService.setHandlingMode(conversationId, mode, reason);
+    res.json(envelope(result.conversation));
   });
 
   /**

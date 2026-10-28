@@ -9,6 +9,16 @@ import type { CommunicationMessage, CommunicationConversation } from '../types/c
 
 const STORAGE_KEY = 'ltms_guest_chat_session';
 
+interface SendWebsiteMessageResponse extends CommunicationMessage {
+  reply?: CommunicationMessage | null;
+}
+
+interface HandoverResponse {
+  success?: boolean;
+  handlingMode?: string;
+  message?: CommunicationMessage | null;
+}
+
 export function useWebsiteChat(isOpen: boolean) {
   const queryClient = useQueryClient();
   const [session, setSession] = useState<WebsiteSessionResponse | null>(() => {
@@ -140,14 +150,31 @@ export function useWebsiteChat(isOpen: boolean) {
 
   // 4. Send Message Mutation
   const sendMutation = useMutation({
-    mutationFn: (content: string) =>
-      communicationService.sendWebsiteMessage(conversationId!, token!, content),
-    onSuccess: (savedMsg) => {
+    mutationFn: ({
+      convId,
+      sessionToken,
+      content,
+    }: {
+      convId: string;
+      sessionToken: string;
+      content: string;
+    }) => communicationService.sendWebsiteMessage(convId, sessionToken, content),
+    onSuccess: (savedMsg: SendWebsiteMessageResponse, variables) => {
       queryClient.setQueryData<CommunicationMessage[]>(
-        ['website-chat-messages', conversationId],
+        ['website-chat-messages', variables.convId],
         (old = []) => {
-          if (old.some((m) => (m.id || m._id) === (savedMsg.id || savedMsg._id))) return old;
-          return [...old, savedMsg];
+          let updated = old;
+          const msgId = savedMsg?.id || savedMsg?._id;
+          if (msgId && !updated.some((m) => (m.id || m._id) === msgId)) {
+            updated = [...updated, savedMsg];
+          }
+          if (savedMsg?.reply) {
+            const replyId = savedMsg.reply.id || savedMsg.reply._id;
+            if (replyId && !updated.some((m) => (m.id || m._id) === replyId)) {
+              updated = [...updated, savedMsg.reply];
+            }
+          }
+          return updated;
         },
       );
     },
@@ -155,24 +182,68 @@ export function useWebsiteChat(isOpen: boolean) {
 
   // 5. Handover Mutation
   const handoverMutation = useMutation({
-    mutationFn: () => communicationService.requestHandover(conversationId!),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['website-chat-conversation', conversationId] });
+    mutationFn: async () => {
+      let convId = conversationId;
+      if (!convId) {
+        const res = await communicationService.createWebsiteSession();
+        setSession(res);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(res));
+        convId = res.conversationId;
+      }
+      return communicationService.requestHandover(convId);
+    },
+    onSuccess: (data: HandoverResponse) => {
+      if (conversationId) {
+        queryClient.invalidateQueries({ queryKey: ['website-chat-conversation', conversationId] });
+        if (data?.message) {
+          queryClient.setQueryData<CommunicationMessage[]>(
+            ['website-chat-messages', conversationId],
+            (old = []) => {
+              const msgId = data.message.id || data.message._id;
+              if (msgId && !old.some((m) => (m.id || m._id) === msgId)) {
+                return [...old, data.message];
+              }
+              return old;
+            },
+          );
+        }
+      }
     },
   });
 
   const sendMessage = useCallback(
     async (content: string) => {
-      if (!content.trim() || !conversationId || !token) return;
-      return sendMutation.mutateAsync(content.trim());
+      const text = content.trim();
+      if (!text) return;
+
+      let convId = conversationId;
+      let sessionToken = token;
+
+      if (!convId || !sessionToken) {
+        try {
+          const res = await communicationService.createWebsiteSession();
+          setSession(res);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(res));
+          convId = res.conversationId;
+          sessionToken = res.token;
+        } catch (err) {
+          console.error('Failed to create guest chat session', err);
+          return;
+        }
+      }
+
+      return sendMutation.mutateAsync({
+        convId,
+        sessionToken,
+        content: text,
+      });
     },
     [conversationId, token, sendMutation],
   );
 
   const requestHumanSupport = useCallback(async () => {
-    if (!conversationId) return;
     return handoverMutation.mutateAsync();
-  }, [conversationId, handoverMutation]);
+  }, [handoverMutation]);
 
   return {
     session,
