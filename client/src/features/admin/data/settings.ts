@@ -6,8 +6,8 @@ export const DEFAULT_COMPANY_SETTINGS: CompanySettings = {
   logoUrl: '',
   faviconUrl: '',
   supportEmail: 'support@labibtours.com',
-  supportPhone: '+8801700000000',
-  whatsappNumber: '+8801000000000',
+  supportPhone: '+8801602113987',
+  whatsappNumber: '+8801602113987',
   socialLinks: [
     { platform: 'Facebook', url: 'https://facebook.com/labibtours' },
     { platform: 'Instagram', url: 'https://instagram.com/labibtours' },

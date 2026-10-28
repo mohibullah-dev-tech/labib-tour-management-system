@@ -22,6 +22,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { apiClient } from '@/lib/axios';
 import { fadeInUp } from '@/lib/animations/variants';
+import { LABIB_CONTACTS } from '@/config/contacts';
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, 'দয়া করে আপনার পূর্ণ নাম লিখুন (কমপক্ষে ২ অক্ষর)'),
@@ -124,19 +125,30 @@ function ContactSection() {
                 </div>
               </div>
 
-              {/* Phone */}
+              {/* Phone & WhatsApp Lines */}
               <div className="flex items-start gap-3.5">
                 <div className="bg-primary/10 text-primary mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg">
                   <Phone className="size-4" />
                 </div>
                 <div>
-                  <p className="text-foreground text-xs font-semibold">কল ও কাস্টমার কেয়ার</p>
-                  <a
-                    href="tel:+8801700000000"
-                    className="text-foreground hover:text-primary mt-0.5 block text-sm font-medium transition-colors"
-                  >
-                    +৮৮০ ১৭০০-০০০০০০
-                  </a>
+                  <p className="text-foreground text-xs font-semibold">
+                    কল ও কাস্টমার কেয়ার হেল্পলাইন
+                  </p>
+                  <div className="mt-1 flex flex-col gap-1 text-sm font-medium">
+                    {LABIB_CONTACTS.whatsAppList.map((contact) => (
+                      <div key={contact.id} className="flex items-center gap-2">
+                        <a
+                          href={`tel:${contact.raw}`}
+                          className="text-foreground hover:text-primary transition-colors"
+                        >
+                          {contact.number}
+                        </a>
+                        <span className="text-muted-foreground text-xs">
+                          ({contact.description})
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -177,26 +189,29 @@ function ContactSection() {
             {/* Quick Actions (WhatsApp & Facebook) */}
             <div className="border-border mt-6 border-t pt-5">
               <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                সোশ্যাল মিডিয়া ও চ্যাট
+                হোয়াটসঅ্যাপে সরাসরি চ্যাট করুন
               </p>
-              <div className="mt-3 flex flex-wrap gap-2.5">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  className="gap-1.5 text-xs hover:border-emerald-500 hover:text-emerald-600"
-                >
-                  <a
-                    href="https://wa.me/8801700000000"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Chat with Labib Tour on WhatsApp"
+              <div className="mt-3 flex flex-wrap gap-2">
+                {LABIB_CONTACTS.whatsAppList.map((contact) => (
+                  <Button
+                    key={contact.id}
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="gap-1.5 text-xs hover:border-emerald-500 hover:text-emerald-600 dark:hover:border-emerald-500"
                   >
-                    <MessageSquare className="size-3.5 text-emerald-500" />
-                    হোয়াটসঅ্যাপে চ্যাট করুন
-                    <ExternalLink className="size-3 opacity-60" />
-                  </a>
-                </Button>
+                    <a
+                      href={contact.waUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Chat with Labib Tour on WhatsApp: ${contact.number}`}
+                    >
+                      <MessageSquare className="size-3.5 text-emerald-500" />
+                      <span>{contact.number}</span>
+                      <ExternalLink className="size-3 opacity-60" />
+                    </a>
+                  </Button>
+                ))}
 
                 <Button
                   variant="outline"
@@ -230,7 +245,8 @@ function ContactSection() {
           <div className="border-border bg-card rounded-2xl border p-6 shadow-xs sm:p-8">
             <h3 className="font-display text-foreground text-xl font-bold">আমাদের বার্তা পাঠান</h3>
             <p className="text-muted-foreground mt-1 text-sm">
-              আপনার বিবরণ ও পছন্দের ট্যুরের তথ্য পূরণ করুন। আমাদের টিম দ্রুত আপনার সাথে যোগাযোগ করবে।
+              আপনার বিবরণ ও পছন্দের ট্যুরের তথ্য পূরণ করুন। আমাদের টিম দ্রুত আপনার সাথে যোগাযোগ
+              করবে।
             </p>
 
             {submitSuccess && (
@@ -242,7 +258,8 @@ function ContactSection() {
                 <div className="text-sm">
                   <p className="font-semibold">আপনার বার্তা সফলভাবে পাঠানো হয়েছে!</p>
                   <p className="mt-0.5 text-xs opacity-90">
-                    যোগাযোগের জন্য ধন্যবাদ। আমাদের প্রতিনিধি আপনার বার্তা পেয়েছেন এবং দ্রুত যোগাযোগ করবেন।
+                    যোগাযোগের জন্য ধন্যবাদ। আমাদের প্রতিনিধি আপনার বার্তা পেয়েছেন এবং দ্রুত যোগাযোগ
+                    করবেন।
                   </p>
                 </div>
               </div>

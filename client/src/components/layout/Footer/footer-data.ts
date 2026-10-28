@@ -23,6 +23,11 @@ export const SOCIAL_LINKS: SocialLink[] = [
 ];
 
 export const EMERGENCY_CONTACT = {
-  phone: '+৮৮০ ১৭০০-০০০০০০',
+  phones: [
+    { number: '01602113987', raw: '+8801602113987', label: 'লাইন ১' },
+    { number: '01991009767', raw: '+8801991009767', label: 'লাইন ২' },
+    { number: '01848474663', raw: '+8801848474663', label: 'লাইন ৩' },
+  ],
+  phone: '01602113987',
   email: 'support@labibtours.com',
 };

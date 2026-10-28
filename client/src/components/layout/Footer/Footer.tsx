@@ -91,20 +91,25 @@ function Footer() {
         </div>
 
         {/* Emergency contact */}
-        <div className="flex flex-col gap-3">
-          <Caption>জরুরি যোগাযোগ</Caption>
-          <a
-            href={`tel:${EMERGENCY_CONTACT.phone.replace(/\s/g, '')}`}
-            className="text-muted-foreground hover:text-primary flex items-center gap-2 text-sm transition-colors"
-          >
-            <Phone className="size-4 shrink-0" />
-            {EMERGENCY_CONTACT.phone}
-          </a>
+        <div className="flex flex-col gap-2.5">
+          <Caption>জরুরি যোগাযোগ ও হোয়াটসঅ্যাপ</Caption>
+          <div className="flex flex-col gap-1.5">
+            {EMERGENCY_CONTACT.phones.map((p) => (
+              <a
+                key={p.number}
+                href={`tel:${p.raw}`}
+                className="text-muted-foreground hover:text-primary flex items-center gap-2 text-sm transition-colors"
+              >
+                <Phone className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <span>{p.number}</span>
+              </a>
+            ))}
+          </div>
           <a
             href={`mailto:${EMERGENCY_CONTACT.email}`}
             className="text-muted-foreground hover:text-primary flex items-center gap-2 text-sm transition-colors"
           >
-            <Mail className="size-4 shrink-0" />
+            <Mail className="size-3.5 shrink-0" />
             {EMERGENCY_CONTACT.email}
           </a>
         </div>
