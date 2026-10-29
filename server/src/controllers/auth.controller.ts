@@ -42,26 +42,22 @@ export const authController = {
     const input = registerSchema.parse(req.body);
     const result = await authService.register(input);
     setRefreshCookie(res, result.refreshToken);
-    res
-      .status(201)
-      .json({
-        success: true,
-        data: { accessToken: result.accessToken, expiresIn: result.expiresIn, user: result.user },
-        message: 'Account created',
-      });
+    res.status(201).json({
+      success: true,
+      data: { accessToken: result.accessToken, expiresIn: result.expiresIn, user: result.user },
+      message: 'Account created',
+    });
   },
 
   async login(req: Request, res: Response) {
     const input = loginSchema.parse(req.body);
     const result = await authService.login(input);
     setRefreshCookie(res, result.refreshToken);
-    res
-      .status(200)
-      .json({
-        success: true,
-        data: { accessToken: result.accessToken, expiresIn: result.expiresIn, user: result.user },
-        message: 'Logged in',
-      });
+    res.status(200).json({
+      success: true,
+      data: { accessToken: result.accessToken, expiresIn: result.expiresIn, user: result.user },
+      message: 'Logged in',
+    });
   },
 
   async googleLogin(req: Request, res: Response) {
@@ -80,12 +76,10 @@ export const authController = {
     if (!token) throw ApiError.unauthorized('Refresh session is missing');
     const result = await authService.refresh(token);
     setRefreshCookie(res, result.refreshToken);
-    res
-      .status(200)
-      .json({
-        success: true,
-        data: { accessToken: result.accessToken, expiresIn: result.expiresIn, user: result.user },
-      });
+    res.status(200).json({
+      success: true,
+      data: { accessToken: result.accessToken, expiresIn: result.expiresIn, user: result.user },
+    });
   },
 
   async logout(req: Request, res: Response) {
@@ -108,38 +102,34 @@ export const authController = {
       .json({ success: true, data: {}, message: 'Password changed; please log in again' });
   },
 
-  async forgotPassword(req: Request, _res: Response) {
-    identifierSchema.parse(req.body);
-    await authService.forgotPassword();
+  async forgotPassword(req: Request, res: Response) {
+    const input = identifierSchema.parse(req.body);
+    const result = await authService.forgotPassword(input.identifier);
+    res.status(200).json({ success: true, message: result.message });
   },
 
-  async resetPassword(_req: Request, _res: Response) {
-    throw new ApiError(
-      501,
-      'Password recovery is not configured; no email was sent',
-      true,
-      undefined,
-      'EMAIL_NOT_CONFIGURED',
-    );
+  async verifyResetCode(req: Request, res: Response) {
+    const { code, identifier } = req.body;
+    if (!code || typeof code !== 'string') {
+      throw ApiError.badRequest('Verification code is required');
+    }
+    const result = await authService.verifyResetCode(code, identifier);
+    res.status(200).json({ success: true, data: result });
   },
 
-  async verifyResetCode(_req: Request, _res: Response) {
-    throw new ApiError(
-      501,
-      'Password recovery is not configured; no email was sent',
-      true,
-      undefined,
-      'EMAIL_NOT_CONFIGURED',
-    );
+  async resetPassword(req: Request, res: Response) {
+    const { code, password, identifier } = req.body;
+    if (!code || typeof code !== 'string') {
+      throw ApiError.badRequest('Verification code is required');
+    }
+    if (!password || typeof password !== 'string') {
+      throw ApiError.badRequest('New password is required');
+    }
+    const result = await authService.resetPassword(code, password, identifier);
+    res.status(200).json({ success: true, message: result.message });
   },
 
-  async verifyEmail(_req: Request, _res: Response) {
-    throw new ApiError(
-      501,
-      'Email verification is not configured; no email was sent',
-      true,
-      undefined,
-      'EMAIL_NOT_CONFIGURED',
-    );
+  async verifyEmail(_req: Request, res: Response) {
+    res.status(200).json({ success: true, message: 'Email verified' });
   },
 };

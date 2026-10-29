@@ -47,6 +47,14 @@ const envSchema = z.object({
   // Google OAuth
   GOOGLE_CLIENT_ID: z.string().trim().optional(),
 
+  // SMTP / Email Delivery
+  SMTP_HOST: z.string().trim().default('smtp.gmail.com'),
+  SMTP_PORT: z.coerce.number().int().default(587),
+  SMTP_SECURE: z.coerce.boolean().default(false),
+  SMTP_USER: z.string().trim().optional(),
+  SMTP_PASS: z.string().trim().optional(),
+  EMAIL_FROM: z.string().trim().default('Labib Tours & Travels <support@labibtours.com>'),
+
   // SSLCommerz Payment Gateway
   SSLCOMMERZ_STORE_ID: z.string().trim().default('testbox'),
   SSLCOMMERZ_STORE_PASS: z.string().trim().default('qwerty'),

@@ -1,8 +1,9 @@
 import { Types } from 'mongoose';
-import { Booking, Payment, User } from '@/models/index.js';
+import { Booking, Payment, TourEvent, TourTemplate, User } from '@/models/index.js';
 import { ApiError } from '@/utils/ApiError.js';
 import { env } from '@/config/env.js';
 import { logger } from '@/utils/logger.js';
+import { emailService } from '@/services/email.service.js';
 
 export interface InitiatePaymentParams {
   bookingId: string;
@@ -215,6 +216,40 @@ export class SSLCommerzService {
       }
 
       await booking.save();
+
+      // Dispatch booking confirmation email asynchronously
+      try {
+        const customer = await User.findById(booking.customerId).select('name email');
+        const tourTemplate = await TourTemplate.findById(booking.tourTemplateId).select('title');
+        const event = await TourEvent.findById(booking.eventId).select('startDate');
+        const recipientEmail = customer?.email || booking.guestDetails?.[0]?.email;
+        const recipientName = customer?.name || booking.guestDetails?.[0]?.name || 'Traveler';
+
+        if (recipientEmail) {
+          const departureStr = event?.startDate
+            ? new Date(event.startDate).toLocaleDateString('bn-BD', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              })
+            : 'শীঘ্রই ঘোষণা করা হবে';
+
+          emailService
+            .sendBookingConfirmationEmail(recipientEmail, recipientName, {
+              bookingReference: booking.bookingCode,
+              tourTitle: tourTemplate?.title || 'স্পেশাল গ্রুপ ট্যুর',
+              departureDate: departureStr,
+              seats: booking.seatNumbers,
+              totalAmount: booking.totalAmount,
+              paidAmount: booking.receivedAmount,
+              dueAmount: booking.dueAmount,
+              ticketUrl: `${env.CLIENT_URL}/booking/tickets/${booking.bookingCode}`,
+            })
+            .catch(() => {});
+        }
+      } catch (emailErr) {
+        logger.warn('Failed to dispatch booking confirmation email', { error: emailErr });
+      }
     }
 
     return `${env.CLIENT_URL}/booking/payment-result?status=success&bookingCode=${booking.bookingCode}&tranId=${encodeURIComponent(tranId)}&amount=${paidAmount}`;

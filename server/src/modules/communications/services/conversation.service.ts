@@ -267,7 +267,7 @@ export class ConversationService {
           lastMessageId: handoverMessageDoc._id,
           lastMessageAt: handoverMessageDoc.createdAt,
         });
-      } catch (err) {
+      } catch {
         // Logging or ignore
       }
     }

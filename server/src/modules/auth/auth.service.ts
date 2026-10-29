@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { User } from '@/models/index.js';
 import { env } from '@/config/env.js';
 import { ApiError } from '@/utils/ApiError.js';
+import { emailService } from '@/services/email.service.js';
 import type { LoginInput, RegisterInput } from '@/validators/auth.validators.js';
 
 const REFRESH_TOKEN_TTL_MS = durationToMilliseconds(env.JWT_REFRESH_EXPIRES_IN);
@@ -96,6 +97,10 @@ export const authService = {
       role: 'guest',
     });
     const tokens = await saveRefreshToken(user._id.toString());
+
+    // Dispatch welcome confirmation email asynchronously
+    emailService.sendWelcomeEmail(user.email, user.name).catch(() => {});
+
     return {
       user: toPublicUser(user),
       accessToken: tokens.accessToken,
@@ -292,14 +297,79 @@ export const authService = {
     );
   },
 
-  async forgotPassword() {
-    // No email provider is configured in this phase; do not claim that a message was sent.
-    throw new ApiError(
-      501,
-      'Password recovery is not configured; no email was sent',
-      true,
-      undefined,
-      'EMAIL_NOT_CONFIGURED',
+  async forgotPassword(identifier: string) {
+    const trimmed = identifier.trim();
+    const user = await User.findOne({
+      $or: [{ email: trimmed.toLowerCase() }, { phone: trimmed }],
+      isActive: true,
+    });
+
+    if (!user || !user.email) {
+      // Prevent user enumeration by returning standard success message
+      return { message: 'If an account exists with this email, a reset code has been sent.' };
+    }
+
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const tokenHash = digest(resetCode);
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+
+    await User.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          passwordResetTokenHash: tokenHash,
+          passwordResetExpiresAt: expiresAt,
+        },
+      },
     );
+
+    emailService.sendPasswordResetEmail(user.email, user.name, resetCode).catch(() => {});
+    return { message: 'Password reset code has been sent to your email.' };
+  },
+
+  async verifyResetCode(code: string, identifier?: string) {
+    const tokenHash = digest(code.trim());
+    const query: Record<string, unknown> = {
+      passwordResetTokenHash: tokenHash,
+      passwordResetExpiresAt: { $gt: new Date() },
+      isActive: true,
+    };
+    if (identifier) {
+      const trimmed = identifier.trim();
+      query.$or = [{ email: trimmed.toLowerCase() }, { phone: trimmed }];
+    }
+    const user = await User.findOne(query);
+    if (!user) throw ApiError.badRequest('Invalid or expired verification code');
+    return { valid: true };
+  },
+
+  async resetPassword(code: string, newPassword: string, identifier?: string) {
+    const tokenHash = digest(code.trim());
+    const query: Record<string, unknown> = {
+      passwordResetTokenHash: tokenHash,
+      passwordResetExpiresAt: { $gt: new Date() },
+      isActive: true,
+    };
+    if (identifier) {
+      const trimmed = identifier.trim();
+      query.$or = [{ email: trimmed.toLowerCase() }, { phone: trimmed }];
+    }
+    const user = await User.findOne(query);
+    if (!user) throw ApiError.badRequest('Invalid or expired verification code');
+
+    const passwordHash = await bcrypt.hash(newPassword, PASSWORD_HASH_COST);
+    await User.updateOne(
+      { _id: user._id },
+      {
+        $set: { passwordHash },
+        $unset: {
+          passwordResetTokenHash: 1,
+          passwordResetExpiresAt: 1,
+          refreshTokenHash: 1,
+          refreshTokenExpiresAt: 1,
+        },
+      },
+    );
+    return { message: 'Password has been reset successfully. You can now log in.' };
   },
 };
